@@ -1,0 +1,1097 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>Developer Guide &#8211; Vinay Arora</title>
+	<atom:link href="https://vinayaroratech.com/category/developer-guide/feed/" rel="self" type="application/rss+xml" />
+	<link>https://vinayaroratech.com</link>
+	<description>.NET Core, Full Stack, Angular, Azure, Microservices</description>
+	<lastBuildDate>Tue, 16 Jun 2020 16:48:35 +0000</lastBuildDate>
+	<language>en</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.8</generator>
+
+<image>
+	<url>https://vinayaroratech.com/wp-content/uploads/2020/05/cropped-android-chrome-512x5121-1-3-32x32.png</url>
+	<title>Developer Guide &#8211; Vinay Arora</title>
+	<link>https://vinayaroratech.com</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>Coding standards</title>
+		<link>https://vinayaroratech.com/developer-guide/coding-standards/</link>
+					<comments>https://vinayaroratech.com/developer-guide/coding-standards/#respond</comments>
+		
+		<dc:creator><![CDATA[Vinay]]></dc:creator>
+		<pubDate>Tue, 16 Jun 2020 16:45:43 +0000</pubDate>
+				<category><![CDATA[Developer Guide]]></category>
+		<category><![CDATA[C#]]></category>
+		<category><![CDATA[Coding Standards]]></category>
+		<guid isPermaLink="false">http://vinayaroratech.com/?p=92</guid>
+
+					<description><![CDATA[There are three supported .NET coding convention categories: Language conventions .NET code style settings &#8220;this.&#8221; qualifiers This style rule can be applied to fields, properties, methods, or events. Prefer the code element not to be prefaced with this. Prefer fields not to be prefaced with this. //Right capacity = 0; //Wrong this.capacity = 0; Prefer properties not to be prefaced with this. //Right ID &#8230;<p class="read-more"> <a class="" href="https://vinayaroratech.com/developer-guide/coding-standards/"> <span class="screen-reader-text">Coding standards</span> Read More &#187;</a></p>]]></description>
+										<content:encoded><![CDATA[<p>There are three supported .NET coding convention categories:</p>
+<h2 id="language-conventions">Language conventions</h2>
+<div class="col-md-10">
+<article id="_content" class="content wrap" data-uid="en/developer/tutorials/coding-standards">
+<h3 id="net-code-style-settings">.NET code style settings</h3>
+<h4 id="this-qualifiers">&#8220;this.&#8221; qualifiers</h4>
+<p>This style rule can be applied to fields, properties, methods, or events.</p>
+<ul>
+<li>Prefer the code element <em>not</em> to be prefaced with <code>this.</code></li>
+<li>Prefer fields <em>not</em> to be prefaced with <code>this.</code>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+capacity = <span class="hljs-number">0</span>;
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">this</span>.capacity = <span class="hljs-number">0</span>;
+</code></pre>
+</li>
+<li>Prefer properties <em>not</em> to be prefaced with <code>this.</code>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+ID = <span class="hljs-number">0</span>;
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">this</span>.ID = <span class="hljs-number">0</span>;
+</code></pre>
+</li>
+<li>Prefer methods <em>not</em> to be prefaced with <code>this.</code>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+Display();
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">this</span>.Display();
+</code></pre>
+</li>
+<li>Prefer events <em>not</em> to be prefaced with <code>this.</code>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+Elapsed += Handler;
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">this</span>.Elapsed += Handler;
+</code></pre>
+</li>
+</ul>
+<h4 id="language-keywords-instead-of-framework-type-names-for-type-references">Language keywords instead of framework type names for type references</h4>
+<p>This style rule can be applied to local variables, method parameters, and class members, or as a separate rule to type member access expressions.</p>
+<ul>
+<li>Prefer the language keyword for local variables, method parameters, and class members, instead of the type name, for types that have a keyword to represent them.
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> _member;
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">private</span> Int32 _member;
+</code></pre>
+</li>
+<li>Prefer the language keyword for member access expressions, instead of the type name, for types that have a keyword to represent them.
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">var</span> local = <span class="hljs-keyword">int</span>.MaxValue;
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">var</span> local = Int32.MaxValue;
+</code></pre>
+</li>
+</ul>
+<h4 id="modifier-preferences">Modifier preferences</h4>
+<p>The style rules in this section concern modifier preferences, including requiring accessibility modifiers, specifying the desired modifier sort order, and requiring the read-only modifier.</p>
+<ul>
+<li>Prefer accessibility modifiers to be declared except for public interface members.
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title">MyClass</span>
+{
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">const</span> <span class="hljs-keyword">string</span> thisFieldIsConst = <span class="hljs-string">"constant"</span>;
+}
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title">MyClass</span>
+{
+    <span class="hljs-keyword">const</span> <span class="hljs-keyword">string</span> thisFieldIsConst = <span class="hljs-string">"constant"</span>;
+}
+</code></pre>
+</li>
+<li>Prefer the specified ordering:<em><code>public, private, protected, internal, static, extern, new, virtual, abstract, sealed, override, readonly, unsafe, volatile, async:silent</code></em>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title">MyClass</span>
+{
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">readonly</span> <span class="hljs-keyword">int</span> _daysInYear = <span class="hljs-number">365</span>;
+}
+</code></pre>
+</li>
+</ul>
+<h4 id="parentheses-preferences">Parentheses preferences</h4>
+<p>The style rules in this section concern parentheses preferences, including the use of parentheses for arithmetic, relational, and other binary operators.</p>
+<ul>
+<li>Prefer parentheses to clarify arithmetic operator (*, /, %, +, -, &lt;&lt;, &gt;&gt;, &amp;, ^, |) precedence
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">var</span> v = a + (b * c);
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">var</span> v = a + b * c;
+</code></pre>
+</li>
+<li>Prefer parentheses to clarify relational operator (&gt;, &lt;, &lt;=, &gt;=, is, as, ==, !=) precedence
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">var</span> v = (a &lt; b) == (c &gt; d);
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">var</span> v = a &lt; b == c &gt; d;
+</code></pre>
+</li>
+<li>Prefer parentheses to clarify other binary operator (&amp;&amp;, ||, ??) precedence
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">var</span> v = a || (b &amp;&amp; c);
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">var</span> v = a || b &amp;&amp; c;
+</code></pre>
+</li>
+<li>Prefer to not have parentheses when operator precedence is obvious
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">var</span> v = a.b.Length;
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">var</span> v = (a.b).Length;
+</code></pre>
+</li>
+</ul>
+<h4 id="expression-level-preferences">Expression-level preferences</h4>
+<p>The style rules in this section concern expression-level preferences, including the use of object initializers, collection initializers, explicit or inferred tuple names, and inferred anonymous types.</p>
+<ul>
+<li>Prefer objects to be initialized using object initializers when possible
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">var</span> c = <span class="hljs-keyword">new</span> Customer() { Age = <span class="hljs-number">21</span> };
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">var</span> c = <span class="hljs-keyword">new</span> Customer();
+c.Age = <span class="hljs-number">21</span>;
+</code></pre>
+</li>
+<li>Prefer collections to be initialized using collection initializers when possible
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">var</span> list = <span class="hljs-keyword">new</span> List&lt;<span class="hljs-keyword">int</span>&gt; { <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span> };
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">var</span> list = <span class="hljs-keyword">new</span> List&lt;<span class="hljs-keyword">int</span>&gt;();
+list.Add(<span class="hljs-number">1</span>);
+list.Add(<span class="hljs-number">2</span>);
+list.Add(<span class="hljs-number">3</span>);
+</code></pre>
+</li>
+<li>Prefer tuple names to ItemX properties
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+(<span class="hljs-keyword">string</span> name, <span class="hljs-keyword">int</span> age) customer = GetCustomer();
+<span class="hljs-keyword">var</span> name = customer.name;
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+(<span class="hljs-keyword">string</span> name, <span class="hljs-keyword">int</span> age) customer = GetCustomer();
+<span class="hljs-keyword">var</span> name = customer.Item1;
+</code></pre>
+</li>
+<li>Prefer inferred tuple element names
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">var</span> tuple = (age, name);
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">var</span> tuple = (age: age, name: name);
+</code></pre>
+</li>
+<li>Prefer explicit anonymous type member names
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">var</span> anon = <span class="hljs-keyword">new</span> { age = age, name = name };
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">var</span> anon = <span class="hljs-keyword">new</span> { age, name };
+</code></pre>
+</li>
+<li>Prefer autoproperties over properties with private backing fields
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> Age { <span class="hljs-keyword">get</span>; }
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> age;
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> Age
+{
+    <span class="hljs-keyword">get</span>
+    {
+        <span class="hljs-keyword">return</span> age;
+    }
+}
+</code></pre>
+</li>
+<li>Prefer using a null check with pattern-matching over <em><code>object.ReferenceEquals</code></em>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">if</span> (<span class="hljs-keyword">value</span> <span class="hljs-keyword">is</span> <span class="hljs-literal">null</span>)
+    <span class="hljs-keyword">return</span>;
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">if</span> (<span class="hljs-keyword">object</span>.ReferenceEquals(<span class="hljs-keyword">value</span>, <span class="hljs-literal">null</span>))
+    <span class="hljs-keyword">return</span>;
+</code></pre>
+</li>
+<li>Prefer assignments with a ternary conditional over an if-else statement
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">string</span> s = expr ? <span class="hljs-string">"hello"</span> : <span class="hljs-string">"world"</span>;
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">string</span> s;
+<span class="hljs-keyword">if</span> (expr)
+{
+    s = <span class="hljs-string">"hello"</span>;
+}
+<span class="hljs-keyword">else</span>
+{
+    s = <span class="hljs-string">"world"</span>;
+}
+</code></pre>
+</li>
+<li>Prefer return statements to use a ternary conditional over an if-else statement
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">return</span> expr ? <span class="hljs-string">"hello"</span> : <span class="hljs-string">"world"</span>
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">if</span> (expr)
+{
+    <span class="hljs-keyword">return</span> <span class="hljs-string">"hello"</span>;
+}
+<span class="hljs-keyword">else</span>
+{
+    <span class="hljs-keyword">return</span> <span class="hljs-string">"world"</span>;
+}
+</code></pre>
+</li>
+<li>Prefer compound assignment expressions
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+x += <span class="hljs-number">1</span>;
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+x = x + <span class="hljs-number">1</span>;
+</code></pre>
+</li>
+</ul>
+<h4 id="null-checking-preferences">Null-checking preferences</h4>
+<p>The style rules in this section concern null-checking preferences.</p>
+<ul>
+<li>Prefer null coalescing expressions to ternary operator checking
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">var</span> v = x ?? y;
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">var</span> v = x != <span class="hljs-literal">null</span> ? x : y; <span class="hljs-comment">// or</span>
+<span class="hljs-keyword">var</span> v = x == <span class="hljs-literal">null</span> ? y : x;
+</code></pre>
+</li>
+<li>Prefer to use null-conditional operator when possible
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">var</span> v = o?.ToString();
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">var</span> v = o == <span class="hljs-literal">null</span> ? <span class="hljs-literal">null</span> : o.ToString(); <span class="hljs-comment">// or</span>
+<span class="hljs-keyword">var</span> v = o != <span class="hljs-literal">null</span> ? o.String() : <span class="hljs-literal">null</span>;
+</code></pre>
+</li>
+</ul>
+<h3 id="c-code-style-settings">C# code style settings</h3>
+<h4 id="implicit-and-explicit-types">Implicit and explicit types</h4>
+<p>The style rules in this section concern the use of the var keyword versus an explicit type in a variable declaration. This rule can be applied separately to built-in types, when the type is apparent, and elsewhere.</p>
+<ul>
+<li>Prefer <em><code>var</code></em> is used to declare variables with built-in system types such as <em><code>int</code></em>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">var</span> x = <span class="hljs-number">5</span>;
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">int</span> x = <span class="hljs-number">5</span>;
+</code></pre>
+</li>
+<li>Prefer <em><code>var</code></em> when the type is already mentioned on the right-hand side of a declaration expression
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">var</span> obj = <span class="hljs-keyword">new</span> Customer();
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+Customer obj = <span class="hljs-keyword">new</span> Customer();
+</code></pre>
+</li>
+<li>Prefer <em><code>var</code></em> over explicit type in all cases, unless overridden by another code style rule
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">var</span> f = <span class="hljs-keyword">this</span>.Init();
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">bool</span> f = <span class="hljs-keyword">this</span>.Init();
+</code></pre>
+</li>
+</ul>
+<h4 id="expression-bodied-members">Expression-bodied members</h4>
+<p>The style rules in this section concern the use of <a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/statements-expressions-operators/expression-bodied-members">expression-bodied members</a> when the logic consists of a single expression. This rule can be applied to methods, constructors, operators, properties, indexers, and accessors.</p>
+<ul>
+<li>Prefer block bodies for methods
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">GetAge</span>() </span>{ <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.Age; }
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">GetAge</span>() </span>=&gt; <span class="hljs-keyword">this</span>.Age;
+</code></pre>
+</li>
+<li>Prefer block bodies for constructors
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Customer</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> age</span>) </span>{ Age = age; }
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Customer</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> age</span>) </span>=&gt; Age = age;
+</code></pre>
+</li>
+<li>Prefer block bodies for operators
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> ComplexNumber <span class="hljs-keyword">operator</span> + (ComplexNumber c1, ComplexNumber c2)
+{ <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ComplexNumber(c1.Real + c2.Real, c1.Imaginary + c2.Imaginary); }
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> ComplexNumber <span class="hljs-keyword">operator</span> + (ComplexNumber c1, ComplexNumber c2)
+    =&gt; <span class="hljs-keyword">new</span> ComplexNumber(c1.Real + c2.Real, c1.Imaginary + c2.Imaginary);
+</code></pre>
+</li>
+<li>Prefer expression bodies for properties when they will be a single line
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> Age =&gt; _age;
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> Age { <span class="hljs-keyword">get</span> { <span class="hljs-keyword">return</span> _age; }}
+</code></pre>
+</li>
+<li>Prefer expression bodies for indexers
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">public</span> T <span class="hljs-keyword">this</span>[<span class="hljs-keyword">int</span> i] =&gt; _values[i];
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">public</span> T <span class="hljs-keyword">this</span>[<span class="hljs-keyword">int</span> i] { <span class="hljs-keyword">get</span> { <span class="hljs-keyword">return</span> _values[i]; } }
+</code></pre>
+</li>
+<li>Prefer expression bodies for accessors
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> Age { <span class="hljs-keyword">get</span> =&gt; _age; <span class="hljs-keyword">set</span> =&gt; _age = <span class="hljs-keyword">value</span>; }
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> Age { <span class="hljs-keyword">get</span> { <span class="hljs-keyword">return</span> _age; } <span class="hljs-keyword">set</span> { _age = <span class="hljs-keyword">value</span>; } }
+</code></pre>
+</li>
+<li>Prefer expression bodies for lambdas
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+Func&lt;<span class="hljs-keyword">int</span>, <span class="hljs-keyword">int</span>&gt; square = x =&gt; x * x;
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+Func&lt;<span class="hljs-keyword">int</span>, <span class="hljs-keyword">int</span>&gt; square = x =&gt; { <span class="hljs-keyword">return</span> x * x; };
+</code></pre>
+</li>
+</ul>
+<h4 id="pattern-matching">Pattern matching</h4>
+<p>The style rules in this section concern the use of <a href="https://docs.microsoft.com/dotnet/csharp/pattern-matching">pattern matching</a> in C#.</p>
+<ul>
+<li>Prefer pattern matching instead of is expressions with type casts
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">if</span> (o <span class="hljs-keyword">is</span> <span class="hljs-keyword">int</span> i) {...}
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">if</span> (o <span class="hljs-keyword">is</span> <span class="hljs-keyword">int</span>) {<span class="hljs-keyword">var</span> i = (<span class="hljs-keyword">int</span>)o; ... }
+</code></pre>
+</li>
+<li>Prefer pattern matching instead of <em><code>as</code></em> expressions with null checks to determine if something is of a particular type
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">if</span> (o <span class="hljs-keyword">is</span> <span class="hljs-keyword">string</span> s) {...}
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">var</span> s = o <span class="hljs-keyword">as</span> <span class="hljs-keyword">string</span>;
+<span class="hljs-keyword">if</span> (s != <span class="hljs-literal">null</span>) {...}
+</code></pre>
+</li>
+</ul>
+<h4 id="inlined-variable-declarations">Inlined variable declarations</h4>
+<p>This style rule concerns whether out variables are declared inline or not. Starting in C# 7, you can <a href="https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/out-parameter-modifier#calling-a-method-with-an-out-argument">declare an out variable in the argument list of a method call</a>, rather than in a separate variable declaration.</p>
+<ul>
+<li>Prefer <em><code>out</code></em> variables to be declared inline in the argument list of a method call when possible
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">if</span> (<span class="hljs-keyword">int</span>.TryParse(<span class="hljs-keyword">value</span>, <span class="hljs-keyword">out</span> <span class="hljs-keyword">int</span> i) {...}
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">int</span> i;
+<span class="hljs-keyword">if</span> (<span class="hljs-keyword">int</span>.TryParse(<span class="hljs-keyword">value</span>, <span class="hljs-keyword">out</span> i) {...}
+</code></pre>
+</li>
+</ul>
+<h4 id="c-expression-level-preferences">C# expression-level preferences</h4>
+<p>This style rule concerns using the <a href="https://docs.microsoft.com/dotnet/csharp/programming-guide/statements-expressions-operators/default-value-expressions#default-literal-and-type-inference">default literal for default value expressions</a> when the compiler can infer the type of the expression.</p>
+<ul>
+<li>Prefer <em><code>default</code></em> over <em><code>default(T)</code></em>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">DoWork</span>(<span class="hljs-params">CancellationToken cancellationToken = <span class="hljs-keyword">default</span></span>) </span>{ ... }
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">DoWork</span>(<span class="hljs-params">CancellationToken cancellationToken = <span class="hljs-keyword">default</span>(CancellationToken</span>)) </span>{   ... }
+</code></pre>
+</li>
+</ul>
+<h4 id="c-null-checking-preferences">C# null-checking preferences</h4>
+<p>These style rules concern the syntax around null checking, including using throw expressions or throw statements, and whether to perform a null check or use the conditional coalescing operator (?.) when invoking a <a href="https://docs.microsoft.com/dotnet/csharp/lambda-expressions">lambda expression</a>.</p>
+<ul>
+<li>Prefer to use throw expressions instead of throw statements
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">this</span>.s = s ?? <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ArgumentNullException(<span class="hljs-keyword">nameof</span>(s));
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">if</span> (s == <span class="hljs-literal">null</span>) { <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ArgumentNullException(<span class="hljs-keyword">nameof</span>(s)); }
+<span class="hljs-keyword">this</span>.s = s;
+</code></pre>
+</li>
+<li>Refer to use the conditional coalescing operator (?.) when invoking a lambda expression, instead of performing a null check
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+func?.Invoke(args);
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">if</span> (func != <span class="hljs-literal">null</span>) { func(args); }
+</code></pre>
+</li>
+</ul>
+<h4 id="code-block-preferences">Code block preferences</h4>
+<p>This style rule concerns the use of curly braces { } to surround code blocks.</p>
+<ul>
+<li>Prefer no curly braces if allowed
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">if</span> (test) <span class="hljs-keyword">this</span>.Display();
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">if</span> (test) { <span class="hljs-keyword">this</span>.Display(); }
+</code></pre>
+</li>
+</ul>
+<h2 id="formatting-conventions">Formatting conventions</h2>
+<h3 id="net-formatting-settings">.NET formatting settings</h3>
+<h3 id="organize-using-directives">Organize using directives</h3>
+<p>These formatting rules concern the sorting and display of <em><code>using</code></em> directives and <em><code>Imports</code></em> statements.</p>
+<ul>
+<li>Sort System.* <em><code>using</code></em> directives alphabetically, and place them before other using directives.
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">using</span> System.Collections.Generic;
+<span class="hljs-keyword">using</span> System.Threading.Tasks;
+<span class="hljs-keyword">using</span> Octokit;
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">using</span> System.Collections.Generic;
+<span class="hljs-keyword">using</span> Octokit;
+<span class="hljs-keyword">using</span> System.Threading.Tasks;
+</code></pre>
+</li>
+<li>Do not place a blank line between using directive groups.
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">using</span> System.Collections.Generic;
+<span class="hljs-keyword">using</span> System.Threading.Tasks;
+<span class="hljs-keyword">using</span> Octokit;
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">using</span> System.Collections.Generic;
+<span class="hljs-keyword">using</span> System.Threading.Tasks;
+
+<span class="hljs-keyword">using</span> Octokit;
+</code></pre>
+</li>
+</ul>
+<h3 id="c-formatting-settings">C# formatting settings</h3>
+<p>The formatting rules in this section apply only to C# code.</p>
+<h4 id="new-line-options">New-line options</h4>
+<p>These formatting rules concern the use of new lines to format code.</p>
+<ul>
+<li>Require braces to be on a new line for all expressions (&#8220;Allman&#8221; style).
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">MyMethod</span>()
+</span>{
+    <span class="hljs-keyword">if</span> (...)
+    {
+        ...
+    }
+}
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">MyMethod</span>() </span>{
+    <span class="hljs-keyword">if</span> (...) {
+        ...
+    }
+}
+</code></pre>
+</li>
+<li>Place else statements on a new line.
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">if</span> (...) 
+{
+    ...
+}
+<span class="hljs-keyword">else</span> 
+{
+    ...
+}
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">if</span> (...) {
+    ...
+} <span class="hljs-keyword">else</span> {
+    ...
+}
+</code></pre>
+</li>
+<li>Place catch statements on a new line.
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">try</span> 
+{
+    ...
+}
+<span class="hljs-keyword">catch</span> (Exception e) 
+{
+    ...
+}
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">try</span> {
+    ...
+} <span class="hljs-keyword">catch</span> (Exception e) {
+    ...
+}
+</code></pre>
+</li>
+<li>Require finally statements to be on a new line after the closing brace.
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">try</span> 
+{
+    ...
+}
+<span class="hljs-keyword">catch</span> (Exception e) 
+{
+    ...
+}
+<span class="hljs-keyword">finally</span> 
+{
+    ...
+}
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">try</span> {
+    ...
+} <span class="hljs-keyword">catch</span> (Exception e) {
+    ...
+} <span class="hljs-keyword">finally</span> {
+    ...
+}
+</code></pre>
+</li>
+<li>Require members of object initializers to be on separate lines
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">var</span> z = <span class="hljs-keyword">new</span> B()
+{
+    A = <span class="hljs-number">3</span>,
+    B = <span class="hljs-number">4</span>
+}
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">var</span> z = <span class="hljs-keyword">new</span> B()
+{
+    A = <span class="hljs-number">3</span>, B = <span class="hljs-number">4</span>
+}
+</code></pre>
+</li>
+<li>Require members of anonymous types to be on separate lines
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">var</span> z = <span class="hljs-keyword">new</span>
+{
+    A = <span class="hljs-number">3</span>,
+    B = <span class="hljs-number">4</span>
+}
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">var</span> z = <span class="hljs-keyword">new</span>
+{
+    A = <span class="hljs-number">3</span>, B = <span class="hljs-number">4</span>
+}
+</code></pre>
+</li>
+<li>Require elements of query expression clauses to be on separate lines
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">var</span> q = <span class="hljs-keyword">from</span> a <span class="hljs-keyword">in</span> e
+        <span class="hljs-keyword">from</span> b <span class="hljs-keyword">in</span> e
+        <span class="hljs-keyword">select</span> a * b;
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">var</span> q = <span class="hljs-keyword">from</span> a <span class="hljs-keyword">in</span> e <span class="hljs-keyword">from</span> b <span class="hljs-keyword">in</span> e
+        <span class="hljs-keyword">select</span> a * b;
+</code></pre>
+</li>
+</ul>
+<h4 id="indentation-options">Indentation options</h4>
+<p>These formatting rules concern the use of indentation to format code.</p>
+<ul>
+<li>Indent <em><code>switch</code></em> case contents
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">switch</span>(c) 
+{
+    <span class="hljs-keyword">case</span> Color.Red:
+        Console.WriteLine(<span class="hljs-string">"The color is red"</span>);
+        <span class="hljs-keyword">break</span>;
+    <span class="hljs-keyword">case</span> Color.Blue:
+        Console.WriteLine(<span class="hljs-string">"The color is blue"</span>);
+        <span class="hljs-keyword">break</span>;
+    <span class="hljs-keyword">default</span>:
+        Console.WriteLine(<span class="hljs-string">"The color is unknown."</span>);
+        <span class="hljs-keyword">break</span>;
+}
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">switch</span>(c) {
+    <span class="hljs-keyword">case</span> Color.Red:
+    Console.WriteLine(<span class="hljs-string">"The color is red"</span>);
+    <span class="hljs-keyword">break</span>;
+    <span class="hljs-keyword">case</span> Color.Blue:
+    Console.WriteLine(<span class="hljs-string">"The color is blue"</span>);
+    <span class="hljs-keyword">break</span>;
+    <span class="hljs-keyword">default</span>:
+    Console.WriteLine(<span class="hljs-string">"The color is unknown."</span>);
+    <span class="hljs-keyword">break</span>;
+}
+</code></pre>
+</li>
+<li>Indent <em><code>switch</code></em> labels
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">switch</span>(c) 
+{
+    <span class="hljs-keyword">case</span> Color.Red:
+        Console.WriteLine(<span class="hljs-string">"The color is red"</span>);
+        <span class="hljs-keyword">break</span>;
+    <span class="hljs-keyword">case</span> Color.Blue:
+        Console.WriteLine(<span class="hljs-string">"The color is blue"</span>);
+        <span class="hljs-keyword">break</span>;
+    <span class="hljs-keyword">default</span>:
+        Console.WriteLine(<span class="hljs-string">"The color is unknown."</span>);
+        <span class="hljs-keyword">break</span>;
+}
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">switch</span>(c) {
+<span class="hljs-keyword">case</span> Color.Red:
+    Console.WriteLine(<span class="hljs-string">"The color is red"</span>);
+    <span class="hljs-keyword">break</span>;
+<span class="hljs-keyword">case</span> Color.Blue:
+    Console.WriteLine(<span class="hljs-string">"The color is blue"</span>);
+    <span class="hljs-keyword">break</span>;
+<span class="hljs-keyword">default</span>:
+    Console.WriteLine(<span class="hljs-string">"The color is unknown."</span>);
+    <span class="hljs-keyword">break</span>;
+}
+</code></pre>
+</li>
+<li>Labels are placed at the same indent as the current context
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title">C</span>
+{
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">string</span> <span class="hljs-title">MyMethod</span>(<span class="hljs-params">...</span>)
+    </span>{          
+        <span class="hljs-keyword">if</span> (...) 
+        {
+            <span class="hljs-keyword">goto</span> error;
+        }
+        error:
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Exception(...);
+    }
+}
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title">C</span>
+{
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">string</span> <span class="hljs-title">MyMethod</span>(<span class="hljs-params">...</span>)
+    </span>{
+        <span class="hljs-keyword">if</span> (...) {
+            <span class="hljs-keyword">goto</span> error;
+        }
+error:
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Exception(...);
+    }
+}
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title">C</span>
+{
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">string</span> <span class="hljs-title">MyMethod</span>(<span class="hljs-params">...</span>)
+    </span>{
+        <span class="hljs-keyword">if</span> (...) {
+            <span class="hljs-keyword">goto</span> error;
+        }
+    error:
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Exception(...);
+    }
+}
+</code></pre>
+</li>
+</ul>
+<h4 id="spacing-options">Spacing options</h4>
+<p>These formatting rules concern the use of space characters to format code.</p>
+<ul>
+<li>Remove space between the cast and the value
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">int</span> y = (<span class="hljs-keyword">int</span>)x;
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">int</span> y = (<span class="hljs-keyword">int</span>) x;
+</code></pre>
+</li>
+<li>Place a space character after a keyword in a control flow statement such as a <em><code>for</code></em> loop
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i;i&lt;x;i++) { ... }
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i;i&lt;x;i++) { ... }
+</code></pre>
+</li>
+<li>Place a space character before the colon for bases or interfaces in a type declaration
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">interface</span> <span class="hljs-title">I</span>
+{
+
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title">C</span> : <span class="hljs-title">I</span>
+{
+
+}
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">interface</span> <span class="hljs-title">I</span>
+{
+
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title">C</span>: <span class="hljs-title">I</span>
+{
+
+}
+</code></pre>
+</li>
+<li>Place a space character after the colon for bases or interfaces in a type declaration
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">interface</span> <span class="hljs-title">I</span>
+{
+
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title">C</span> : <span class="hljs-title">I</span>
+{
+
+}
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">interface</span> <span class="hljs-title">I</span>
+{
+
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title">C</span> :<span class="hljs-title">I</span>
+{
+
+}
+</code></pre>
+</li>
+<li>Insert space before and after the binary operator
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">return</span> x * (x - y);
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">return</span> x*(x-y);
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">return</span> x  *  (x-y);
+</code></pre>
+</li>
+<li>Remove space characters after the opening parenthesis and before the closing parenthesis of a method declaration parameter list
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Bark</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> x</span>) </span>{ ... }
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Bark</span>(<span class="hljs-params"> <span class="hljs-keyword">int</span> x </span>) </span>{ ... }
+</code></pre>
+</li>
+<li>Remove space within empty parameter list parentheses for a method declaration
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Goo</span>()
+</span>{
+    Goo(<span class="hljs-number">1</span>);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Goo</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> x</span>)
+</span>{
+    Goo();
+}
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Goo</span>( )
+</span>{
+    Goo(<span class="hljs-number">1</span>);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Goo</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> x</span>)
+</span>{
+    Goo();
+}
+
+</code></pre>
+</li>
+<li>Remove space characters between the method name and opening parenthesis in the method declaration
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">M</span>() </span>{ }
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">M</span> () </span>{ }
+</code></pre>
+</li>
+<li>Remove space characters after the opening parenthesis and before the closing parenthesis of a method call
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+MyMethod(argument);
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+MyMethod( argument );
+</code></pre>
+</li>
+<li>Remove space within empty argument list parentheses
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Goo</span>()
+</span>{
+    Goo(<span class="hljs-number">1</span>);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Goo</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> x</span>)
+</span>{
+    Goo();
+}
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Goo</span>()
+</span>{
+    Goo(<span class="hljs-number">1</span>);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Goo</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> x</span>)
+</span>{
+    Goo( );
+}
+</code></pre>
+</li>
+<li>Remove space between method call name and opening parenthesis
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Goo</span>()
+</span>{
+    Goo(<span class="hljs-number">1</span>);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Goo</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> x</span>)
+</span>{
+    Goo();
+}
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Goo</span>()
+</span>{
+    Goo(<span class="hljs-number">1</span>);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Goo</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> x</span>)
+</span>{
+    Goo ();
+}
+</code></pre>
+</li>
+<li>Insert space after a comma
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">int</span>[] x = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[] { <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span> };
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">int</span>[] x = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[] { <span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span> }
+</code></pre>
+</li>
+<li>Remove space before a comma
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">int</span>[] x = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[] { <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span> };
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">int</span>[] x = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[] { <span class="hljs-number">1</span> , <span class="hljs-number">2</span> , <span class="hljs-number">3</span> , <span class="hljs-number">4</span> , <span class="hljs-number">5</span> };
+</code></pre>
+</li>
+<li>Insert space after each semicolon in a for statement
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; x.Length; i++)
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>;i &lt; x.Length;i++)
+</code></pre>
+</li>
+<li>Remove space before each semicolon in a for statement
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; x.Length; i++)
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span> ; i &lt; x.Length ; i++)
+</code></pre>
+</li>
+<li>Remove extra space characters in declaration statements
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">int</span> x = <span class="hljs-number">0</span>;
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">int</span>    x    =    <span class="hljs-number">0</span>   ;
+</code></pre>
+</li>
+<li>Remove space before opening square brackets <em><code>[</code></em>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">int</span>[] numbers = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[] { <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span> };
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">int</span> [] numbers = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span> [] { <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span> };
+</code></pre>
+</li>
+<li>Remove space between empty square brackets <em><code>[]</code></em>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">int</span>[] numbers = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[] { <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span> };
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">int</span>[ ] numbers = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[ ] { <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span> };
+</code></pre>
+</li>
+<li>Remove space characters in non-empty square brackets <em><code>[0]</code></em>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">int</span> index = numbers[<span class="hljs-number">0</span>];
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">int</span> index = numbers[ <span class="hljs-number">0</span> ];
+</code></pre>
+</li>
+</ul>
+<h4 id="wrap-options">Wrap options</h4>
+<p>These formatting rules concern the use of single lines versus separate lines for statements and code blocks.</p>
+<ul>
+<li>Leave statements and member declarations on different lines
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>;
+<span class="hljs-keyword">string</span> name = <span class="hljs-string">"John"</span>;
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; <span class="hljs-keyword">string</span> name = <span class="hljs-string">"John"</span>;
+</code></pre>
+</li>
+<li>Leave code block on single line
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> Foo { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> MyProperty
+{
+    <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>;
+}
+</code></pre>
+</li>
+</ul>
+<h2 id="naming-conventions">Naming conventions</h2>
+<ul>
+<li>Constants are named only in capital letters with a delimiter <em><code>_</code></em>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> TEST_CONSTANT = <span class="hljs-number">1</span>;
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> Test_Constant = <span class="hljs-number">1</span>;
+</code></pre>
+</li>
+<li>Fields with <em><code>public</code></em> access are referred to as PascalCase notation
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> TestField;
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> testField;
+</code></pre>
+</li>
+<li>Interface names must be in PascalCase notation and have the prefix <em><code>I</code></em>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title">ITestInterface</span>;
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title">testInterface</span>;
+</code></pre>
+</li>
+<li>The names of classes, structures, methods, enums, events, properties, namespaces, and delegates should be in PascalCase notation
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">SomeClass</span>;
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">someClass</span>;
+</code></pre>
+</li>
+<li>Assigned to the parameter of a generic type a descriptive name in the notation PascalCase, unless enough of a letter and a descriptive name has no practical value
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title">ISessionChannel</span>&lt;<span class="hljs-title">TSession</span>&gt; { <span class="hljs-comment">/*...*/</span> }
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">delegate</span> TOutput Converter&lt;TInput, TOutput&gt;(TInput <span class="hljs-keyword">from</span>);
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">List</span>&lt;<span class="hljs-title">T</span>&gt; { <span class="hljs-comment">/*...*/</span> }
+</code></pre>
+</li>
+<li>Use the name of the type <em><code>T</code></em> parameter for types that contain only a single letter type parameter
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> IComparer&lt;T&gt;() { <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>; }
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">delegate</span> <span class="hljs-keyword">bool</span> Predicate&lt;T&gt;(T item);
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">struct</span> Nullable&lt;T&gt; <span class="hljs-keyword">where</span> T : <span class="hljs-keyword">struct</span> { <span class="hljs-comment">/*...*/</span> }
+</code></pre>
+</li>
+<li>Use the prefix <em><code>T</code></em> for descriptive names of type parameters
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title">ISessionChannel</span>&lt;<span class="hljs-title">TSession</span>&gt;
+{
+    TSession Session { <span class="hljs-keyword">get</span>; }
+}
+</code></pre>
+<p>Specify the constraints associated with the type parameter in its name. For example, an <em><code>ISession</code></em> constraint parameter may be called <em><code>TSession</code></em>.</li>
+<li>Private and protected class fields must begin with the prefix <em><code>_</code></em>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> _testField;
+<span class="hljs-keyword">protected</span> <span class="hljs-keyword">int</span> _testField;
+</code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> testField;
+<span class="hljs-keyword">protected</span> <span class="hljs-keyword">int</span> testField;
+</code></pre>
+</li>
+<li>All other code elements such as variables, method parameters and class fields (except open ones) are named in camelCase notation.
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Right</span>
+<span class="hljs-keyword">var</span> testVar = <span class="hljs-keyword">new</span> Object();
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Foo</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> firstParam, <span class="hljs-keyword">string</span> secondParam</span>)
+</span></code></pre>
+<pre><code class="lang-csharp hljs"><span class="hljs-comment">//Wrong</span>
+<span class="hljs-keyword">var</span> TestVar = <span class="hljs-keyword">new</span> Object();
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Foo</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> FirstParam, <span class="hljs-keyword">string</span> SecondParam</span>)
+</span></code></pre>
+</li>
+</ul>
+</article>
+</div>
+<div class="hidden-sm col-md-2" role="complementary">
+<div class="sideaffix shiftup">
+<div class="contribution">
+<ul class="nav">
+<li></li>
+</ul>
+</div>
+</div>
+</div>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://vinayaroratech.com/developer-guide/coding-standards/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

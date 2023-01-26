@@ -1,0 +1,71 @@
+HTTrack3.49-2+htsswf+htsjava launched on Thu, 26 Jan 2023 13:53:02 at https://vinayaroratech.com/ +*.png +*.gif +*.jpg +*.jpeg +*.css +*.js -ad.doubleclick.net/* -mime:application/foobar
+(winhttrack -qwC2%Ps2u1%s%uN0%I0p3DaK0H0%kf2A25000%f#f -F "Mozilla/4.5 (compatible; HTTrack 3.0x; Windows 98)" -%F "<!-- Mirrored from %s%s by HTTrack Website Copier/3.x [XR&CO'2014], %s -->" -%l "en, *" https://vinayaroratech.com/ -O1 "D:\Projects\Personal\vinayaroratech\vinayaroratech" +*.png +*.gif +*.jpg +*.jpeg +*.css +*.js -ad.doubleclick.net/* -mime:application/foobar )
+
+Information, Warnings and Errors reported for this mirror:
+note:	the hts-log.txt file, and hts-cache folder, may contain sensitive information,
+	such as username/password authentication for websites mirrored in this project
+	do not share these files/folders if you want these information to remain private
+
+13:53:40	Warning: 	Moved Permanently for https://vinayaroratech.com/?p=707
+13:53:40	Warning: 	File has moved from https://vinayaroratech.com/?p=707 to https://vinayaroratech.com/about/
+13:53:40	Warning: 	Moved Permanently for https://vinayaroratech.com/?p=713
+13:53:40	Warning: 	File has moved from https://vinayaroratech.com/?p=713 to https://vinayaroratech.com/recent-projects/
+13:55:12	Warning: 	Moved Permanently for https://vinayaroratech.com/?p=710
+13:55:12	Warning: 	File has moved from https://vinayaroratech.com/?p=710 to https://vinayaroratech.com/contact/
+13:55:13	Warning: 	Moved Permanently for https://vinayaroratech.com/?p=969
+13:55:13	Warning: 	File has moved from https://vinayaroratech.com/?p=969 to https://vinayaroratech.com/dotnet/securing-blazor-webassembly-apps/
+13:55:14	Error: 	"Method Not Allowed" (405) at link https://vinayaroratech.com/xmlrpc.php (from https://vinayaroratech.com/dotnet/securing-blazor-webassembly-apps/)
+13:55:25	Warning: 	Moved Permanently for https://vinayaroratech.com/?p=952
+13:55:25	Warning: 	File has moved from https://vinayaroratech.com/?p=952 to https://vinayaroratech.com/dotnet/how-to-visualize-net-core-api-usage-with-prometheus-and-grafana-net-6/
+13:55:26	Warning: 	Moved Permanently for https://vinayaroratech.com/?p=950
+13:55:26	Warning: 	File has moved from https://vinayaroratech.com/?p=950 to https://vinayaroratech.com/dotnet/getting-started-with-opentelemetry-metrics-in-net-part-2-instrumenting-the-bookstore-api/
+13:55:26	Warning: 	Moved Permanently for https://vinayaroratech.com/?p=948
+13:55:26	Warning: 	File has moved from https://vinayaroratech.com/?p=948 to https://vinayaroratech.com/dotnet/getting-started-with-opentelemetry-metrics-in-net-part-1-key-concepts/
+13:55:27	Warning: 	Moved Permanently for https://vinayaroratech.com/?p=946
+13:55:27	Warning: 	File has moved from https://vinayaroratech.com/?p=946 to https://vinayaroratech.com/dotnet/getting-started-with-opentelemetry-and-distributed-tracing-in-net-core/
+13:55:28	Warning: 	Moved Permanently for https://vinayaroratech.com/?p=940
+13:55:28	Warning: 	File has moved from https://vinayaroratech.com/?p=940 to https://vinayaroratech.com/dotnet/how-to/examples-of-creating-base64-hashes-using-hmac-sha256-in-different-languages/
+13:55:29	Warning: 	Moved Permanently for https://vinayaroratech.com/?p=936
+13:55:29	Warning: 	File has moved from https://vinayaroratech.com/?p=936 to https://vinayaroratech.com/azure/amazing-microsoft-resources/
+13:55:30	Warning: 	Moved Permanently for https://vinayaroratech.com/?p=934
+13:55:30	Warning: 	File has moved from https://vinayaroratech.com/?p=934 to https://vinayaroratech.com/dotnet/how-to-handle-datetime-in-cosmos-db/
+13:55:30	Warning: 	Moved Permanently for https://vinayaroratech.com/?p=926
+13:55:30	Warning: 	File has moved from https://vinayaroratech.com/?p=926 to https://vinayaroratech.com/dotnet/confirm-aws-cognito-signups-automatically/
+13:55:46	Warning: 	Moved Permanently for https://vinayaroratech.com/?p=924
+13:55:46	Warning: 	File has moved from https://vinayaroratech.com/?p=924 to https://vinayaroratech.com/dotnet/how-to-aws-cognito-login-signup-in-asp-net-core/
+13:56:11	Warning: 	Moved Permanently for https://vinayaroratech.com/?p=922
+13:56:11	Warning: 	File has moved from https://vinayaroratech.com/?p=922 to https://vinayaroratech.com/dotnet/how-to-load-net-configuration-from-aws-secrets-manager/
+13:56:11	Warning: 	Moved Permanently for https://vinayaroratech.com/?p=919
+13:56:11	Warning: 	File has moved from https://vinayaroratech.com/?p=919 to https://vinayaroratech.com/dotnet/aws-cognito-client-credentials-flow-net-6/
+13:56:11	Warning: 	Moved Permanently for https://vinayaroratech.com/?p=164
+13:56:11	Warning: 	File has moved from https://vinayaroratech.com/?p=164 to https://vinayaroratech.com/dotnet/how-to/how-to-reverse-proxy-using-nginx/
+13:56:11	Warning: 	Moved Permanently for https://vinayaroratech.com/?p=912
+13:56:11	Warning: 	File has moved from https://vinayaroratech.com/?p=912 to https://vinayaroratech.com/dotnet-core/working-with-aws-s3-using-asp-net-core-upload-download-delete-files/
+13:56:11	Warning: 	Moved Permanently for https://vinayaroratech.com/?p=910
+13:56:11	Warning: 	File has moved from https://vinayaroratech.com/?p=910 to https://vinayaroratech.com/dotnet/using-stripe-js-elements-with-angular/
+13:56:11	Warning: 	Moved Permanently for https://vinayaroratech.com/?p=906
+13:56:11	Warning: 	File has moved from https://vinayaroratech.com/?p=906 to https://vinayaroratech.com/dotnet/hosting-net-6-web-api-with-aws-lambda-truly-server-less-rest-apis/
+13:56:11	Warning: 	Moved Permanently for https://vinayaroratech.com/?p=875
+13:56:11	Warning: 	File has moved from https://vinayaroratech.com/?p=875 to https://vinayaroratech.com/github/ci-cd-using-github-actions-aws-ecr-and-ecs-fargate/
+13:56:11	Warning: 	Moved Permanently for https://vinayaroratech.com/?p=869
+13:56:11	Warning: 	File has moved from https://vinayaroratech.com/?p=869 to https://vinayaroratech.com/mdm/up-and-running-with-micromdm/
+13:56:11	Warning: 	Moved Permanently for https://vinayaroratech.com/mdm/up-and-running-with-micromdm/"data:image/svg+xml;utf8,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg fill%3D%22none%22 fill-rule%3D%22evenodd%22%3E%3Cpath d%3D%22M-8-6h24v24H-8z%22%3E%3C%2Fpath%3E%3Cpath d%3D%22M3 8.509V1c0-.552.449-1 1-1 .552 0 1 .448 1 1V8.51l1.217-1.206a1.05 1.05 0 011.477 0 1.03 1.03 0 01.004 1.463l-.003.002-2.956 2.93a1.053 1.053 0 01-1.478 0L.305 8.767a1.03 1.03 0 01.001-1.464 1.05 1.05 0 011.477 0L3 8.508z%22 fill%3D%22%2342526E%22%3E%3C%2Fpath%3E%3C%2Fg%3E%3C%2Fsvg%3E"
+13:56:11	Warning: 	File has moved from https://vinayaroratech.com/mdm/up-and-running-with-micromdm/"data:image/svg+xml;utf8,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg fill%3D%22none%22 fill-rule%3D%22evenodd%22%3E%3Cpath d%3D%22M-8-6h24v24H-8z%22%3E%3C%2Fpath%3E%3Cpath d%3D%22M3 8.509V1c0-.552.449-1 1-1 .552 0 1 .448 1 1V8.51l1.217-1.206a1.05 1.05 0 011.477 0 1.03 1.03 0 01.004 1.463l-.003.002-2.956 2.93a1.053 1.053 0 01-1.478 0L.305 8.767a1.03 1.03 0 01.001-1.464 1.05 1.05 0 011.477 0L3 8.508z%22 fill%3D%22%2342526E%22%3E%3C%2Fpath%3E%3C%2Fg%3E%3C%2Fsvg%3E" to https://vinayaroratech.com/mdm/up-and-running-with-micromdm/%22data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cpath%20d%3D%22M-8-6h24v24H-8z%22%3E%3C%2Fpath%3E%3Cpath%20d%3D%22M3%208.509V1c0-.552.449-1%201-1%20.552%200%201%20.448%201%201V8.51l1.217-1.206a1.05%201.05%200%20011.477%200%201.03%201.03%200%2001.004%201.463l-.003.002-2.956%202.93a1.053%201.053%200%2001-1.478%200L.305%208.767a1.03%201.03%200%2001.001-1.464%201.05%201.05%200%20011.477%200L3%208.508z%22%20fill%3D%22%2342526E%22%3E%3C%2Fpath%3E%3C%2Fg%3E%3C%2Fsvg%3E
+13:56:11	Warning: 	Moved Permanently for https://vinayaroratech.com/?p=854
+13:56:11	Warning: 	File has moved from https://vinayaroratech.com/?p=854 to https://vinayaroratech.com/mdm/micromdm/
+13:56:11	Warning: 	Moved Permanently for https://vinayaroratech.com/?p=157
+13:56:11	Warning: 	File has moved from https://vinayaroratech.com/?p=157 to https://vinayaroratech.com/dotnet/problem-statement/stock-buy-sell-to-maximize-profit/
+13:56:11	Warning: 	Moved Permanently for https://vinayaroratech.com/?p=147
+13:56:11	Warning: 	File has moved from https://vinayaroratech.com/?p=147 to https://vinayaroratech.com/restful-apis/generating-code-from-the-swagger-specification/
+13:56:11	Warning: 	Moved Permanently for https://vinayaroratech.com/?p=136
+13:56:11	Warning: 	File has moved from https://vinayaroratech.com/?p=136 to https://vinayaroratech.com/certificates/learning-node-js/
+13:56:11	Warning: 	Moved Permanently for https://vinayaroratech.com/?p=133
+13:56:11	Warning: 	File has moved from https://vinayaroratech.com/?p=133 to https://vinayaroratech.com/restful-apis/what-you-should-expose-in-restapi/
+13:56:11	Warning: 	Moved Permanently for https://vinayaroratech.com/?p=92
+13:56:11	Warning: 	File has moved from https://vinayaroratech.com/?p=92 to https://vinayaroratech.com/developer-guide/coding-standards/
+13:56:11	Warning: 	Moved Permanently for https://vinayaroratech.com/?p=82
+13:56:11	Warning: 	File has moved from https://vinayaroratech.com/?p=82 to https://vinayaroratech.com/github/a-successful-git-branching-model/
+13:56:11	Error: 	"Not Found" (404) at link https://vinayaroratech.com/mdm/up-and-running-with-micromdm/%22data:image/svg+xml;utf8,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg fill%3D%22none%22 fill-rule%3D%22evenodd%22%3E%3Cpath d%3D%22M-8-6h24v24H-8z%22%3E%3C%2Fpath%3E%3Cpath d%3D%22M3 8.509V1c0-.552.449-1 1-1 .552 0 1 .448 1 1V8.51l1.217-1.206a1.05 1.05 0 011.477 0 1.03 1.03 0 01.004 1.463l-.003.002-2.956 2.93a1.053 1.053 0 01-1.478 0L.305 8.767a1.03 1.03 0 01.001-1.464 1.05 1.05 0 011.477 0L3 8.508z%22 fill%3D%22%2342526E%22%3E%3C%2Fpath%3E%3C%2Fg%3E%3C%2Fsvg%3E (from https://vinayaroratech.com/mdm/up-and-running-with-micromdm/"data:image/svg+xml;utf8,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg fill%3D%22none%22 fill-rule%3D%22evenodd%22%3E%3Cpath d%3D%22M-8-6h24v24H-8z%22%3E%3C%2Fpath%3E%3Cpath d%3D%22M3 8.509V1c0-.552.449-1 1-1 .552 0 1 .448 1 1V8.51l1.217-1.206a1.05 1.05 0 011.477 0 1.03 1.03 0 01.004 1.463l-.003.002-2.956 2.93a1.053 1.053 0 01-1.478 0L.305 8.767a1.03 1.03 0 01.001-1.464 1.05 1.05 0 011.477 0L3 8.508z%22 fill%3D%22%2342526E%22%3E%3C%2Fpath%3E%3C%2Fg%3E%3C%2Fsvg%3E")
+
+HTTrack Website Copier/3.49-2 mirror complete in 3 minutes 9 seconds : 448 links scanned, 416 files written (27157806 bytes overall) [21271084 bytes received at 112545 bytes/sec], 10201397 bytes transferred using HTTP compression in 193 files, ratio 39%, 4.2 requests per connection
+(2 errors, 58 warnings, 0 messages)

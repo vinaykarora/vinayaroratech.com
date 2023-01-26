@@ -1,0 +1,3399 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>How-to &#8211; Vinay Arora</title>
+	<atom:link href="https://vinayaroratech.com/category/dotnet/how-to/feed/" rel="self" type="application/rss+xml" />
+	<link>https://vinayaroratech.com</link>
+	<description>.NET Core, Full Stack, Angular, Azure, Microservices</description>
+	<lastBuildDate>Wed, 18 Jan 2023 18:16:22 +0000</lastBuildDate>
+	<language>en</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.8</generator>
+
+<image>
+	<url>https://vinayaroratech.com/wp-content/uploads/2020/05/cropped-android-chrome-512x5121-1-3-32x32.png</url>
+	<title>How-to &#8211; Vinay Arora</title>
+	<link>https://vinayaroratech.com</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>Securing Blazor Webassembly Apps</title>
+		<link>https://vinayaroratech.com/dotnet/securing-blazor-webassembly-apps/</link>
+					<comments>https://vinayaroratech.com/dotnet/securing-blazor-webassembly-apps/#respond</comments>
+		
+		<dc:creator><![CDATA[Vinay]]></dc:creator>
+		<pubDate>Wed, 18 Jan 2023 18:16:20 +0000</pubDate>
+				<category><![CDATA[.NET]]></category>
+		<category><![CDATA[How-to]]></category>
+		<category><![CDATA[.NET7]]></category>
+		<category><![CDATA[Auth0]]></category>
+		<category><![CDATA[Blazor]]></category>
+		<category><![CDATA[WASM]]></category>
+		<guid isPermaLink="false">https://vinayaroratech.com/?p=969</guid>
+
+					<description><![CDATA[Blazor allows you to build your WebAssembly (also known as WASM) applications by leveraging the .NET platform. Thanks to&#160;Auth0, you can also easily secure them by adding support for authentication and authorization, as this article will show. Let&#8217;s start! Building a Blazor WebAssembly Application In a previous article, you built&#160;a Blazor application by using the &#8230;<p class="read-more"> <a class="" href="https://vinayaroratech.com/dotnet/securing-blazor-webassembly-apps/"> <span class="screen-reader-text">Securing Blazor Webassembly Apps</span> Read More &#187;</a></p>]]></description>
+										<content:encoded><![CDATA[
+<p>Blazor allows you to build your WebAssembly (also known as WASM) applications by leveraging the .NET platform. Thanks to&nbsp;<a href="http://auth0.com/" target="_blank" rel="noreferrer noopener">Auth0</a>, you can also easily secure them by adding support for authentication and authorization, as this article will show. Let&#8217;s start!</p>
+
+
+
+<h2 id="Building-a-Blazor-WebAssembly-Application">Building a Blazor WebAssembly Application</h2>
+
+
+
+<p>In a previous article, you built&nbsp;<a href="https://auth0.com/blog/what-is-blazor-tutorial-on-building-webapp-with-authentication/" target="_blank" rel="noreferrer noopener">a Blazor application by using the Server Hosting model</a>. It was a simple quiz application that shows a list of questions with multiple answers and assigns you a score based on the correct answers you provide.</p>
+
+
+
+<p>Now you are going to implement the same application by using the WebAssembly hosting model. To learn more&nbsp;<a href="https://auth0.com/blog/what-is-blazor-tutorial-on-building-webapp-with-authentication/#What-is-Blazor-" target="_blank" rel="noreferrer noopener">about Blazor hosting models</a>, please check out the specific section in that mentioned article.</p>
+
+
+
+<p>As explained in that article, the WebAssembly hosting model makes your application be compiled in WebAssembly and run in your browser. However, depending on the structure of your project, you have two options to create your application:</p>
+
+
+
+<ul><li>You may have just the client-side application that will call an existing Web API</li><li>You may have both the client-side application and the Web API application. In this case, the Web API application also serves the Blazor WebAssembly app to the browsers. This option is called&nbsp;<em>ASP.NET Core hosted</em>.</li></ul>
+
+
+
+<p>For this project, you will choose the second option. In fact, you will have the client-side application, which will be responsible for showing the UI and managing the user interaction, and the Web API application, which will provide the quiz to the client.</p>
+
+
+
+<p>To build this application, you need <a href="https://dotnet.microsoft.com/en-us/download/dotnet/7.0" target="_blank" rel="noreferrer noopener">.NET 7.0 SDK</a> or above installed on your machine.</p>
+
+
+
+<p>You create a new Blazor WebAssembly project by typing the following command:</p>
+
+
+
+<pre class="wp-block-code"><code>dotnet new blazorwasm -o QuizManagerClientHosted --hosted</code></pre>
+
+
+
+<blockquote class="wp-block-quote"><p><strong>Note</strong>: If you want to create only the client-side application, you have to omit the&nbsp;<code>--hosted</code>&nbsp;flag in the previous command.</p></blockquote>
+
+
+
+<p>If you take a look at the&nbsp;<code>QuizManagerClientHosted</code>&nbsp;folder, you will find the folder structure shown below:</p>
+
+
+
+<pre class="wp-block-code"><code>QuizManagerClientHosted
+│   .gitignore
+│   QuizManagerClientHosted.sln    
+├── Client
+├── Server
+└── Shared</code></pre>
+
+
+
+<p>Each of these folders contains a .NET project. While the&nbsp;<code>Client</code>&nbsp;and the&nbsp;<code>Server</code>&nbsp;folders are straightforward, you may wonder what the&nbsp;<code>Shared</code>&nbsp;folder contains. It contains a class library project with the code shared by the client-side and the server-side applications. In the case of the application you are going to re-implement, it will contain the data model.</p>
+
+
+
+<p>So, move into the&nbsp;<code>Shared</code>&nbsp;folder and remove the&nbsp;<code>WeatherForecasts.cs</code>&nbsp;file. Create a new file in the&nbsp;<code>Shared</code>&nbsp;folder called&nbsp;<code>QuizItem.cs</code>&nbsp;with the following content:</p>
+
+
+
+<pre class="wp-block-code"><code>// Shared/QuizItem.cs
+
+namespace QuizManagerClientHosted.Shared;
+public class QuizItem
+{
+  public string Question { get; set; }
+  public List&lt;string&gt; Choices { get; set; }
+  public int AnswerIndex { get; set; }
+  public int Score { get; set; }
+
+  public QuizItem()
+  {
+    Choices = new List&lt;string&gt;();
+  }
+}</code></pre>
+
+
+
+<p>This class implements the model for each item of the quiz. It provides a question, a list of possible answers, the zero-based index of the correct answer, and the score assigned when the user gives the correct answer.</p>
+
+
+
+<h3 id="Creating-the-server">Creating the server</h3>
+
+
+
+<p>Move in the&nbsp;<code>Server/Controllers</code>&nbsp;folder and remove the&nbsp;<code>WeatherForecastController.cs</code>&nbsp;file. Then, add in the same folder a new file named&nbsp;<code>QuizController.cs</code>&nbsp;and put the following code inside it:</p>
+
+
+
+<pre class="wp-block-code"><code>// Server/Controllers/QuizController.cs
+
+using QuizManagerClientHosted.Shared;
+using Microsoft.AspNetCore.Mvc;
+
+namespace QuizManagerClientHosted.Server.Controllers;
+
+&#91;ApiController]
+&#91;Route("&#91;controller]")]
+public class QuizController : ControllerBase
+{
+  private static readonly List&lt;QuizItem&gt; Quiz = new List&lt;QuizItem&gt; {
+    new QuizItem
+      {
+        Question = "Which of the following is the name of a Leonardo da Vinci's masterpiece?",
+        Choices = new List&lt;string&gt; {"Sunflowers", "Mona Lisa", "The Kiss"},
+        AnswerIndex = 1,
+        Score = 3
+      },
+    new QuizItem
+      {
+        Question = "Which of the following novels was written by Miguel de Cervantes?",
+        Choices = new List&lt;string&gt; {"The Ingenious Gentleman Don Quixote of La Mancia", "The Life of Gargantua and of Pantagruel", "One Hundred Years of Solitude"},
+        AnswerIndex = 0,
+        Score = 5
+      }
+    };
+
+  &#91;HttpGet]
+  public List&lt;QuizItem&gt; Get()
+  {
+    return Quiz;
+  }
+}</code></pre>
+
+
+
+<p>As you can see, this is the Web API version of the&nbsp;<code>QuizService</code>&nbsp;class you created in&nbsp;<a href="https://auth0.com/blog/what-is-blazor-tutorial-on-building-webapp-with-authentication" target="_blank" rel="noreferrer noopener">the Blazor server application</a>. You notice the initialization of the&nbsp;<code>Quiz</code>&nbsp;static variable with a few&nbsp;<code>QuizItem</code>&nbsp;instances and the definition of the&nbsp;<code>Get()</code>&nbsp;action returning that variable.</p>
+
+
+
+<p>For more information on&nbsp;<a href="https://auth0.com/blog/building-aspnet-web-api/" target="_blank" rel="noreferrer noopener">how to create a Web API in ASP.NET Core, see this tutorial</a>.</p>
+
+
+
+<h3 id="Creating-the-client">Creating the client</h3>
+
+
+
+<p>In order to create the Blazor client application, move into the&nbsp;<code>Client/Pages</code>&nbsp;folder and remove the&nbsp;<code>Counter.razor</code>&nbsp;and the&nbsp;<code>FetchData.razor</code>&nbsp;files. Then, add to this folder a file named&nbsp;<code>QuizViewer.razor</code>&nbsp;with the following content:</p>
+
+
+
+<pre class="wp-block-code"><code>// Client/Pages/QuizViewer.cs
+
+@page "/quizViewer"
+@using QuizManagerClientHosted.Shared
+@inject HttpClient Http
+
+&lt;h1&gt;Take your quiz!&lt;/h1&gt;
+&lt;p&gt;Your current score is @currentScore&lt;/p&gt;
+
+@if (quiz == null)
+{
+  &lt;p&gt;&lt;em&gt;Loading...&lt;/em&gt;&lt;/p&gt;
+}
+else
+{
+  int quizIndex = 0;
+  @foreach (var quizItem in quiz)
+  {
+    &lt;section&gt;
+    &lt;h3&gt;@quizItem.Question&lt;/h3&gt;
+    &lt;div class="form-check"&gt;
+      @{
+        int choiceIndex = 0;
+        quizScores.Add(0);
+      }
+      @foreach (var choice in quizItem.Choices)
+      {
+        int currentQuizIndex = quizIndex;
+        &lt;input class="form-check-input"
+          type="radio" 
+          name="@quizIndex" 
+          value="@choiceIndex"
+          @onchange="@((eventArgs) =&gt; UpdateScore(Convert.ToInt32(eventArgs.Value), currentQuizIndex))" /&gt;@choice
+        &lt;br&gt;
+
+        choiceIndex++;
+      }
+    &lt;/div&gt;
+    &lt;/section&gt;
+
+    quizIndex++;
+  }
+}
+
+@code {
+  List&lt;QuizItem&gt; quiz;
+  List&lt;int&gt; quizScores = new List&lt;int&gt;();
+  int currentScore = 0;
+
+  protected override async Task OnInitializedAsync()
+  {
+    quiz = await Http.GetFromJsonAsync&lt;List&lt;QuizItem&gt;&gt;("Quiz");
+  }
+
+  void UpdateScore(int chosenAnswerIndex, int quizIndex)
+  {
+    var quizItem = quiz&#91;quizIndex];
+
+    if (chosenAnswerIndex == quizItem.AnswerIndex)
+    {
+      quizScores&#91;quizIndex] = quizItem.Score;
+    }
+    else
+    {
+      quizScores&#91;quizIndex] = 0;
+    }
+    currentScore = quizScores.Sum();
+  }
+}</code></pre>
+
+
+
+<p>The&nbsp;<code>@page</code>&nbsp;directive defines this&nbsp;<a href="https://docs.microsoft.com/en-us/aspnet/core/blazor/components" target="_blank" rel="noreferrer noopener">Razor component</a>&nbsp;as a page, which is a UI element that is directly reachable through an address (<code>/quizViewer</code>&nbsp;in this case) in the Blazor&#8217;s routing system. Then, you have the&nbsp;<code>@using</code>&nbsp;directive, which provides access to the shared data model created above (<code>QuizItem.cs</code>). The&nbsp;<code>@inject</code>&nbsp;directive asks the dependency injection system to get an instance of the&nbsp;<code>HttpClient</code>&nbsp;class.</p>
+
+
+
+<p>After these initializations, you find the markup defining the UI. As you can see, this part is a mix of HTML and C# code whose purpose is to build the list of questions with the respective possible answers represented as radio buttons.</p>
+
+
+
+<p>The final block of the component is enclosed in the&nbsp;<code>@code</code>&nbsp;directive. This is where you put the logic of the component. In the case of the&nbsp;<code>QuizViewer</code>&nbsp;component, you have the&nbsp;<code>OnInitializedAsync()</code>&nbsp;and the&nbsp;<code>UpdateScore()</code>&nbsp;methods. The first method is called when the component is initialized, and it basically gets the quiz data by invoking the&nbsp;<code>Quiz</code>&nbsp;endpoint of the Web API you created before. The&nbsp;<code>UpdateScore()</code>&nbsp;method is called when the user clicks one of the proposed answers, and it updates the list of the assigned scores according to the answer chosen by the user. In the same method, the value of the current score is computed and assigned to the&nbsp;<code>currentScore</code>&nbsp;variable. The value of this variable is shown above the list of questions, as you can see in the markup.</p>
+
+
+
+<p>To complete your application, replace the content of the&nbsp;<code>NavMenu.razor</code>&nbsp;file in the&nbsp;<code>Client/Shared</code>&nbsp;folder with the following code:</p>
+
+
+
+<pre class="wp-block-code"><code>// Shared/NavMenu.razor
+
+&lt;div class="top-row ps-3 navbar navbar-dark"&gt;
+    &lt;div class="container-fluid"&gt;
+        &lt;a class="navbar-brand" href=""&gt;QuizManager&lt;/a&gt;
+        &lt;button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu"&gt;
+            &lt;span class="navbar-toggler-icon"&gt;&lt;/span&gt;
+        &lt;/button&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="@NavMenuCssClass" @onclick="ToggleNavMenu"&gt;
+    &lt;nav class="flex-column"&gt;
+        &lt;div class="nav-item px-3"&gt;
+            &lt;NavLink class="nav-link" href="" Match="NavLinkMatch.All"&gt;
+                &lt;span class="oi oi-home" aria-hidden="true"&gt;&lt;/span&gt; Home
+            &lt;/NavLink&gt;
+        &lt;/div&gt;
+        &lt;div class="nav-item px-3"&gt;
+            &lt;NavLink class="nav-link" href="quizViewer"&gt;
+                &lt;span class="oi oi-list-rich" aria-hidden="true"&gt;&lt;/span&gt; Quiz
+            &lt;/NavLink&gt;
+        &lt;/div&gt;
+    &lt;/nav&gt;
+&lt;/div&gt;
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass =&gt; collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}</code></pre>
+
+
+
+<p>As you may have noticed, this code redefines the navigation menu by removing the default items pointing to the&nbsp;<code>Counter</code>&nbsp;and&nbsp;<code>FetchData</code>&nbsp;components and including an item to reach the&nbsp;<code>QuizViewer</code>&nbsp;component.</p>
+
+
+
+<h3 id="Running-your-Blazor-WebAssembly-application">Running your Blazor WebAssembly application</h3>
+
+
+
+<p>Your Blazor WebAssembly application is complete and ready to run.</p>
+
+
+
+<p>In the root folder of the project, type the following command:</p>
+
+
+
+<pre class="wp-block-code"><code>dotnet run --project Server</code></pre>
+
+
+
+<p>Take a look at your terminal window to get the address your application is listening to. It is in the form&nbsp;<code>https://localhost:&lt;YOUR_PORT_NUMBER&gt;</code>. In my case, I got the address&nbsp;<a href="https://localhost:7291/" target="_blank" rel="noreferrer noopener"><code>https://localhost:7291</code></a>, and I will refer to it throughout the article.</p>
+
+
+
+<blockquote class="wp-block-quote"><p>Starting with .NET 6.0, any ASP.NET project created through a template is assigned a random port between 5000 and 5300 for HTTP and between 7000 and 7300 for HTTPS. See&nbsp;<a href="https://docs.microsoft.com/en-us/aspnet/core/release-notes/aspnetcore-6.0?view=aspnetcore-6.0#tgp" target="_blank" rel="noreferrer noopener">this document</a>&nbsp;for more information.</p></blockquote>
+
+
+
+<p>Pointing your browser to your application&#8217;s address, you should see the following page:</p>
+
+
+
+<figure class="wp-block-image"><img src="https://images.ctfassets.net/23aumh6u8s0i/1iuH4fcHt0rA0OoTGUdd9P/7ea0a59eebc6358e319e9c3f9f0b59ba/blazor-homepage.png" alt="Blazor App Home page"/></figure>
+
+
+
+<p>Clicking the Quiz item on the navigation bar, you should be able to take a simple quiz as shown in the following screenshot:</p>
+
+
+
+<figure class="wp-block-image"><img src="https://images.ctfassets.net/23aumh6u8s0i/K0RnC5N4WNMdaTd0XA7vS/d773f4e01e0a6da995e1ab9f612acb71/blazor-quiz-app.png" alt="Blazor Quiz Page"/></figure>
+
+
+
+<p>Even if the look and feel of this application is basically the same as&nbsp;<a href="https://auth0.com/blog/what-is-blazor-tutorial-on-building-webapp-with-authentication" target="_blank" rel="noreferrer noopener">the Blazor Server implementation</a>, the application architecture is quite different. In this case, you have the client side compiled into WebAssembly and running in your browser, while the server side is running in the built-in Web server. In addition, with this architecture, the client and the server interact with classic HTTP requests. You can check this by analyzing the network traffic with the developer tools of your browser.</p>
+
+
+
+<h2 id="Registering-the-Blazor-WASM-App-with-Auth0">Registering the Blazor WASM App with Auth0</h2>
+
+
+
+<p>Now that you have the WebAssembly version of the Quiz Manager application, learn how to secure it. You will use&nbsp;<a href="https://auth0.com/" target="_blank" rel="noreferrer noopener">Auth0</a>&nbsp;since it provides an easy way to integrate authentication and authorization without having to deal with the complexity of the underlying technology. To use Auth0, you need to provide some information and configure your application to make the two parties communicate with each other. If you don&#8217;t have an Auth0 account yet, you can&nbsp;<a href="https://auth0.com/signup" target="_blank" rel="noreferrer noopener">sign up for a free one right now</a>.Try out the most powerful authentication platform for free.<a target="_blank" href="https://auth0.com/signup?promo=sup&amp;place=in-blog-banner&amp;type=link&amp;text=get-started&amp;origin=blog" rel="noreferrer noopener">Get started →</a></p>
+
+
+
+<p>After accessing the&nbsp;<a href="https://manage.auth0.com/" target="_blank" rel="noreferrer noopener">Auth0 Dashboard</a>, move to the&nbsp;<a href="https://manage.auth0.com/#/applications" target="_blank" rel="noreferrer noopener">Applications section</a>, and follow these steps:</p>
+
+
+
+<ol><li>Click the&nbsp;<em>Create Application</em>&nbsp;button.</li><li>Provide a friendly name for your application (for example,&nbsp;<em>Quiz Blazor WASM Client</em>) and select&nbsp;<em>Single Page Web Applications</em>&nbsp;as the application type.</li><li>Finally, click the&nbsp;<em>Create</em>&nbsp;button.</li></ol>
+
+
+
+<p>After you register the application, move to the&nbsp;<em>Settings</em>&nbsp;tab and take note of your Auth0&nbsp;<strong>Domain</strong>&nbsp;and your&nbsp;<strong>Client ID</strong>. Then, assign the value&nbsp;<code>https://localhost:&lt;YOUR_PORT_NUMBER&gt;/authentication/login-callback</code>&nbsp;to the&nbsp;<em>Allowed Callback URLs</em>&nbsp;field and the value&nbsp;<code>https://localhost:&lt;YOUR_PORT_NUMBER&gt;</code>&nbsp;to the&nbsp;<em>Allowed Logout URLs</em>&nbsp;field. Replace the&nbsp;<code>&lt;YOUR_PORT_NUMBER&gt;</code>&nbsp;placeholder with the actual port number assigned to your application. In my case, those values are&nbsp;<code>https://localhost:7291/authentication/login-callback</code>&nbsp;and&nbsp;<code>https://localhost:7291</code>.</p>
+
+
+
+<p>The first value tells Auth0 which URL to call back after users authenticate. The second value tells Auth0 which URL users should be redirected to after they log out.</p>
+
+
+
+<p>Finally, click the&nbsp;<em>Save Changes</em>&nbsp;button to apply them.</p>
+
+
+
+<h2 id="Adding-Support-for-Authentication">Adding Support for Authentication</h2>
+
+
+
+<p>Now, you need to configure your Blazor project by applying some changes to make it aware of Auth0.</p>
+
+
+
+<h3 id="Configure-your-Blazor-app">Configure your Blazor app</h3>
+
+
+
+<p>So, move to the&nbsp;<code>Client/wwwroot</code>&nbsp;folder and create an&nbsp;<code>appsettings.json</code>&nbsp;file with the following content:</p>
+
+
+
+<pre class="wp-block-code"><code>{
+  "Auth0": {
+    "Authority": "https://&lt;YOUR_AUTH0_DOMAIN&gt;",
+    "ClientId": "&lt;YOUR_CLIENT_ID&gt;"
+  }
+}</code></pre>
+
+
+
+<p>Replace the placeholders&nbsp;<code>&lt;YOUR_AUTH0_DOMAIN&gt;</code>&nbsp;and&nbsp;<code>&lt;YOUR_CLIENT_ID&gt;</code>&nbsp;with the respective values taken from the Auth0 dashboard.</p>
+
+
+
+<h3 id="Add-support-for-authentication">Add support for authentication</h3>
+
+
+
+<p>Now, add the authentication package to the Blazor client project by running the following command in the&nbsp;<code>Client</code>&nbsp;folder:</p>
+
+
+
+<pre class="wp-block-code"><code>dotnet add package Microsoft.AspNetCore.Components.WebAssembly.Authentication</code></pre>
+
+
+
+<p>After adding the package, still in the&nbsp;<code>Client</code>&nbsp;folder, edit the&nbsp;<code>Program.cs</code>&nbsp;file by changing its content as follows:</p>
+
+
+
+<pre class="wp-block-code"><code>// Client/Program.cs
+
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using QuizManagerClientHosted.Client;
+
+var builder = WebAssemblyHostBuilder.CreateDefault(args);
+builder.RootComponents.Add&lt;App&gt;("#app");
+builder.RootComponents.Add&lt;HeadOutlet&gt;("head::after");
+
+builder.Services.AddScoped(sp =&gt; new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+// &#x1f447; new code
+builder.Services.AddOidcAuthentication(options =&gt;
+{
+  builder.Configuration.Bind("Auth0", options.ProviderOptions);
+  options.ProviderOptions.ResponseType = "code";
+});
+// &#x1f446; new code
+
+await builder.Build().RunAsync();</code></pre>
+
+
+
+<p>You added the call to&nbsp;<code>AddOidcAuthentication()</code>&nbsp;with specific options. In particular, you specified using the parameters from the&nbsp;<code>Auth0</code>&nbsp;section of the&nbsp;<code>appsettings.json</code>&nbsp;configuration file. Also, you specified the type of&nbsp;<a href="https://auth0.com/docs/flows" target="_blank" rel="noreferrer noopener">authentication and authorization flow</a>&nbsp;you want to use; in this specific case, the&nbsp;<a href="https://auth0.com/docs/flows/concepts/auth-code" target="_blank" rel="noreferrer noopener">Authorization Code flow</a>&nbsp;is recommended.</p>
+
+
+
+<p>To complete the implementation of authentication support in your application, open the&nbsp;<code>index.html</code>&nbsp;file under the&nbsp;<code>Client/wwwroot</code>&nbsp;folder and add the reference to the&nbsp;<code>AuthenticationService.js</code>&nbsp;script as shown below:</p>
+
+
+
+<pre class="wp-block-code"><code>&lt;!-- Client/wwwroot/index.html --&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;!-- existing markup --&gt;
+  &lt;body&gt;
+    &lt;!-- existing markup --&gt;
+    &lt;script src="_framework/blazor.webassembly.js"&gt;&lt;/script&gt;
+    &lt;!--&#x1f447; new addition --&gt;
+    &lt;script src="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js"&gt;&lt;/script&gt;
+    &lt;!--&#x1f446; new addition --&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+
+
+<p>This script is responsible for performing the authentication operations on the WebAssembly client side.</p>
+
+
+
+<h3 id="Adjust-the-UI-of-your-Blazor-app">Adjust the UI of your Blazor app</h3>
+
+
+
+<p>At this point, you prepared the infrastructure for your Blazor app to support authentication. Now you need to make some changes to the UI.</p>
+
+
+
+<p>The first step is to enable support for the authorization&nbsp;<a href="https://docs.microsoft.com/en-us/aspnet/core/blazor/components" target="_blank" rel="noreferrer noopener">Razor components</a>. So, open the&nbsp;<code>_Imports.razor</code>&nbsp;file in the&nbsp;<code>Client</code>&nbsp;folder and add a reference to the&nbsp;<code>Microsoft.AspNetCore.Components.Authorization</code>&nbsp;and&nbsp;<code>Microsoft.AspNetCore.Authorization</code>&nbsp;namespaces. The content of that file will look as follows:</p>
+
+
+
+<pre class="wp-block-code"><code>@* Client/_Imports.razor *@
+
+@using System.Net.Http
+@using System.Net.Http.Json
+@using Microsoft.AspNetCore.Components.Authorization  //&#x1f448; new addition
+@using Microsoft.AspNetCore.Authorization             //&#x1f448; new addition
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.AspNetCore.Components.WebAssembly.Http
+@using Microsoft.JSInterop
+@using QuizManagerClientHosted.Client
+@using QuizManagerClientHosted.Client.Shared</code></pre>
+
+
+
+<p>Then, open the&nbsp;<code>App.razor</code>&nbsp;file in the same folder and replace its content with the following:</p>
+
+
+
+<pre class="wp-block-code"><code>&lt;!-- Client/App.razor --&gt;
+
+&lt;CascadingAuthenticationState&gt;
+    &lt;Router AppAssembly="@typeof(App).Assembly"&gt;
+        &lt;Found Context="routeData"&gt;
+            &lt;AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"&gt;
+                &lt;Authorizing&gt;
+                    &lt;p&gt;Determining session state, please wait...&lt;/p&gt;
+                &lt;/Authorizing&gt;
+                &lt;NotAuthorized&gt;
+                    &lt;h1&gt;Sorry&lt;/h1&gt;
+                    &lt;p&gt;You're not authorized to reach this page. You need to log in.&lt;/p&gt;
+                &lt;/NotAuthorized&gt;
+            &lt;/AuthorizeRouteView&gt;
+            &lt;FocusOnNavigate RouteData="@routeData" Selector="h1" /&gt;
+        &lt;/Found&gt;
+        &lt;NotFound&gt;
+            &lt;PageTitle&gt;Not found&lt;/PageTitle&gt;
+            &lt;LayoutView Layout="@typeof(MainLayout)"&gt;
+                &lt;p role="alert"&gt;Sorry, there's nothing at this address.&lt;/p&gt;
+            &lt;/LayoutView&gt;
+        &lt;/NotFound&gt;
+    &lt;/Router&gt;
+&lt;/CascadingAuthenticationState&gt;</code></pre>
+
+
+
+<p>You used the&nbsp;<code>AuthorizeRouteView</code>&nbsp;Blazor component to customize the content according to the user&#8217;s authentication status. The&nbsp;<code>CascadingAuthenticationState</code>&nbsp;component will propagate the current authentication state to the inner components so that they can work on it consistently.</p>
+
+
+
+<p>The next step is to create a new&nbsp;<a href="https://docs.microsoft.com/en-us/aspnet/core/blazor/components" target="_blank" rel="noreferrer noopener">Razor component</a>&nbsp;that allows the user to log in and see their name when authenticated. So, create a new file named&nbsp;<code>AccessControl.razor</code>&nbsp;in the&nbsp;<code>Client/Shared</code>&nbsp;folder with the following content:</p>
+
+
+
+<pre class="wp-block-code"><code>@* Client/Shared/AccessControl.razor *@
+
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@inject NavigationManager Navigation
+@inject SignOutSessionStateManager SignOutManager
+
+&lt;AuthorizeView&gt;
+    &lt;Authorized&gt;
+        Hello, @context.User.Identity.Name!
+        &lt;a href="#" @onclick="BeginSignOut"&gt;Log out&lt;/a&gt;
+    &lt;/Authorized&gt;
+    &lt;NotAuthorized&gt;
+        &lt;a href="authentication/login"&gt;Log in&lt;/a&gt;
+    &lt;/NotAuthorized&gt;
+&lt;/AuthorizeView&gt;
+
+@code{
+    private async Task BeginSignOut(MouseEventArgs args)
+    {
+        await SignOutManager.SetSignOutState();
+        Navigation.NavigateTo("authentication/logout");
+    }
+}</code></pre>
+
+
+
+<p>The component uses the&nbsp;<code>AuthorizeView</code>&nbsp;component to show different content according to the user&#8217;s authentication status. Basically, it shows the&nbsp;<em>Log in</em>&nbsp;link when the user is not authenticated. It shows the name of the user and the&nbsp;<em>Log out</em>&nbsp;link when the user is authenticated.</p>
+
+
+
+<p>Note the URL the user is redirected to when they click the&nbsp;<em>Log out</em>&nbsp;link (<code>authentication/logout</code>). You will learn about that URL in a moment.</p>
+
+
+
+<p>Now, open the&nbsp;<code>MainLayout.razor</code>&nbsp;file in the&nbsp;<code>Shared</code>&nbsp;folder and add the&nbsp;<code>AccessControl</code>&nbsp;component just before the&nbsp;<em>About</em>&nbsp;link. The final code should look like the following:</p>
+
+
+
+<pre class="wp-block-code"><code>@* Client/Shared/MainLayout.razor *@
+
+@inherits LayoutComponentBase
+
+&lt;div class="page"&gt;
+    &lt;div class="sidebar"&gt;
+        &lt;NavMenu /&gt;
+    &lt;/div&gt;
+
+    &lt;main&gt;
+        &lt;div class="top-row px-4"&gt;
+            &lt;AccessControl /&gt;    //&#x1f448; new code
+            &lt;a href="https://docs.microsoft.com/aspnet/" target="_blank"&gt;About&lt;/a&gt;
+        &lt;/div&gt;
+
+        &lt;article class="content px-4"&gt;
+            @Body
+        &lt;/article&gt;
+    &lt;/main&gt;
+&lt;/div&gt;</code></pre>
+
+
+
+<p>When you registered your Blazor app with Auth0, you specified a couple of URLs as the allowed URLs for login callback and logout. To manage these URLs, you need to implement a page responsible for handling different authentication stages. For this purpose, create a new&nbsp;<code>Authentication.razor</code>&nbsp;file in the&nbsp;<code>Client/Pages</code>&nbsp;folder with the following code:</p>
+
+
+
+<pre class="wp-block-code"><code>@* Client/Pages/Authentication.razor *@
+
+@page "/authentication/{action}"
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Microsoft.Extensions.Configuration
+
+@inject NavigationManager Navigation
+@inject IConfiguration Configuration
+
+&lt;RemoteAuthenticatorView Action="@Action"&gt;
+    &lt;LogOut&gt;
+        @{
+            var authority = (string)Configuration&#91;"Auth0:Authority"];
+            var clientId = (string)Configuration&#91;"Auth0:ClientId"];
+
+             Navigation.NavigateTo($"{authority}/v2/logout?client_id={clientId}");
+        }
+    &lt;/LogOut&gt;
+&lt;/RemoteAuthenticatorView&gt;
+
+@code{
+    &#91;Parameter] public string Action { get; set; }
+}</code></pre>
+
+
+
+<p>As you can see, this component implements a page containing the&nbsp;<code>RemoteAuthenticatorView</code>&nbsp;component. This component manages the users&#8217; authentication status and interacts with the authorization server on the Auth0 side. While the login interaction doesn&#8217;t require any specific code, you need to manage the logout transaction. In fact, by design Blazor clears your authentication state on the client side but doesn&#8217;t disconnect you from Auth0. To close your session on the Auth0 side, you need to explicitly call the logout endpoint, as shown in the code above.</p>
+
+
+
+<blockquote class="wp-block-quote"><p>Disclaimer: At the time of writing, the logout function seems not to be stable due to an apparently Blazor problem. Check out&nbsp;<a href="https://github.com/dotnet/aspnetcore/issues/40046" target="_blank" rel="noreferrer noopener">this issue on the Blazor project&#8217;s repository to learn more</a>.</p></blockquote>
+
+
+
+<p>Finally, you need to add the&nbsp;<code>Authorize</code>&nbsp;attribute to the&nbsp;<code>QuizViewer.razor</code>&nbsp;page to protect it from unauthorized access. Open the&nbsp;<code>QuizViewer.razor</code>&nbsp;file in the&nbsp;<code>Pages</code>&nbsp;folder and add the attribute as shown below:</p>
+
+
+
+<pre class="wp-block-code"><code>@* Client/Pages/QuizViewer.razor *@
+
+@page "/quizViewer"
+@attribute &#91;Authorize]            //&#x1f448; new addition
+
+@using QuizManagerClientHosted.Shared
+
+// ... exisiting code ...</code></pre>
+
+
+
+<blockquote class="wp-block-quote"><p>Note that the presence of the&nbsp;<code>Authorize</code>&nbsp;attribute on the page doesn&#8217;t prevent the client from calling the API on the server. You need to protect the API on the server side as well.</p></blockquote>
+
+
+
+<p>At this point, you can stop your Blazor app, if it is still running, and restart it to test the authentication integration. Once the app is running, by clicking the&nbsp;<em>Quiz</em>&nbsp;menu item, you should see the following screen:</p>
+
+
+
+<figure class="wp-block-image"><img src="https://images.ctfassets.net/23aumh6u8s0i/7Lwyrds8bai2wl26T63ZlL/50f3fbda536515d608972fcbf0def159/blazor-unauthenticated-user.png" alt="Blazor app and the unauthenticated user"/></figure>
+
+
+
+<p>Note the&nbsp;<em>Log In</em>&nbsp;in the upper right corner. By clicking on it, the&nbsp;<a href="https://auth0.com/docs/universal-login" target="_blank" rel="noreferrer noopener">Auth0 Universal Login page</a>&nbsp;is shown, and the authentication process takes place. After authentication, you will be able to access the&nbsp;<em>QuizViewer</em>&nbsp;page.</p>
+
+
+
+<p></p>
+
+
+
+<h2 id="Securing-the-API-with-Auth0">Securing the API with Auth0</h2>
+
+
+
+<p>The data shown on the&nbsp;<em>QuizViewer</em>&nbsp;page are loaded from the&nbsp;<code>/quiz</code>&nbsp;API implemented in the server project. This API is not protected, so any client could access it. In fact, the Blazor WASM client is able to access it without any problem. However, in a production-ready scenario, you need to protect the API to prevent unauthorized access. Although the API security implementation is out of the scope of this tutorial, you need to perform a few changes to the API in the server project to secure it.</p>
+
+
+
+<p>If you want to learn more about&nbsp;<a href="https://auth0.com/blog/aspnet-web-api-authorization/" target="_blank" rel="noreferrer noopener">protecting Web APIs in .NET, please check out this article</a>.</p>
+
+
+
+<h3 id="Register-the-API">Register the API</h3>
+
+
+
+<p>Like what you did with the Blazor WASM application, you need to register the API with Auth0. So, head your browser to the&nbsp;<a href="https://manage.auth0.com/" target="_blank" rel="noreferrer noopener">Auth0 Dashboard</a>, move to the&nbsp;<a href="https://manage.auth0.com/#/apis" target="_blank" rel="noreferrer noopener">API section</a>, and follow these steps:</p>
+
+
+
+<ol><li>Click the&nbsp;<em>Create API</em>&nbsp;button.</li><li>Provide a friendly name for your API (for example,&nbsp;<em>Quiz API</em>) and a unique identifier (also known as&nbsp;<em>audience</em>) in the URL format (for example,&nbsp;<em><a href="https://quizapi.com/" target="_blank" rel="noreferrer noopener">https://quizapi.com</a></em>).</li><li>Leave the signing algorithm to RS256 and click the&nbsp;<em>Create</em>&nbsp;button.</li></ol>
+
+
+
+<p>This way, Auth0 is aware of your Web API and will allow you to control access.</p>
+
+
+
+<h3 id="Protecting-the-API">Protecting the API</h3>
+
+
+
+<p>In the server project under the&nbsp;<code>Server</code>&nbsp;folder, open the&nbsp;<code>appsettings.json</code>&nbsp;and modify its content as follows:</p>
+
+
+
+<pre class="wp-block-code"><code>{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "Auth0": {
+    "Domain": "&lt;YOUR_AUTH0_DOMAIN&gt;",
+    "Audience": "&lt;YOUR_API_IDENTIFIER&gt;"
+  }
+}</code></pre>
+
+
+
+<p>Replace the&nbsp;<code>&lt;YOUR_AUTH0_DOMAIN&gt;</code>&nbsp;placeholder with the Auth0 domain value you used for the Blazor WASM client. Also, replace the&nbsp;<code>&lt;YOUR_API_IDENTIFIER&gt;</code>&nbsp;placeholder with the unique identifier you defined for your API in the Auth0 Dashboard: it should be&nbsp;<code>https://quizapi.com</code>, if you kept the suggested value.</p>
+
+
+
+<p>Still in the&nbsp;<code>Server</code>&nbsp;folder, run the following command to install the library that will handle the authorization process:</p>
+
+
+
+<pre class="wp-block-code"><code>dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer</code></pre>
+
+
+
+<p>Then, open the&nbsp;<code>Program.cs</code>&nbsp;file and apply the changes shown below:</p>
+
+
+
+<pre class="wp-block-code"><code>// Server/Startup.cs
+
+// ... exisiting code ...
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+//&#x1f446; new code
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+//&#x1f447; new code
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, c =&gt;
+    {
+        c.Authority = $"https://{builder.Configuration&#91;"Auth0:Domain"]}";
+        c.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        {
+            ValidAudience = builder.Configuration&#91;"Auth0:Audience"],
+            ValidIssuer = $"https://{builder.Configuration&#91;"Auth0:Domain"]}"
+        };
+    });
+//&#x1f446; new code
+
+builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
+
+var app = builder.Build();
+
+// ... exisiting code ...
+
+app.UseRouting();
+
+//&#x1f447; new code
+app.UseAuthentication();
+app.UseAuthorization();
+//&#x1f446; new code
+
+app.MapRazorPages();
+
+// ... exisiting code ...</code></pre>
+
+
+
+<p>You added the reference to the&nbsp;<code>Microsoft.AspNetCore.Authentication.JwtBearer</code>&nbsp;namespace and added the statements that configure the server to handle the authorization process through Auth0. Finally, you configured the middleware to process authentication and authorization.</p>
+
+
+
+<p>Now, open the&nbsp;<code>QuizController.cs</code>&nbsp;file in the&nbsp;<code>Server/Controllers</code>&nbsp;folder and apply the following changes:</p>
+
+
+
+<pre class="wp-block-code"><code>// Server/Controllers/QuizController.cs
+
+using QuizManagerClientHosted.Shared;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;  //&#x1f448; new addition
+
+namespace QuizManagerClientHosted.Server.Controllers;
+
+&#91;ApiController]
+&#91;Route("&#91;controller]")]
+&#91;Authorize]            //&#x1f448; new addition
+public class QuizController : ControllerBase
+{
+  // ... existing code ...
+}</code></pre>
+
+
+
+<p>You added the reference to the&nbsp;<code>Microsoft.AspNetCore.Authorization</code>&nbsp;namespace and decorated the&nbsp;<code>QuizController</code>&nbsp;class with the&nbsp;<code>Authorize</code>&nbsp;attribute.</p>
+
+
+
+<blockquote class="wp-block-quote"><p>Remember: if you want&nbsp;<a href="https://auth0.com/blog/aspnet-web-api-authorization" target="_blank" rel="noreferrer noopener">to learn in depth how to protect your API with Auth0, read this article</a>.</p></blockquote>
+
+
+
+<p>Now your API is protected. To check if everything is working as expected, move to the root of the project and restart it. Then, log in to the application and click the&nbsp;<em>Quiz</em>&nbsp;menu item. This time you shouldn&#8217;t be able to display the quiz data. Your screen should be like the following:</p>
+
+
+
+<figure class="wp-block-image"><img src="https://images.ctfassets.net/23aumh6u8s0i/3LvgHWbncfgMgQ8yBlbTl3/bb53b957ad5581a2acc7b9efa1189162/blazor-unauthorized-user.png" alt="Blazor app unauthorized to access the API"/></figure>
+
+
+
+<p>If you take a look at the network section of your browser&#8217;s developer tool, you will find that the call to the&nbsp;<code>/quiz</code>&nbsp;endpoint gets an HTTP 401 status code, as in the following example:</p>
+
+
+
+<figure class="wp-block-image"><img src="https://images.ctfassets.net/23aumh6u8s0i/2lsComaCge0ZuDAQa6Pbse/3e16fdec1aee9233acca9a83b27c519f/blazor-app-dev-tools.png" alt="Unauthorized error when calling an API"/></figure>
+
+
+
+<p>This confirms that the server prevents unauthorized access to the API.</p>
+
+
+
+<p><a href="https://twitter.com/intent/tweet?text=%22Learn%20how%20to%20call%20a%20protected%20API%20with%20Blazor%20WebAssembly.%22%20via%20@auth0%20https://auth0.com/blog/securing-blazor-webassembly-apps" target="_blank" rel="noreferrer noopener">&#8220;Learn how to call a protected API with Blazor WebAssembly.&#8221;</a><a href="https://twitter.com/intent/tweet?text=%22Learn%20how%20to%20call%20a%20protected%20API%20with%20Blazor%20WebAssembly.%22%20via%20@auth0%20https://auth0.com/blog/securing-blazor-webassembly-apps" target="_blank" rel="noreferrer noopener">Tweet This</a></p>
+
+
+
+<h2 id="Calling-the-Protected-API">Calling the Protected API</h2>
+
+
+
+<p>To enable your Blazor WASM application to access the protected API, you need to get an&nbsp;<a href="https://auth0.com/docs/tokens/concepts/access-tokens" target="_blank" rel="noreferrer noopener">access token</a>&nbsp;from Auth0 and provide it along with your API call. You might think to write some code that attaches this token when you make an HTTP request to the server. However, you can centralize the access token attachment to your API calls in a straightforward way.</p>
+
+
+
+<h3 id="Creating-the-HTTP-client">Creating the HTTP client</h3>
+
+
+
+<p>Start by moving to the&nbsp;<code>Client</code>&nbsp;folder and installing the&nbsp;<code>Microsoft.Extensions.Http</code>&nbsp;package with the following command:</p>
+
+
+
+<pre class="wp-block-code"><code>dotnet add package Microsoft.Extensions.Http</code></pre>
+
+
+
+<p>This package allows you to create named HTTP clients and customize their behavior. In your case, you will create an HTTP client that automatically attaches an access token to each HTTP request.</p>
+
+
+
+<p>Open the&nbsp;<code>Program.cs</code>&nbsp;file in the&nbsp;<code>Client</code>&nbsp;folder and add a reference to the&nbsp;<code>Microsoft.AspNetCore.Components.WebAssembly.Authentication</code>&nbsp;as shown below:</p>
+
+
+
+<pre class="wp-block-code"><code>// Client/Program.cs
+
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using QuizManagerClientHosted.Client;
+//&#x1f447; new addition
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+
+// ... existing code ...</code></pre>
+
+
+
+<p>In the same file, apply the changes pointed out in the following code snippet:</p>
+
+
+
+<pre class="wp-block-code"><code>// Client/Program.cs
+
+// ... existing code ...
+
+builder.RootComponents.Add&lt;HeadOutlet&gt;("head::after");
+
+//&#x1f447; old code
+//builder.Services.AddScoped(sp =&gt; new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+//&#x1f447; new code
+builder.Services.AddHttpClient("ServerAPI", 
+      client =&gt; client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
+    .AddHttpMessageHandler&lt;BaseAddressAuthorizationMessageHandler&gt;();
+
+builder.Services.AddScoped(sp =&gt; sp.GetRequiredService&lt;IHttpClientFactory&gt;()
+  .CreateClient("ServerAPI"));
+//&#x1f446; new code      
+
+// ... existing code ...</code></pre>
+
+
+
+<p>You replaced the existing line of code that created an HTTP client with two lines of code. The&nbsp;<code>AddHttpClient()</code>&nbsp;method defines a named&nbsp;<code>HttpClient</code>&nbsp;instance (<code>ServerAPI</code>) with the current server&#8217;s address as the base address to use when requesting a resource. Also, the&nbsp;<code>BaseAddressAuthorizationMessageHandler</code>&nbsp;class is added to the&nbsp;<code>HttpClient</code>&nbsp;instance as the HTTP message handler. This class is provided by the&nbsp;<code>Microsoft.AspNetCore.Components.WebAssembly.Authentication</code>&nbsp;namespace and is responsible for attaching the access token to any HTTP request to the application&#8217;s base URI.</p>
+
+
+
+<p>The actual&nbsp;<code>HttpClient</code>&nbsp;instance is created by the&nbsp;<code>CreateClient()</code>&nbsp;method of the&nbsp;<code>IHttpClientFactory</code>&nbsp;service implementation.</p>
+
+
+
+<h3 id="Specifying-the-API-audience">Specifying the API audience</h3>
+
+
+
+<p>Now, open the&nbsp;<code>appsettings.json</code>&nbsp;file in the&nbsp;<code>Client/wwwroot</code>&nbsp;folder and add the&nbsp;<code>Audience</code>&nbsp;element as shown below:</p>
+
+
+
+<pre class="wp-block-code"><code>{
+  "Auth0": {
+    "Authority": "https://&lt;YOUR_AUTH0_DOMAIN&gt;",
+    "ClientId": "&lt;YOUR_CLIENT_ID&gt;",
+    "Audience": "&lt;YOUR_API_IDENTIFIER&gt;"
+  }
+}</code></pre>
+
+
+
+<p>Replace the&nbsp;<code>&lt;YOUR_API_IDENTIFIER&gt;</code>&nbsp;placeholder with the unique identifier you defined for your API in the Auth0 Dashboard (e.g.,&nbsp;<code>https://quizapi.com</code>).</p>
+
+
+
+<p>Now, back in the&nbsp;<code>Client/Program.cs</code>&nbsp;file, apply the change highlighted below:</p>
+
+
+
+<pre class="wp-block-code"><code>// Client/Program.cs
+
+// ... existing code ...
+
+builder.Services.AddOidcAuthentication(options =&gt;
+{
+  builder.Configuration.Bind("Auth0", options.ProviderOptions);
+  options.ProviderOptions.ResponseType = "code";
+  //&#x1f447; new code
+  options.ProviderOptions.AdditionalProviderParameters.Add("audience", builder.Configuration&#91;"Auth0:Audience"]);
+});
+
+await builder.Build().RunAsync();</code></pre>
+
+
+
+<p>You added an additional&nbsp;<code>audience</code>&nbsp;parameter to let Auth0 know you want to call the API identified by the&nbsp;<code>Audience</code>&nbsp;setting value.</p>
+
+
+
+<h3 id="Making-the-call">Making the call</h3>
+
+
+
+<p>After this global configuration, you can call the&nbsp;<code>quiz</code>&nbsp;endpoint of your Web API. So, open the&nbsp;<code>QuizViewer.razor</code>&nbsp;file in the&nbsp;<code>Client\Pages</code>&nbsp;folder and change its content as follows:</p>
+
+
+
+<pre class="wp-block-code"><code>@* Client/Pages/QuizViewer.razor *@
+
+@page "/quizViewer"
+@attribute &#91;Authorize]
+
+@using QuizManagerClientHosted.Shared
+//&#x1f447; new code
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+//&#x1f446; new code
+@inject HttpClient Http
+
+
+// ... existing code ...
+  
+@code {
+  
+    // ... existing code ...
+  
+    protected override async Task OnInitializedAsync()
+    {
+        //&#x1f447; changed code
+        try
+        {
+            quiz = await Http.GetFromJsonAsync&lt;List&lt;QuizItem&gt;&gt;("quiz");
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        //&#x1f446; changed code
+    }
+  
+  // ... existing code ...
+}</code></pre>
+
+
+
+<p>You imported the&nbsp;<code>Microsoft.AspNetCore.Components.WebAssembly.Authentication</code>&nbsp;namespace. Then, you simply arranged the&nbsp;<code>OnInitializedAsync()</code>&nbsp;method by wrapping it with a&nbsp;<em>try-catch</em>&nbsp;statement.</p>
+
+
+
+<p>After applying these changes, restart your application, log in, and try to move to the Quiz page. This time you should be able to access your protected API and show the Quiz page.</p>
+
+
+
+<h2 id="Recap">Recap</h2>
+
+
+
+<p>This tutorial guided you in creating and securing a Blazor WebAssembly application by using Auth0. You learned how to build a simple Blazor WebAssembly application and some Razor components. You went through the process of registering your application with Auth0 and enabling it to support authentication. Finally, you protected the API hosted by the server side of your application and called that API passing the access token.</p>
+
+
+
+<p>The full source code of the application secured in this tutorial can be downloaded from <a href="https://github.com/vinaykarora/secure-blazor-wasm-auth0" target="_blank" rel="noreferrer noopener">this GitHub repository</a>.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://vinayaroratech.com/dotnet/securing-blazor-webassembly-apps/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Examples of creating base64 hashes using HMAC SHA256 in different languages</title>
+		<link>https://vinayaroratech.com/dotnet/how-to/examples-of-creating-base64-hashes-using-hmac-sha256-in-different-languages/</link>
+					<comments>https://vinayaroratech.com/dotnet/how-to/examples-of-creating-base64-hashes-using-hmac-sha256-in-different-languages/#respond</comments>
+		
+		<dc:creator><![CDATA[Vinay]]></dc:creator>
+		<pubDate>Wed, 04 Jan 2023 15:39:33 +0000</pubDate>
+				<category><![CDATA[How-to]]></category>
+		<category><![CDATA[C#]]></category>
+		<category><![CDATA[dart]]></category>
+		<category><![CDATA[go]]></category>
+		<category><![CDATA[hmac]]></category>
+		<category><![CDATA[java]]></category>
+		<category><![CDATA[javascript]]></category>
+		<category><![CDATA[objectiveC]]></category>
+		<category><![CDATA[perl]]></category>
+		<category><![CDATA[php]]></category>
+		<category><![CDATA[powershell]]></category>
+		<category><![CDATA[python2]]></category>
+		<category><![CDATA[python3]]></category>
+		<category><![CDATA[rest]]></category>
+		<category><![CDATA[ruby]]></category>
+		<category><![CDATA[security]]></category>
+		<category><![CDATA[sha256]]></category>
+		<category><![CDATA[shell]]></category>
+		<category><![CDATA[swift]]></category>
+		<guid isPermaLink="false">https://vinayaroratech.com/?p=940</guid>
+
+					<description><![CDATA[I recently went through the processing of callback events for an in house API. The API required to validate that the events were sent by X, not by a third party. X generates signatures using a hash-based message authentication code (HMAC) with SHA-256 signatures. Those signatures then needed to be converted to base64. Amazon S3 uses &#8230;<p class="read-more"> <a class="" href="https://vinayaroratech.com/dotnet/how-to/examples-of-creating-base64-hashes-using-hmac-sha256-in-different-languages/"> <span class="screen-reader-text">Examples of creating base64 hashes using HMAC SHA256 in different languages</span> Read More &#187;</a></p>]]></description>
+										<content:encoded><![CDATA[
+<p>I recently went through the processing of callback events for an in house API. The API required to validate that the events were sent by X, not by a third party. X generates signatures using a hash-based message authentication code (HMAC) with SHA-256 signatures. Those signatures then needed to be converted to base64. Amazon S3 uses base64 strings for their hashes. There are some good reasons to use base64 encoding. See the stackOverflow question <a href="http://stackoverflow.com/a/201510/215502">What is the use of base 64 encoding?</a></p>
+
+
+
+<p>Below are some simplified HMAC SHA 256 solutions. They should all output&nbsp;<code>qnR8UCqJggD55PohusaBNviGoOJ67HC6Btry4qXLVZc=</code>&nbsp;given the values of&nbsp;<code>secret</code>&nbsp;and&nbsp;<code>Message</code>. Take notice of the capital M. The hashed message is case sensitive.</p>
+
+
+
+<p>Jump to an implementation:</p>
+
+
+
+<ul><li><a href="https://vinayaroratech.com/dotnet/how-to/examples-of-creating-base64-hashes-using-hmac-sha256-in-different-languages#js">Javascript</a></li><li><a href="https://vinayaroratech.com/dotnet/how-to/examples-of-creating-base64-hashes-using-hmac-sha256-in-different-languages#php">PHP</a></li><li><a href="https://vinayaroratech.com/dotnet/how-to/examples-of-creating-base64-hashes-using-hmac-sha256-in-different-languages#java">Java</a></li><li><a href="https://vinayaroratech.com/dotnet/how-to/examples-of-creating-base64-hashes-using-hmac-sha256-in-different-languages#groovy">Groovy</a></li><li><a href="https://vinayaroratech.com/dotnet/how-to/examples-of-creating-base64-hashes-using-hmac-sha256-in-different-languages#csharp">C#</a></li><li><a href="https://vinayaroratech.com/dotnet/how-to/examples-of-creating-base64-hashes-using-hmac-sha256-in-different-languages#objc">Objective C</a></li><li><a href="https://vinayaroratech.com/dotnet/how-to/examples-of-creating-base64-hashes-using-hmac-sha256-in-different-languages#go">Go</a></li><li><a href="https://vinayaroratech.com/dotnet/how-to/examples-of-creating-base64-hashes-using-hmac-sha256-in-different-languages#ruby">Ruby</a></li><li><a href="https://vinayaroratech.com/dotnet/how-to/examples-of-creating-base64-hashes-using-hmac-sha256-in-different-languages#python2">Python2</a></li><li><a href="https://vinayaroratech.com/dotnet/how-to/examples-of-creating-base64-hashes-using-hmac-sha256-in-different-languages#python3">Python3</a></li><li><a href="https://vinayaroratech.com/dotnet/how-to/examples-of-creating-base64-hashes-using-hmac-sha256-in-different-languages#perl">Perl</a></li><li><a href="https://vinayaroratech.com/dotnet/how-to/examples-of-creating-base64-hashes-using-hmac-sha256-in-different-languages#dart">Dart</a></li><li><a href="https://vinayaroratech.com/dotnet/how-to/examples-of-creating-base64-hashes-using-hmac-sha256-in-different-languages#swift">Swift</a></li><li><a href="https://vinayaroratech.com/dotnet/how-to/examples-of-creating-base64-hashes-using-hmac-sha256-in-different-languages#rust">Rust</a></li><li><a href="https://vinayaroratech.com/dotnet/how-to/examples-of-creating-base64-hashes-using-hmac-sha256-in-different-languages#powershell">Powershell</a></li><li><a href="https://vinayaroratech.com/dotnet/how-to/examples-of-creating-base64-hashes-using-hmac-sha256-in-different-languages#shell">Shell</a></li><li><a href="https://vinayaroratech.com/dotnet/how-to/examples-of-creating-base64-hashes-using-hmac-sha256-in-different-languages#delphi">Delphi</a></li></ul>
+
+
+
+<h3>Javascript HMAC SHA256</h3>
+
+
+
+<p>Run the code online with this&nbsp;<a href="http://jsfiddle.net/af9ps1yk/6/">jsfiddle</a>. Dependent upon an open source js library called&nbsp;<a href="http://code.google.com/p/crypto-js/">http://code.google.com/p/crypto-js/</a>.</p>
+
+
+
+<pre class="wp-block-code"><code>&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"&gt;&lt;/script&gt;
+&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/hmac-sha256.min.js"&gt;&lt;/script&gt;
+&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/enc-base64.min.js"&gt;&lt;/script&gt;
+
+&lt;script&gt;
+  var hash = CryptoJS.HmacSHA256("Message", "secret");
+  var hashInBase64 = CryptoJS.enc.Base64.stringify(hash);
+  document.write(hashInBase64);
+&lt;/script&gt;
+</code></pre>
+
+
+
+<h3>PHP HMAC SHA256</h3>
+
+
+
+<p>PHP has built in methods for&nbsp;<a href="http://php.net/manual/en/function.hash-hmac.php">hash_hmac</a>&nbsp;(PHP 5) and&nbsp;<a href="http://php.net/manual/en/function.base64-encode.php">base64_encode</a>&nbsp;(PHP 4, PHP 5) resulting in no outside dependencies. Say what you want about PHP but they have the cleanest code for this example.</p>
+
+
+
+<pre class="wp-block-code"><code>$s = hash_hmac('sha256', 'Message', 'secret', true);
+echo base64_encode($s);
+</code></pre>
+
+
+
+<h3>Java HMAC SHA256</h3>
+
+
+
+<p>Dependent on&nbsp;<a href="http://commons.apache.org/codec/">Apache Commons Codec</a>&nbsp;to encode in base64.</p>
+
+
+
+<pre class="wp-block-code"><code>import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import org.apache.commons.codec.binary.Base64;
+
+public class ApiSecurityExample {
+  public static void main(String&#91;] args) {
+    try {
+     String secret = "secret";
+     String message = "Message";
+
+     Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+     SecretKeySpec secret_key = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
+     sha256_HMAC.init(secret_key);
+
+     String hash = Base64.encodeBase64String(sha256_HMAC.doFinal(message.getBytes()));
+     System.out.println(hash);
+    }
+    catch (Exception e){
+     System.out.println("Error");
+    }
+   }
+}
+</code></pre>
+
+
+
+<h3>Groovy HMAC SHA256</h3>
+
+
+
+<p>It is mostly java code but there are some slight differences. Adapted from&nbsp;<a href="http://juliusgithaiga.blogspot.com/2013/06/hmacsha256-representation.html">Dev Takeout &#8211; Groovy HMAC/SHA256 representation</a>.</p>
+
+
+
+<pre class="wp-block-code"><code>import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.security.InvalidKeyException;
+
+def hmac_sha256(String secretKey, String data) {
+ try {
+    Mac mac = Mac.getInstance("HmacSHA256")
+    SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getBytes(), "HmacSHA256")
+    mac.init(secretKeySpec)
+    byte&#91;] digest = mac.doFinal(data.getBytes())
+    return digest
+   } catch (InvalidKeyException e) {
+    throw new RuntimeException("Invalid key exception while converting to HMac SHA256")
+  }
+}
+
+def hash = hmac_sha256("secret", "Message")
+encodedData = hash.encodeBase64().toString()
+log.info(encodedData)
+</code></pre>
+
+
+
+<h3>C# HMAC SHA256</h3>
+
+
+
+<pre class="wp-block-code"><code>using System.Security.Cryptography;
+
+namespace Test
+{
+  public class MyHmac
+  {
+    private string CreateToken(string message, string secret)
+    {
+      secret = secret ?? "";
+      var encoding = new System.Text.ASCIIEncoding();
+      byte&#91;] keyByte = encoding.GetBytes(secret);
+      byte&#91;] messageBytes = encoding.GetBytes(message);
+      using (var hmacsha256 = new HMACSHA256(keyByte))
+      {
+        byte&#91;] hashmessage = hmacsha256.ComputeHash(messageBytes);
+        return Convert.ToBase64String(hashmessage);
+      }
+    }
+  }
+}
+</code></pre>
+
+
+
+<h3>Objective C and Cocoa HMAC SHA256</h3>
+
+
+
+<p>Most of the code required was for converting to bae64 and working the NSString and NSData data types.</p>
+
+
+
+<pre class="wp-block-code"><code>#import "AppDelegate.h"
+#import &lt;CommonCrypto/CommonHMAC.h&gt;
+
+@implementation AppDelegate
+
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+ NSString* key = @"secret";
+ NSString* data = @"Message";
+
+ const char *cKey = &#91;key cStringUsingEncoding:NSASCIIStringEncoding];
+ const char *cData = &#91;data cStringUsingEncoding:NSASCIIStringEncoding];
+ unsigned char cHMAC&#91;CC_SHA256_DIGEST_LENGTH];
+ CCHmac(kCCHmacAlgSHA256, cKey, strlen(cKey), cData, strlen(cData), cHMAC);
+ NSData *hash = &#91;&#91;NSData alloc] initWithBytes:cHMAC length:sizeof(cHMAC)];
+
+ NSLog(@"%@", hash);
+
+ NSString* s = &#91;AppDelegate base64forData:hash];
+ NSLog(s);
+}
+
++ (NSString*)base64forData:(NSData*)theData {
+ const uint8_t* input = (const uint8_t*)&#91;theData bytes];
+ NSInteger length = &#91;theData length];
+
+ static char table&#91;] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+
+ NSMutableData* data = &#91;NSMutableData dataWithLength:((length + 2) / 3) * 4];
+ uint8_t* output = (uint8_t*)data.mutableBytes;
+
+ NSInteger i;
+ for (i=0; i &lt; length; i += 3) {
+ NSInteger value = 0;
+ NSInteger j;
+ for (j = i; j &lt; (i + 3); j++) {
+ value &lt;&lt;= 8;
+
+ if (j &lt; length) {  value |= (0xFF &amp; input&#91;j]);  }  }  NSInteger theIndex = (i / 3) * 4;  output&#91;theIndex + 0] = table&#91;(value &gt;&gt; 18) &amp; 0x3F];
+ output&#91;theIndex + 1] = table&#91;(value &gt;&gt; 12) &amp; 0x3F];
+ output&#91;theIndex + 2] = (i + 1) &lt; length ? table&#91;(value &gt;&gt; 6) &amp; 0x3F] : '=';
+ output&#91;theIndex + 3] = (i + 2) &lt; length ? table&#91;(value &gt;&gt; 0) &amp; 0x3F] : '=';
+ }
+
+ return &#91;&#91;NSString alloc] initWithData:data encoding:NSASCIIStringEncoding]; }
+
+@end
+</code></pre>
+
+
+
+<h3>Go programming language &#8211; Golang HMAC SHA256</h3>
+
+
+
+<ul><li><a href="http://play.golang.org/p/iTmI0RUCkD">Try it online in your browser with Play GoLang</a></li><li><a href="http://golang.org/pkg/crypto/hmac/">crypto/hmac package</a></li></ul>
+
+
+
+<pre class="wp-block-code"><code>package main
+
+import (
+    "crypto/hmac"
+    "crypto/sha256"
+    "encoding/base64"
+    "fmt"
+)
+
+func ComputeHmac256(message string, secret string) string {
+    key := &#91;]byte(secret)
+    h := hmac.New(sha256.New, key)
+    h.Write(&#91;]byte(message))
+    return base64.StdEncoding.EncodeToString(h.Sum(nil))
+}
+
+func main() {
+    fmt.Println(ComputeHmac256("Message", "secret"))
+}
+</code></pre>
+
+
+
+<h3>Ruby HMAC SHA256</h3>
+
+
+
+<p>Requires&nbsp;<a href="http://www.ruby-doc.org/stdlib-1.9.3/libdoc/openssl/rdoc/OpenSSL.html">openssl</a>&nbsp;and&nbsp;<a href="http://ruby-doc.org/stdlib-2.0/libdoc/base64/rdoc/Base64.html">base64</a>.</p>
+
+
+
+<pre class="wp-block-code"><code>require 'openssl'
+require "base64"
+
+hash  = OpenSSL::HMAC.digest('sha256', "secret", "Message")
+puts Base64.encode64(hash)
+</code></pre>
+
+
+
+<h3>Python (2.7) HMAC SHA256</h3>
+
+
+
+<pre class="wp-block-code"><code>import hashlib
+import hmac
+import base64
+
+message = bytes("Message").encode('utf-8')
+secret = bytes("secret").encode('utf-8')
+
+signature = base64.b64encode(hmac.new(secret, message, digestmod=hashlib.sha256).digest())
+print(signature)
+</code></pre>
+
+
+
+<p>Tested with Python 2.7.6. Also, be sure not to name your python demo script the same as one of the imported libraries.</p>
+
+
+
+<h3>Python (3.7) HMAC SHA256</h3>
+
+
+
+<pre class="wp-block-code"><code>import hashlib
+import hmac
+import base64
+
+message = bytes('Message', 'utf-8')
+secret = bytes('secret', 'utf-8')
+
+signature = base64.b64encode(hmac.new(secret, message, digestmod=hashlib.sha256).digest())
+print(signature)
+</code></pre>
+
+
+
+<p>Tested with Python 3.7.0. Also, be sure not to name your python demo script the same as one of the imported libraries. Thanks to&nbsp;<a href="https://github.com/biswapanda">@biswapanda</a>.</p>
+
+
+
+<h3>Perl HMAC SHA256</h3>
+
+
+
+<p>See&nbsp;<a href="http://search.cpan.org/~mshelor/Digest-SHA-5.85/lib/Digest/SHA.pm">Digest::SHA documentation</a>. By convention, the Digest modules do not pad their Base64 output. To fix this you can test the length of the hash and append equal signs &#8220;=&#8221; until it is the length is a multiple of 4. We will use a modulus function below.</p>
+
+
+
+<pre class="wp-block-code"><code>use Digest::SHA qw(hmac_sha256_base64);
+$digest = hmac_sha256_base64("Message", "secret");
+
+# digest is currently: qnR8UCqJggD55PohusaBNviGoOJ67HC6Btry4qXLVZc
+
+# Fix padding of Base64 digests
+while (length($digest) % 4) {
+    $digest .= '=';
+}
+
+print $digest;
+# digest is now: qnR8UCqJggD55PohusaBNviGoOJ67HC6Btry4qXLVZc=
+</code></pre>
+
+
+
+<h3>Dart HMAC SHA256</h3>
+
+
+
+<p>Dependent upon the Dart&nbsp;<a href="https://api.dartlang.org/docs/channels/stable/latest/crypto.html">crypto package</a>.</p>
+
+
+
+<pre class="wp-block-code"><code>import 'dart:html';
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
+
+void main() {
+
+  String secret = 'secret';
+  String message = 'Message';
+
+  List&lt;int&gt; secretBytes = UTF8.encode('secret');
+  List&lt;int&gt; messageBytes = UTF8.encode('Message');
+
+  var hmac = new HMAC(new SHA256(), secretBytes);
+  hmac.add(messageBytes);
+  var digest = hmac.close();
+
+  var hash = CryptoUtils.bytesToBase64(digest);
+
+  // output to html page
+  querySelector('#hash').text = hash;
+  // hash =&gt; qnR8UCqJggD55PohusaBNviGoOJ67HC6Btry4qXLVZc=
+}
+</code></pre>
+
+
+
+<h3>Swift HMAC SHA256</h3>
+
+
+
+<p>I have not verified but see this&nbsp;<a href="http://stackoverflow.com/questions/24099520/commonhmac-in-swift">stackOverflow post</a></p>
+
+
+
+<h3>Rust</h3>
+
+
+
+<p>Take a look at the&nbsp;<a href="https://github.com/alco/rust-digest/blob/master/hmac.rs">alco/rust-digest</a>&nbsp;repository for&nbsp;<a href="http://www.rust-lang.org/">Rust (lang)</a>&nbsp;guidance. I have not verified yet.</p>
+
+
+
+<h3>Powershell (Windows) HMAC SHA256</h3>
+
+
+
+<p>Mostly wrapping of .NET libraries but useful to see it in powershell&#8217;s befuddling syntax. See code as&nbsp;<a href="https://gist.github.com/jokecamp/2c1a67b8f277797ecdb3">gist</a></p>
+
+
+
+<pre class="wp-block-code"><code>$message = 'Message'
+$secret = 'secret'
+
+$hmacsha = New-Object System.Security.Cryptography.HMACSHA256
+$hmacsha.key = &#91;Text.Encoding]::ASCII.GetBytes($secret)
+$signature = $hmacsha.ComputeHash(&#91;Text.Encoding]::ASCII.GetBytes($message))
+$signature = &#91;Convert]::ToBase64String($signature)
+
+echo $signature
+
+# Do we get the expected signature?
+echo ($signature -eq 'qnR8UCqJggD55PohusaBNviGoOJ67HC6Btry4qXLVZc=')
+</code></pre>
+
+
+
+<h3>Shell (Bash etc) HMAC SHA256</h3>
+
+
+
+<p>Using openssl. Credit to&nbsp;<a href="https://github.com/CzechJiri">@CzechJiri</a></p>
+
+
+
+<pre class="wp-block-code"><code>MESSAGE="Message"
+SECRET="secret"
+
+echo -n $MESSAGE | openssl dgst -sha256 -hmac $SECRET -binary | base64
+</code></pre>
+
+
+
+<h3>###&nbsp;Delphi HMAC SHA256</h3>
+
+
+
+<p><a href="https://stackoverflow.com/a/40182566/215502">https://stackoverflow.com/a/40182566/215502</a></p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://vinayaroratech.com/dotnet/how-to/examples-of-creating-base64-hashes-using-hmac-sha256-in-different-languages/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>How to Handle DateTime in Cosmos DB</title>
+		<link>https://vinayaroratech.com/dotnet/how-to-handle-datetime-in-cosmos-db/</link>
+					<comments>https://vinayaroratech.com/dotnet/how-to-handle-datetime-in-cosmos-db/#respond</comments>
+		
+		<dc:creator><![CDATA[Vinay]]></dc:creator>
+		<pubDate>Mon, 02 Jan 2023 11:24:31 +0000</pubDate>
+				<category><![CDATA[.NET]]></category>
+		<category><![CDATA[Azure]]></category>
+		<category><![CDATA[How-to]]></category>
+		<category><![CDATA[C#]]></category>
+		<category><![CDATA[CosmosDB]]></category>
+		<category><![CDATA[DateTime]]></category>
+		<guid isPermaLink="false">https://vinayaroratech.com/?p=934</guid>
+
+					<description><![CDATA[DateTime data type can be trouble. In SQL Server, there are many datetime datatypes. Some of them are in UTC format, some of them has time zone information, some of them is just basic date and time or just date. Depending on what you need, you can pick one of them and hopefully you pick &#8230;<p class="read-more"> <a class="" href="https://vinayaroratech.com/dotnet/how-to-handle-datetime-in-cosmos-db/"> <span class="screen-reader-text">How to Handle DateTime in Cosmos DB</span> Read More &#187;</a></p>]]></description>
+										<content:encoded><![CDATA[
+<p>DateTime data type can be trouble. In SQL Server, there are many datetime datatypes. Some of them are in UTC format, some of them has time zone information, some of them is just basic date and time or just date. Depending on what you need, you can pick one of them and hopefully you pick the right one for what you need.</p>
+
+
+
+<p>What if you want to store datetime in a database and there is no datetime data type available? If you use NoSQL Database like Cosmos DB, you will have this problem. Data is saved as Json in Cosmos DB and other NoSQL Databases. JSON does not have a data type. Json supports only strings, numbers, Boolean, null, custom objects and arrays.</p>
+
+
+
+<p>Things can get tricky if you have queries that need to retrieve data by date. Since there is no date type, how can database engine compare date to date? I am not sure how Cosmos DB handles this problem internally but my guess the answer for this question is just like any database answer…. It depends <img src="https://s.w.org/images/core/emoji/13.0.1/72x72/1f60a.png" alt="😊" class="wp-smiley" style="height: 1em; max-height: 1em;" /> </p>
+
+
+
+<p>I believe it depends on how you save the datetime information in the database. There are many ways to save date and time, the default way is, It will be saved as string but you can also save it as a number. Date format depends on how you serialize your data into JSON.</p>
+
+
+
+<p>Let’s say the date we want to save is <strong>11/15/2019 01:58 PM</strong> and we are in <strong>Eastern Time Zone</strong>. Here are the most common serializer outputs. <br><strong>.NET JavaScriptSerializer</strong>.                             <strong>&#8220;\&#8221;\\/Date(1573844334736)\\/\&#8221;&#8221;</strong></p>
+
+
+
+<p><strong>.NET DataContractJsonSerializer.                &#8220;\&#8221;\\/Date(1573844334736-0500)\\/\&#8221;</strong></p>
+
+
+
+<p><strong>&#8220;Built-in JSON object of JavaScript.           &#8220;2019-11-15T13:58:00.511Z&#8221;     </strong></p>
+
+
+
+<p><strong>ISO 8601 Format                                           &#8220;2019-11-15T13:58:00-05:00&#8221;<br></strong>One of the most common and recommended versions of datetime in many systems is <strong>ISO 8601</strong> format. This is the format Cosmos DB recommends too. Also; It is recommended to store all dates as UTC. It is recommended because it is readable, data sorts correctly, includes fractional seconds and it is endorsed by many groups including W3C.</p>
+
+
+
+<p>As you can see it does not matter which serializer you pick your datetime will be a string. In some way database engine needs to know that this string is datetime and use it as datetime to retrieve data. If this happens in SQL Server, you are looking at table scan because you need to convert all the data into the datetime data type then try to compare data. We are not even touching to potential Time Zone or elapsed seconds problems.</p>
+
+
+
+<p>You can save datetime as a number too. As you can see in the first two serializers, there is a number in the Date constructor. This number is known as Unix timestamp. It represents the total number of seconds that have elapsed since January 1, 1970. It does not count leap seconds! Cosmos DB’s Timestamp (<strong>_ts</strong>) follows this way.</p>
+
+
+
+<p>It’s easy to convert datetime into Unix timestamp in JavaScript. Since Cosmos DB stored procedures are in JavaScript too, you can convert the datetime coming from user into Unix timestamp then search CosmosDB by using a number rather than string. If you need to use SDK to find data, you can use <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.documents.unixdatetimeconverter?redirectedfrom=MSDN&amp;view=azure-dotnet">UnixDateTimeConverter </a>class to convert datetime to Unix timestamp in your code.</p>
+
+
+
+<p>To search by Unix timestamp from stored procedure or SDK; First you need to save datetime in Unix timestamp as number. I recommend saving the dates in string format and Unix timestamp format in the database. You can use Unix timestamp to search in database and you can use string format to display date in User Interface so you don’t need to do any conversion in client side or server side. You might need to pay little bit more for storage, but I think it&#8217;s worth it. You can customize the Indexing policy and index only Unix timestamp.</p>
+
+
+
+<p>Here is an example, I have the date in ISO 8601 format and Unix Timestamp format in the following document.</p>
+
+
+
+<figure class="wp-block-image"><a href="https://1.bp.blogspot.com/-AXyj0hbBPrA/XdCVmcGXOcI/AAAAAAAACdI/P1gy4L57PZ0CLjPU0YlRw5fa1hB4b2FTgCLcBGAsYHQ/s1600/dt1.PNG"><img src="https://1.bp.blogspot.com/-AXyj0hbBPrA/XdCVmcGXOcI/AAAAAAAACdI/P1gy4L57PZ0CLjPU0YlRw5fa1hB4b2FTgCLcBGAsYHQ/s1600/dt1.PNG" alt=""/></a></figure>
+
+
+
+<p>I have a container named Posts, It has 100.000 Json documents in it. Let’s say I need to find all the posts of a specific user after a specific date. Since I have the datetime in Unix timestamp. I will use <strong>CreationUnixDt </strong>property in my query, It should be faster to find a number than string in any database. Let’s test if this applies to Cosmos DB. First let’s search by <strong>CreationDate </strong>property which is a string.</p>
+
+
+
+<figure class="wp-block-image"><a href="https://1.bp.blogspot.com/-HACSfZCB7QY/XdCjtZLnKuI/AAAAAAAACdo/_RO8Cno85LwjwnSTq1Cx2nuncRtP8aMPgCLcBGAsYHQ/s1600/dt2.PNG"><img src="https://1.bp.blogspot.com/-HACSfZCB7QY/XdCjtZLnKuI/AAAAAAAACdo/_RO8Cno85LwjwnSTq1Cx2nuncRtP8aMPgCLcBGAsYHQ/s640/dt2.PNG" alt=""/></a></figure>
+
+
+
+<p>Now, Let’s use the same query but this time search by Unix Timestamp which is a number. First, we need to convert date (2008-07-01) to Unix Timestamp. There are many ways to do that. For example, In SQL Server you can use the following T-SQL</p>
+
+
+
+<p><code>SELECT&nbsp;DATEDIFF(SECOND,{d '1970-01-01'}, '2008-07-1')</code><br>This returns&nbsp;<strong>1214870400.&nbsp;</strong>Now let&#8217;s use that in the query.</p>
+
+
+
+<figure class="wp-block-image"><a href="https://1.bp.blogspot.com/-TNtyMIM_gUA/XdCnGqx1I4I/AAAAAAAACd8/-S2X5EIwyXQO9bKmKM9p3taVKE8dQDwygCLcBGAsYHQ/s1600/dt3.PNG"><img src="https://1.bp.blogspot.com/-TNtyMIM_gUA/XdCnGqx1I4I/AAAAAAAACd8/-S2X5EIwyXQO9bKmKM9p3taVKE8dQDwygCLcBGAsYHQ/s640/dt3.PNG" alt=""/></a></figure>
+
+
+
+<p>There are interesting results here, first of all it looks like It costs more to search by a number. Index lookup time is significantly low when you search by a number and execution time is higher when we search by a number. I am surprised about these numbers. If this was done in SQL Server, there will be huge differences between these two queries. Results of these queries tell me that there is not that much difference between these two queries.</p>
+
+
+
+<p>You have one more option to save datetime in JSON object. You can create a custom object for it. This might cost you more for storage since you will have more properties to define a date and time. But you can search database however you like since it will give you most flexible solution, you store what it matters for you in this way. If date and time is crucial for your solution, this might help you to store datetime the way you want. You can store the location of user in this custom object too. Sometimes, it&#8217;s not enough to know what time zone user was in when transaction occurred. There are a lot of countries in the same time zone and current datetime data types do not include any information about the location of user.</p>
+
+
+
+<figure class="wp-block-image"><a href="https://1.bp.blogspot.com/-Mna_O8UEOYA/XdPfzfdkkvI/AAAAAAAACeo/hykSN7ELwWo87LJQCPj_xAtaOUGIw-pcQCLcBGAsYHQ/s1600/dt4.PNG"><img src="https://1.bp.blogspot.com/-Mna_O8UEOYA/XdPfzfdkkvI/AAAAAAAACeo/hykSN7ELwWo87LJQCPj_xAtaOUGIw-pcQCLcBGAsYHQ/s640/dt4.PNG" alt=""/></a></figure>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://vinayaroratech.com/dotnet/how-to-handle-datetime-in-cosmos-db/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Confirm AWS Cognito signups automatically</title>
+		<link>https://vinayaroratech.com/dotnet/confirm-aws-cognito-signups-automatically/</link>
+					<comments>https://vinayaroratech.com/dotnet/confirm-aws-cognito-signups-automatically/#respond</comments>
+		
+		<dc:creator><![CDATA[Vinay]]></dc:creator>
+		<pubDate>Wed, 30 Nov 2022 10:51:16 +0000</pubDate>
+				<category><![CDATA[.NET]]></category>
+		<category><![CDATA[.NET Core]]></category>
+		<category><![CDATA[AWS]]></category>
+		<category><![CDATA[How-to]]></category>
+		<category><![CDATA[Auto-Approve]]></category>
+		<category><![CDATA[Cognito]]></category>
+		<category><![CDATA[Lambda]]></category>
+		<category><![CDATA[Signup]]></category>
+		<category><![CDATA[Users]]></category>
+		<guid isPermaLink="false">https://vinayaroratech.com/?p=926</guid>
+
+					<description><![CDATA[In this tutorial, I will share how to automatically confirm users in your application without sending the confirmation code. When users signup in for your application normally you will send a confirmation code in their email or phone to confirm their account. This tutorial will be helpful if you are using AWS Cognito. Assuming you &#8230;<p class="read-more"> <a class="" href="https://vinayaroratech.com/dotnet/confirm-aws-cognito-signups-automatically/"> <span class="screen-reader-text">Confirm AWS Cognito signups automatically</span> Read More &#187;</a></p>]]></description>
+										<content:encoded><![CDATA[
+<p>In this tutorial, I will share how to automatically confirm users in your application without sending the confirmation code.</p>
+
+
+
+<p>When users signup in for your application normally you will send a confirmation code in their email or phone to confirm their account.</p>
+
+
+
+<p>This tutorial will be helpful if you are using AWS Cognito. Assuming you want to auto-confirm your user&#8217;s email and phone numbers. This can be done using a Lambda function.</p>
+
+
+
+<h1>STEPS</h1>
+
+
+
+<ul><li>Create a Lambda function name it <strong>confirmSignUp</strong>. For this tutorial, I will use runtime Node.js 18.x.</li><li>Copy the following and paste it in the index.mjs file.</li></ul>
+
+
+
+<pre class="wp-block-code"><code>export const handler = (event, context, callback) => {
+
+    // Confirm the user
+        event.response.autoConfirmUser = true;
+
+    // Set the email as verified if it is in the request
+    if (event.request.userAttributes.hasOwnProperty("email")) {
+        event.response.autoVerifyEmail = true;
+    }
+
+    // Set the phone number as verified if it is in the request
+    if (event.request.userAttributes.hasOwnProperty("phone_number")) {
+        event.response.autoVerifyPhone = true;
+    }
+
+    // Return to Amazon Cognito
+    callback(null, event);
+};
+
+</code></pre>
+
+
+
+<ul><li>Save the Lambda function and go back to AWS Cognito dashboard. </li><li>Select user pool and go to User pool properties and click Add Lambda trigger.</li></ul>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" width="1024" height="263" src="https://vinayaroratech.com/wp-content/uploads/2022/11/image-1024x263.png" alt="" class="wp-image-927" srcset="https://vinayaroratech.com/wp-content/uploads/2022/11/image-1024x263.png 1024w, https://vinayaroratech.com/wp-content/uploads/2022/11/image-300x77.png 300w, https://vinayaroratech.com/wp-content/uploads/2022/11/image-768x197.png 768w, https://vinayaroratech.com/wp-content/uploads/2022/11/image-1536x395.png 1536w, https://vinayaroratech.com/wp-content/uploads/2022/11/image.png 1783w" sizes="(max-width: 1024px) 100vw, 1024px" /></figure>
+
+
+
+<ul><li>Under Lambda triggers Select Sign-up as Trigger type<span style="font-size: 1rem;"> and under sign-up select Pre sign-up trigger option.</span> Pre sign-up trigger will be disabled once you add lambda for this option.</li></ul>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" width="1024" height="622" src="https://vinayaroratech.com/wp-content/uploads/2022/11/image-2-1024x622.png" alt="" class="wp-image-929" srcset="https://vinayaroratech.com/wp-content/uploads/2022/11/image-2-1024x622.png 1024w, https://vinayaroratech.com/wp-content/uploads/2022/11/image-2-300x182.png 300w, https://vinayaroratech.com/wp-content/uploads/2022/11/image-2-768x466.png 768w, https://vinayaroratech.com/wp-content/uploads/2022/11/image-2.png 1173w" sizes="(max-width: 1024px) 100vw, 1024px" /></figure>
+
+
+
+<ul><li>Finally select your Lambda function and click Add Lambda trigger button.</li></ul>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" width="1024" height="523" src="https://vinayaroratech.com/wp-content/uploads/2022/11/image-4-1024x523.png" alt="" class="wp-image-931" srcset="https://vinayaroratech.com/wp-content/uploads/2022/11/image-4-1024x523.png 1024w, https://vinayaroratech.com/wp-content/uploads/2022/11/image-4-300x153.png 300w, https://vinayaroratech.com/wp-content/uploads/2022/11/image-4-768x393.png 768w, https://vinayaroratech.com/wp-content/uploads/2022/11/image-4.png 1207w" sizes="(max-width: 1024px) 100vw, 1024px" /></figure>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://vinayaroratech.com/dotnet/confirm-aws-cognito-signups-automatically/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>How to AWS Cognito Login Signup in ASP.NET Core</title>
+		<link>https://vinayaroratech.com/dotnet/how-to-aws-cognito-login-signup-in-asp-net-core/</link>
+					<comments>https://vinayaroratech.com/dotnet/how-to-aws-cognito-login-signup-in-asp-net-core/#respond</comments>
+		
+		<dc:creator><![CDATA[Vinay]]></dc:creator>
+		<pubDate>Tue, 29 Nov 2022 09:43:38 +0000</pubDate>
+				<category><![CDATA[.NET]]></category>
+		<category><![CDATA[.NET Core]]></category>
+		<category><![CDATA[AWS]]></category>
+		<category><![CDATA[How-to]]></category>
+		<category><![CDATA[Cognito]]></category>
+		<guid isPermaLink="false">https://vinayaroratech.com/?p=924</guid>
+
+					<description><![CDATA[In this article, let&#8217;s look at how we can design and build such an API that encapsulates all of User Identity Management functionalities such as Login.. Introduction AWS Cognito provides OAuth2 auth flows such as Authorization Code where the application can redirect to AWS Cognito hosted login screens where the user credentials are validated against &#8230;<p class="read-more"> <a class="" href="https://vinayaroratech.com/dotnet/how-to-aws-cognito-login-signup-in-asp-net-core/"> <span class="screen-reader-text">How to AWS Cognito Login Signup in ASP.NET Core</span> Read More &#187;</a></p>]]></description>
+										<content:encoded><![CDATA[
+<p>In this article, let&#8217;s look at how we can design and build such an API that encapsulates all of User Identity Management functionalities such as Login..</p>
+
+
+
+<h2>Introduction</h2>
+
+
+
+<p>AWS Cognito provides OAuth2 auth flows such as Authorization Code where the application can redirect to AWS Cognito hosted login screens where the user credentials are validated against Cognito data store and is redirected to the configured landing pages on the application side with an idToken which represents user authorization.</p>
+
+
+
+<p>While it is the most recommended approach for applications, some designs prefer having a layer of their API that would communicate with Cognito for authorization, as a matter of decoupling Cognito with the Client (so as to have flexibility or better control).</p>
+
+
+
+<p>In this article, let’s look at how we can design and build such an API that encapsulates all of User Identity Management functionalities such as Login, Signup, Password Reset, Update profile and so on, while internally communicating with Cognito for respective flows.</p>
+
+
+
+<p>Keep in mind that to run such an API, we need the API to be deployed in a resource that has all the IAM permissions for Cognito access.</p>
+
+
+
+<h2>Features we’ll implement &amp; Getting started</h2>
+
+
+
+<p>We shall look at designing our APIs which provide the below features:</p>
+
+
+
+<ol><li>Login an existing user with his/her Email address and Password combination</li><li>Signup a new user with his/her Email address, Name, Phone and Password</li><li>Update a logged in user’s profile information</li><li>Update a logged in user’s password</li><li>Reset a user’s forgotten password based on Email address</li></ol>
+
+
+
+<p>To get started, let’s create a new AspNetCore project that’d host all of these functionalities.</p>
+
+
+
+<p><code>dotnet new mvc --name CognitoUserManager</code></p>
+
+
+
+<p>I’m creating an MVC application instead of a WebAPI, so that I can also add a layer of UI for testing the functionalities. In the project, I create a Repository class called UserRepository which implements an interface IUserRepository that defines all the functionalities as contracts. This Repository is injected into our API layers or UI layer by means of the inbuilt Dependency Injection.</p>
+
+
+
+<pre class="wp-block-code"><code>namespace CognitoUserManager.Contracts.Repositories
+{
+    public interface IUserRepository
+    {
+        /* Signup Flow Starts */
+        Task&lt;UserSignUpResponse> ConfirmUserSignUpAsync(UserConfirmSignUpRequest request);
+        Task&lt;UserSignUpResponse> CreateUserAsync(UserSignUpRequest request);
+        /* Signup Flow Ends */
+        
+        /* Change Password Flow */
+        Task&lt;BaseResponseRequest> TryChangePasswordAsync(ChangePwdRequest request);
+        
+        /* Forgot Password Flow Starts */
+        Task&lt;InitForgotPwdResponse> TryInitForgotPasswordAsync(InitForgotPwdRequest request);
+        Task&lt;ResetPasswordResponse> TryResetPasswordWithConfirmationCodeAsync(ResetPasswordRequest request);
+        /* Forgot Password Flow Ends */
+        
+        /* Login Flow Starts */
+        Task&lt;AuthResponseRequest> TryLoginAsync(UserLoginRequest request);
+        /* Login Flow Ends */
+        
+        Task&lt;UserSignOutResponse> TryLogOutAsync(UserSignOutRequest request);
+        
+        /* Update Profile Flow Starts */
+        Task&lt;UserProfileResponse> GetUserAsync(string userId);
+        Task&lt;UpdateProfileResponse> UpdateUserAttributesAsync(UpdateProfileRequest request);
+        /* Update Profile Flow Ends */
+    }
+}
+</code></pre>
+
+
+
+<p>I’ve created individual request and response DTO classes for handling respective data. All the Response classes extend from a BaseResponse class which contains the below attributes.</p>
+
+
+
+<pre class="wp-block-code"><code>public class BaseResponse
+{
+    public bool IsSuccess { get; set; }
+    public string Message { get; set; }
+}
+</code></pre>
+
+
+
+<p>Before jumping into the implementation, we also need to know what information from Cognito to be configured and used in the API.</p>
+
+
+
+<h2>Prerequisites for Accessing AWS Cognito Resources</h2>
+
+
+
+<p>To access Cognito, we’d require a UserPool where all the users are stored and an AppClient which is created over this UserPool. We’d also require the Region in which this UserPool resides.</p>
+
+
+
+<p>In case if we’re not deploying our application inside an AWS environment we’d also require the credentials of a user who has all the required permissions for accessing the Cognito user pool.</p>
+
+
+
+<p>This we call the AccessKey and the SecretKey. We shall store and access all these information inside our appsettings.json (or preferably as Environmental Variables if redeployments are not an option).</p>
+
+
+
+<pre class="wp-block-code"><code>"AppConfig": {
+    "Region": "us-west-2",
+    "UserPoolId": "us-west-2_aBcDeFgHiJ",
+    "AppClientId": "Ab12Cd34Ef56Gh78ij90",
+    "AccessKeyId": "AKIA1234567890",
+    "AccessSecretKey": "abcdEfghalfheqncoryedofhuehhrh"
+}
+</code></pre>
+
+
+
+<p>I’ve configured this configuration section into IOptions so as to access it as an object inside my Repository class.</p>
+
+
+
+<pre class="wp-block-code"><code>services.Configure&lt;AppConfig&gt;(Configuration.GetSection("AppConfig"));
+services.AddScoped&lt;IUserRepository, UserRepository&gt;();
+</code></pre>
+
+
+
+<p>We’d also require to install the below packages which contain the necessary libraries for communicating with Cognito and working with UserPools based on the requests.</p>
+
+
+
+<pre class="wp-block-code"><code>&lt;PackageReference Include="Amazon.Extensions.CognitoAuthentication" Version="2.0.3" /&gt;
+&lt;PackageReference Include="AWSSDK.CognitoIdentityProvider" Version="3.5.1.17" /&gt;
+</code></pre>
+
+
+
+<h2>Implementing UserRepository for Cognito Flows</h2>
+
+
+
+<p>Let’s begin by implementing the UserRepository which implements the IUserRepository interface and encapsulates all the user flows. To communicate with cognito we use an instance of the AmazonCognitoIdentityProviderClient which we configure by passing all the cognito details we collected before.</p>
+
+
+
+<pre class="wp-block-code"><code>_cloudConfig = appConfigOptions.Value;
+_provider = new AmazonCognitoIdentityProviderClient(
+                _cloudConfig.AccessKeyId, 
+                _cloudConfig.AccessSecretKey, 
+                RegionEndpoint.GetBySystemName(_cloudConfig.Region));
+</code></pre>
+
+
+
+<p>Next we create an instance of CognitoUserPool by passing the AmazonCognitoIdentityProviderClient instance we created before along with few other parameters.</p>
+
+
+
+<pre class="wp-block-code"><code>_userPool = new CognitoUserPool(
+        _cloudConfig.UserPoolId, 
+        _cloudConfig.AppClientId, 
+        _provider);
+</code></pre>
+
+
+
+<p>Now that we’re done with our initial setups, let’s jump into action – implementing these user flows one by one using AWS .NET SDK for Cognito.</p>
+
+
+
+<ol><li>Login an existing user with his/her Email address and Password combination</li><li>Signup a new user with his/her Email address, Name, Phone and Password</li><li>Update a logged in user’s profile information</li><li>Update a logged in user’s password</li><li>Reset a user’s forgotten password based on Email address</li></ol>
+
+
+
+<h2>Login Flow – an existing user with Email address and Password</h2>
+
+
+
+<p>In this flow, the client passes an Email address and Password to the API which needs to validate this combination against a UserPool. We use a Resource Owner Password Grant (ROPG) type of flow in this, which is called as a Secure Remote Password (SRP) Authentication. We implement this as below:</p>
+
+
+
+<pre class="wp-block-code"><code>CognitoUser user = new CognitoUser(emailAddress, _cloudConfig.AppClientId, _userPool, _provider);
+InitiateSrpAuthRequest authRequest = new InitiateSrpAuthRequest()
+{
+    Password = password
+};
+
+AuthFlowResponse authResponse = await user.StartWithSrpAuthAsync(authRequest);
+</code></pre>
+
+
+
+<p>We create an instance of CognitoUser by passing the emailAddress and the instances of CognitoUserPool and AmazonCognitoIdentityProviderClient we created before. Then we call the StartWithSrpAuthAsync() method that takes an instance of InitiateSrpAuthRequest where we pass the password.</p>
+
+
+
+<p>This call validates the passed on credentials for any user inside the passed on user pool and returns an AuthFlowResponse.</p>
+
+
+
+<p>This response contains an AuthenticationResult, which is an instance of AuthenticationResultType containing the tokens representing the authenticated user. The tokens generated are based on the scope configurations provided while configuring the cognito.</p>
+
+
+
+<p>If the user is not authenticated, the method throws a NotAuthorizedException which we can assume that the password combination is wrong.</p>
+
+
+
+<pre class="wp-block-code"><code>public async Task&lt;AuthResponseRequest> TryLoginAsync(UserLoginRequest request)
+{
+    try
+    {
+        CognitoUser user = new CognitoUser(
+                emailAddress, 
+                _cloudConfig.AppClientId, 
+                _userPool, 
+                _provider);
+        
+        InitiateSrpAuthRequest authRequest = new InitiateSrpAuthRequest()
+        {
+            Password = password
+        };
+
+        AuthFlowResponse authResponse = await user.StartWithSrpAuthAsync(authRequest);
+        var result = authResponse.AuthenticationResult;
+
+        var authResponseRequest = new AuthResponseRequest();
+        authResponseRequest.EmailAddress = user.UserID;
+        authResponseRequest.UserId = user.Username;
+        authResponseRequest.Tokens = new TokenRequest
+        {
+            IdToken = result.IdToken,
+            AccessToken = result.AccessToken,
+            ExpiresIn = result.ExpiresIn,
+            RefreshToken = result.RefreshToken
+        };
+        
+        authResponseRequest.IsSuccess = true;
+        return authResponseRequest;
+    }
+    catch (UserNotConfirmedException)
+    {
+        // Occurs if the User has signed up 
+        // but has not confirmed his EmailAddress
+        // In this block we try sending 
+        // the Confirmation Code again and ask user to confirm
+    }
+    catch (UserNotFoundException)
+    {
+        // Occurs if the provided emailAddress 
+        // doesn't exist in the UserPool
+        return new AuthResponseRequest
+        {
+            IsSuccess = false,
+            Message = "EmailAddress not found."
+        };
+    }
+    catch (NotAuthorizedException)
+    {
+        return new AuthResponseRequest
+        {
+            IsSuccess = false,
+            Message = "Incorrect username or password"
+        };
+    }
+}
+</code></pre>
+
+
+
+<h2>Signup Flow – a new user with his/her Email address, Name, Phone and Password</h2>
+
+
+
+<p>To let a new user signup, we need to follow a two step process:</p>
+
+
+
+<ol><li>Create a new User in Cognito – this leaves the user in a NotConfirmed state</li><li>Confirm the User by passing the Confirmation Code that is sent to the user’s primary source (EmailAddress in our case).</li></ol>
+
+
+
+<p>Creating a user is a straight forward process, where we pass the EmailAddress, Password and other information such as Name, PhoneNumber and so on as OpenID attributes to the AmazonCognitoIdentityProviderClient instance.</p>
+
+
+
+<pre class="wp-block-code"><code>public async Task&lt;UserSignUpResponse> CreateUserAsync(CreateUserRequest request, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Create user {0}.", request.Email);
+
+        var validator = new CreateUserRequestValidator(_repository, _validatorLocalizer);
+        await validator.ValidateAndThrowAsync(request, cancellationToken: cancellationToken);
+
+        var agency = await _agencyRepository.GetByIdAsync(request.AgencyId, cancellationToken);
+
+        _ = agency ?? throw new NotFoundException(string.Format(_localizer&#91;"agency.notfound"], request.AgencyId));
+
+        if (agency.Name.Equals("Tonkin", StringComparison.InvariantCultureIgnoreCase))
+            request.UserType = Domain.Common.UserType.Tonkin;
+
+        var user = new ApplicationUser(
+        request.AgencyId,
+        request.UserType,
+        request.FirstName,
+        request.LastName,
+        request.Email);
+        await _repository.AddAsync(user, cancellationToken);
+
+        var signUpRequest = new SignUpRequest
+        {
+            ClientId = _myApiCredentials.AppClientId,
+            Password = "Password@1122",
+            Username = request.Email,
+            SecretHash = CognitoHashCalculator.GetSecretHash(request.Email, _myApiCredentials.AppClientId, _myApiCredentials.AppClientSecret),
+        };
+
+        signUpRequest.UserAttributes.AddRange(new&#91;]
+        {
+            new AttributeType { Name = "email", Value = request.Email },
+            new AttributeType { Value = request.FirstName, Name = "given_name" },
+            new AttributeType { Value = $"{request.FirstName} {request.LastName}", Name = "family_name" }
+        });
+
+        try
+        {
+            var response = await _provider.SignUpAsync(signUpRequest, cancellationToken);
+
+            return new UserSignUpResponse
+            {
+                UserId = user.Id,
+                UserSub = response.UserSub,
+                Email = request.Email,
+                IsSuccess = true,
+                Message = $"Confirmation Code sent to {response.CodeDeliveryDetails.Destination} via {response.CodeDeliveryDetails.DeliveryMedium.Value}",
+            };
+        }
+        catch (UsernameExistsException)
+        {
+            return new UserSignUpResponse
+            {
+                IsSuccess = false,
+                Message = "Email Already Exists"
+            };
+        }
+    }</code></pre>
+
+
+
+<p>The SignUpResponse returned by the Cognito CreateUserAsync() method contains the details about where the Confirmation Code has been sent to. The Destination property of the CodeDeliveryDetails contains a masked EmailAddress (or PhoneNumber) to where the code is sent. The next step is to post this Confirmation Code sent by the user to Cognito to as to “Confirm” the user.</p>
+
+
+
+<pre class="wp-block-code"><code> public async Task&lt;UserSignUpResponse> ConfirmUserSignUpAsync(UserConfirmSignUpRequest request, CancellationToken cancellationToken)
+    {
+        var confirmRequest = new ConfirmSignUpRequest
+        {
+            ClientId = _myApiCredentials.AppClientId,
+            ConfirmationCode = request.Code,
+            Username = request.Email,
+            SecretHash = CognitoHashCalculator.GetSecretHash(request.Email, _myApiCredentials.AppClientId, _myApiCredentials.AppClientSecret),
+        };
+
+        try
+        {
+            _ = await _provider.ConfirmSignUpAsync(confirmRequest, cancellationToken);
+            return new UserSignUpResponse
+            {
+                Email = request.Email,
+                UserId = request.UserId,
+                Message = "User Confirmed",
+                IsSuccess = true
+            };
+        }
+        catch (CodeMismatchException)
+        {
+            return new UserSignUpResponse
+            {
+                IsSuccess = false,
+                Message = "Invalid Confirmation Code",
+                Email = request.Email
+            };
+        }
+    }
+</code></pre>
+
+
+
+<p>Here we post the confirmation code for the respective EmailAddress related to the AppClientId and call the ConfirmSignUpAsync() method on the client.</p>
+
+
+
+<p>A successful confirmation means no Exception and we can safely ask the user to login. If the confirmation code is wrong, the method throws a CodeMismatchException.</p>
+
+
+
+<p>if Amazon.CognitoIdentityProvider.Model.NotAuthorizedException throw. i.e. &#8216;Client abcded8uek12di4ftcj0cv7btt is configured for secret but secret was not received. Use the below CognitoHashCalculator method in request payload.</p>
+
+
+
+<pre class="wp-block-code"><code>public static class CognitoHashCalculator
+{
+    public static string GetSecretHash(string username, string appClientId, string appSecretKey)
+    {
+        var dataString = username + appClientId;
+
+        var data = Encoding.UTF8.GetBytes(dataString);
+        var key = Encoding.UTF8.GetBytes(appSecretKey);
+
+        return Convert.ToBase64String(HmacSHA256(data, key));
+    }
+
+    public static byte&#91;] HmacSHA256(byte&#91;] data, byte&#91;] key)
+    {
+        using var shaAlgorithm = new System.Security.Cryptography.HMACSHA256(key);
+        var result = shaAlgorithm.ComputeHash(data);
+        return result;
+    }
+}</code></pre>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://vinayaroratech.com/dotnet/how-to-aws-cognito-login-signup-in-asp-net-core/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>How to load .NET configuration from AWS Secrets Manager</title>
+		<link>https://vinayaroratech.com/dotnet/how-to-load-net-configuration-from-aws-secrets-manager/</link>
+					<comments>https://vinayaroratech.com/dotnet/how-to-load-net-configuration-from-aws-secrets-manager/#respond</comments>
+		
+		<dc:creator><![CDATA[Vinay]]></dc:creator>
+		<pubDate>Fri, 25 Nov 2022 18:56:42 +0000</pubDate>
+				<category><![CDATA[.NET]]></category>
+		<category><![CDATA[.NET Core]]></category>
+		<category><![CDATA[AWS]]></category>
+		<category><![CDATA[How-to]]></category>
+		<category><![CDATA[Configuration]]></category>
+		<category><![CDATA[Secrets Manager]]></category>
+		<guid isPermaLink="false">https://vinayaroratech.com/?p=922</guid>
+
+					<description><![CDATA[Every application has secrets – database credentials, API keys used to call external services, or private encryption keys needed to secure data. In this blog post, I will show you how you can load and use secrets using .NET’s configuration system and AWS Secrets Manager (Secrets Manager). Keeping your sensitive data outside of your code is &#8230;<p class="read-more"> <a class="" href="https://vinayaroratech.com/dotnet/how-to-load-net-configuration-from-aws-secrets-manager/"> <span class="screen-reader-text">How to load .NET configuration from AWS Secrets Manager</span> Read More &#187;</a></p>]]></description>
+										<content:encoded><![CDATA[
+<p>Every application has secrets – database credentials, API keys used to call external services, or private encryption keys needed to secure data. In this blog post, I will show you how you can load and use secrets using .NET’s configuration system and <a href="https://aws.amazon.com/secrets-manager/">AWS Secrets Manager (Secrets Manager)</a>.</p>
+
+
+
+<p>Keeping your sensitive data outside of your code is crucial, but reducing the risk of compromise is not always a simple task. Many companies find themselves inventing complex and difficult-to-implement techniques, which result in a less streamlined development experience. This might lead developers to find simpler, less secure solutions for storing the application’s sensitive data, such as using hard-coded strings in the application’s code or configuration files. This may lead to a security breach when code that contains sensitive data is then saved in the company’s source control, where multiple parties can access it without proper auditing or other security safeguards. In addition, an organization needs to keep track of multiple versions of the same secret and different values depending on the deployed environment (such as dev, staging, or production). This can become difficult when those secrets are tightly coupled with the deployed code.</p>
+
+
+
+<p>Secrets Manager helps you protect secrets needed to access your applications, services, and IT resources. It enables you to easily rotate, manage, and retrieve secrets used by your application, eliminating the need to hard-code sensitive information in plain text. You can use the Secrets Manager client to retrieve secrets using AWS SDK for .NET. However, this would require code changes and add to the complexity of your code, as you need to invoke the client whenever you need to read data stored in Secrets Manager. Instead, you can use the&nbsp;<a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-6.0">.NET configuration system</a>&nbsp;– an extensible API used to read and manage application secrets. This lets developers use a familiar API to access secrets in secure storage and reduce complexity by using a single code path for all environments. Additionally, the provider lets existing applications move to Secrets Manager without making any code changes.</p>
+
+
+
+<p>In this blog post, I will show you how to create a custom configuration provider that loads sensitive data from Secrets Manager and makes those secrets available to your application.</p>
+
+
+
+<h1>Walktrough</h1>
+
+
+
+<p>To load values from Secrets Manager to your .NET configuration, you will need to complete the following steps:</p>
+
+
+
+<ul><li>Create a custom configuration provider</li><li>Create a configuration source to initialize the new provider</li><li>Create a new class to pass the secret’s data to your code</li><li>Update your code to use the new configuration source</li><li><em>Optional: enable secrets reloading</em></li></ul>
+
+
+
+<h1>Prerequisites</h1>
+
+
+
+<p>This example will use credentials needed to connect to a 3rd-party API. The credentials will include an API key, user ID, and password — all stored in Secrets Manager.</p>
+
+
+
+<p>Create a secret to use in your application<br>First, you’ll need to add a new secret to load from your code.</p>
+
+
+
+<ol><li>Log in to the&nbsp;<a href="https://console.aws.amazon.com/secretsmanager">Secrets Manager console</a></li><li>Click on the Store a new secret to create your new secret value.</li><li>Choose Other type of secret and add the following key/value pairs:<code>{ "ApiKey": "key1", "UserId": "User1", "Password": "12345", }</code>JSON<img loading="lazy" src="https://d2908q01vomqb2.cloudfront.net/8effee409c625e1a2d8f5033631840e6ce1dcb64/2022/09/18/Choose-secret-type.png" alt="AWS Secrets Manager - Choose Secret Type" width="977" height="881"></li><li>Choose&nbsp;<strong>Next</strong></li><li>Fill the secret’s name, description, add tags and then choose&nbsp;<strong>Next</strong></li><li>On the next screen, choose&nbsp;<strong>Next</strong>&nbsp;on the Secret rotation page (automatic rotation disabled)</li><li>On the last screen, choose&nbsp;<strong>Store</strong>&nbsp;once you’re done reviewing your changes.</li></ol>
+
+
+
+<h2>Create an ASP.NET Core Web API project</h2>
+
+
+
+<p>Although the .NET configuration system can be used by different project types and different versions of .NET, I am using the .NET 6 ASP.NET Core Web API project template (using Visual Studio 2022 or later).</p>
+
+
+
+<ol><li>Create a new project of type ASP.NET Core Web API</li><li>Fill your project name and choose&nbsp;<strong>Next</strong></li><li>On the next screen, make sure .NET 6.0 is selected, and choose&nbsp;<strong>Create</strong></li></ol>
+
+
+
+<h1>Step 1: Create a custom configuration provider</h1>
+
+
+
+<ol><li>Use NuGet to add <em>AWS.SecretsManager</em> as a dependency in your project.</li><li>Create a new class named <code>AmazonSecretsManagerConfigurationProvider</code> that inherits from the <code>ConfigurationProvider</code> abstract class. The class constructor will receive two string parameters, <em>region</em> and <em>secretName</em>, and store them as fields in the class.</li><li>Override the <em>Load</em> method and add code to retrieve your secret from Secrets Manager as JSON, then deserialize the result as a <code>Dictionary&lt;string, string></code>. Store the result in <em>Data</em> property (inherited from ConfigurationProvider):</li></ol>
+
+
+
+<pre class="wp-block-code"><code>public class AmazonSecretsManagerConfigurationProvider : ConfigurationProvider
+{
+    private readonly string _region;
+    private readonly string _secretName;
+
+    public AmazonSecretsManagerConfigurationProvider(string region, string secretName, PeriodicWatcher watcher)
+    {
+        _region = region;
+        _secretName = secretName;
+        ChangeToken.OnChange(() => watcher.Watch(), Load);
+    }
+
+    public override void Load()
+    {
+        string secret = GetSecret();
+
+        Data = JsonSerializer.Deserialize&lt;Dictionary&lt;string, string>>(secret);
+    }
+
+    private string GetSecret()
+    {
+        var request = new GetSecretValueRequest
+        {
+            SecretId = _secretName,
+            VersionStage = "AWSCURRENT" // VersionStage defaults to AWSCURRENT if unspecified.
+        };
+
+        using var client = new AmazonSecretsManagerClient(RegionEndpoint.GetBySystemName(_region));
+        var response = client.GetSecretValueAsync(request).Result;
+        if (response.SecretString != null)
+        {
+            return response.SecretString;
+        }
+        else
+        {
+            var memoryStream = response.SecretBinary;
+            var reader = new StreamReader(memoryStream);
+            string str = reader.ReadToEnd();
+            return Encoding.UTF8.GetString(Convert.FromBase64String(str));
+        }
+    }
+}</code></pre>
+
+
+
+<h1>Step 2: Create a configuration source to initialize the new provider</h1>
+
+
+
+<p>Create a class that implements&nbsp;<code>IConfigurationSource</code>&nbsp;and creates a new instance of&nbsp;<code>AmazonSecretsManagerConfigurationProvider</code>:</p>
+
+
+
+<pre class="wp-block-code"><code>public class AmazonSecretsManagerConfigurationSource : IConfigurationSource
+{
+    private readonly string _region;
+    private readonly string _secretName;
+
+    public AmazonSecretsManagerConfigurationSource(string region, string secretName)
+    {
+        _region = region;
+        _secretName = secretName;
+    }
+
+    public IConfigurationProvider Build(IConfigurationBuilder builder)
+    {
+        return new AmazonSecretsManagerConfigurationProvider(_region, _secretName);
+    }
+}
+</code></pre>
+
+
+
+<h1>Step 3: Create a new class to pass the secret’s data to your code</h1>
+
+
+
+<p>Create a new class that has properties with the same names as the secret’s keys:</p>
+
+
+
+<pre class="wp-block-code"><code>public class MyApiCredentials
+{
+    public string ApiKey { get; set; }
+    public string UserId { get; set; }
+    public string Password { get;set; }
+}
+</code></pre>
+
+
+
+<h1>Step 4: Update your code to use the new configuration source</h1>
+
+
+
+<p>In this example, I’m using the Visual Studio 2022 .NET project templates. In the new templates, the service’s configuration is in the&nbsp;<em>Program.cs</em>&nbsp;file. Older IDEs (such as Visual Studio 2019 or prior) have similar code in the&nbsp;<em>Startup.cs</em>&nbsp;file.</p>
+
+
+
+<ul><li>Create a new static class with an extension method to initialize the new configuration source and add it to the configuration builder:</li></ul>
+
+
+
+<pre class="wp-block-code"><code>public static class Startup
+{
+    public static void AddAmazonSecretsManager(
+        this IConfigurationBuilder configurationBuilder,
+        string region,
+        string secretName)
+    {
+        var configurationSource = new AmazonSecretsManagerConfigurationSource(region, secretName);
+
+        configurationBuilder.Add(configurationSource);
+    }
+
+    public static IServiceCollection AddMyApiCredentials(this IServiceCollection services, IConfiguration configuration)
+    {
+        return services.Configure&lt;MyApiCredentials>(configuration);
+    }
+}</code></pre>
+
+
+
+<ul><li>Add the new configuration provider to the existing list of configuration providers:</li></ul>
+
+
+
+<pre class="wp-block-code"><code>internal static class Startup
+{
+    internal static ConfigureHostBuilder AddConfigurations(this ConfigureHostBuilder host)
+    {
+        host.ConfigureAppConfiguration((context, config) =>
+        {            
+            var configRoot = config.Build();
+            string region = configRoot&#91;"AWSSecertManager:Region"];
+            string secretName = configRoot&#91;"AWSSecertManager:SecretName"];
+            config.AddAmazonSecretsManager(region, secretName);
+        });
+        return host;
+    }
+}</code></pre>
+
+
+
+<p>Now, use the built-in configuration IOption interface to inject the credentials into your application:</p>
+
+
+
+<pre class="wp-block-code"><code>private readonly MyApiCredentials _myApiCredentials;
+
+public MyService(IOptions&lt;MyApiCredentials> options)
+{
+    _myApiCredentials = options.Value;
+}</code></pre>
+
+
+
+<h1>Step 5: Reloading secrets</h1>
+
+
+
+<p>If your application requires configuration updates without restarting – you will need to add functionality to your configuration provider to refresh the configuration data.</p>
+
+
+
+<ul><li>Create a new class that will hold the logic needed to refresh your configuration values.This class must have a method/property that returns <code>IChangeToken</code>:</li></ul>
+
+
+
+<pre class="wp-block-code"><code>public class PeriodicWatcher : IDisposable
+{
+    private readonly TimeSpan _refreshInterval;
+    private IChangeToken _changeToken;
+    private readonly Timer _timer;
+    private CancellationTokenSource _cancellationTokenSource;
+
+    public PeriodicWatcher(TimeSpan refreshInterval)
+    {
+        _refreshInterval = refreshInterval;
+        _timer = new Timer(OnChange, null, TimeSpan.Zero, _refreshInterval);
+    }
+
+    private void OnChange(object? state)
+    {
+        _cancellationTokenSource?.Cancel();
+    }
+
+    public IChangeToken Watch()
+    {
+        _cancellationTokenSource = new CancellationTokenSource();
+        _changeToken = new CancellationChangeToken(_cancellationTokenSource.Token);
+
+        return _changeToken;
+    }
+
+    public void Dispose()
+    {
+        _timer?.Dispose();
+        _cancellationTokenSource?.Dispose();
+    }
+}
+</code></pre>
+
+
+
+<ul><li>Here I’m using the built-in <code>CancellationChangeToken</code> class to create a change token from <code>CancellationTokenSource</code>.</li><li>Pass an instance of that class to the configuration provider and call <code>ChangeToken.OnChange</code> to tie the change token to a method that will be called on each change – in this case Load:</li></ul>
+
+
+
+<pre class="wp-block-code"><code> public AmazonSecretsManagerConfigurationProvider(string region, string secretName, PeriodicWatcher watcher)
+    {
+        _region = region;
+        _secretName = secretName;
+        ChangeToken.OnChange(() => watcher.Watch(), Load);
+    }</code></pre>
+
+
+
+<ul><li>Update your code to use <em>IOptionsSnapshot </em>instead of <em>IOption</em>. <code>IOption&lt;T></code> caches the configuration read from Data once for the entire application lifecycle, but <code>IOptionsSnapshot&lt;T></code> reads Data on each HTTP request, making sure that the provider gets the latest configuration values:</li></ul>
+
+
+
+<pre class="wp-block-code"><code>private readonly string _myApiCredentials;
+
+public MyService(IOptionsSnapshot&lt;MyApiCredentials> options)
+{
+    _myApiCredentials = options.Value;
+}
+</code></pre>
+
+
+
+<h1>Conclusion</h1>
+
+
+
+<p>Every application has sensitive data it needs to store in a secure location. Keeping sensitive data in your application code can cause a security breach. On the other hand, you do not want to slow down developers by adding hard-to-follow steps to run and debug your application.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://vinayaroratech.com/dotnet/how-to-load-net-configuration-from-aws-secrets-manager/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>AWS Cognito — Client credentials flow .NET 6</title>
+		<link>https://vinayaroratech.com/dotnet/aws-cognito-client-credentials-flow-net-6/</link>
+					<comments>https://vinayaroratech.com/dotnet/aws-cognito-client-credentials-flow-net-6/#respond</comments>
+		
+		<dc:creator><![CDATA[Vinay]]></dc:creator>
+		<pubDate>Wed, 23 Nov 2022 05:19:15 +0000</pubDate>
+				<category><![CDATA[.NET]]></category>
+		<category><![CDATA[.NET Core]]></category>
+		<category><![CDATA[AWS]]></category>
+		<category><![CDATA[How-to]]></category>
+		<category><![CDATA[.NET6]]></category>
+		<category><![CDATA[Auth2]]></category>
+		<category><![CDATA[Authentication]]></category>
+		<category><![CDATA[Cognito]]></category>
+		<guid isPermaLink="false">https://vinayaroratech.com/?p=919</guid>
+
+					<description><![CDATA[AWS Cognito User pool creation Navigate to the AWS Cognito service page Click on create user pool Step 1:&#160;Configure sign-in experience Select Email and click next Step 2:&#160;Configure security requirements Under password policy select cognito defaults Under Multi-factor authentication select No MFA Under User account recovery select Enable self-service account recovery and then Email Only &#8230;<p class="read-more"> <a class="" href="https://vinayaroratech.com/dotnet/aws-cognito-client-credentials-flow-net-6/"> <span class="screen-reader-text">AWS Cognito — Client credentials flow .NET 6</span> Read More &#187;</a></p>]]></description>
+										<content:encoded><![CDATA[
+<h2>AWS Cognito User pool creation</h2>
+
+
+
+<p>Navigate to the AWS Cognito service page</p>
+
+
+
+<p>Click on create user pool</p>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--Q7BE8SnM--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/xowsh1tb5fw7v21vcwvt.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--Q7BE8SnM--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/xowsh1tb5fw7v21vcwvt.png" alt="Image description"/></a></figure>
+
+
+
+<h3>Step 1:&nbsp;<strong>Configure sign-in experience</strong></h3>
+
+
+
+<p>Select Email and click next</p>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--djjpUzj6--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/0dyfbjftcb4gkhn4spho.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--djjpUzj6--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/0dyfbjftcb4gkhn4spho.png" alt="Image description"/></a></figure>
+
+
+
+<h3>Step 2:&nbsp;<strong>Configure security requirements</strong></h3>
+
+
+
+<ul><li>Under password policy select cognito defaults</li><li>Under Multi-factor authentication select No MFA</li><li>Under User account recovery select Enable self-service account recovery and then Email Only</li><li>Click next</li></ul>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--nSiWrZa5--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/fg1utqde501f2nswe5ay.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--nSiWrZa5--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/fg1utqde501f2nswe5ay.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--qcDVjApk--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/oy8cez01twtbaenhaqe0.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--qcDVjApk--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/oy8cez01twtbaenhaqe0.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--20XQoxbI--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/568k0gdjf2ryhmk6g6t8.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--20XQoxbI--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/568k0gdjf2ryhmk6g6t8.png" alt="Image description"/></a></figure>
+
+
+
+<h3>Step 3: Configure sign-up experience</h3>
+
+
+
+<p>Keep all selections as default and click next</p>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--ze1nTPQN--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/11tq51nygov0j0ymqiuh.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--ze1nTPQN--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/11tq51nygov0j0ymqiuh.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--y3DmrFS5--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/w0b4fr89xuxlqrndfe47.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--y3DmrFS5--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/w0b4fr89xuxlqrndfe47.png" alt="Image description"/></a></figure>
+
+
+
+<h3>Step 4:&nbsp;<strong>Configure message delivery</strong></h3>
+
+
+
+<p>Select Send email with Cognito and keep the rest of the configuration as default then click next</p>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--oxXEqCX6--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/w0k59cwdphbe9zdln3wg.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--oxXEqCX6--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/w0k59cwdphbe9zdln3wg.png" alt="Image description"/></a></figure>
+
+
+
+<h3>Step 5:&nbsp;<strong>Integrate your app</strong></h3>
+
+
+
+<ul><li>Configure the User pool name with your preferred naming convention</li><li>Select Confidential client</li><li>Configure the App client name</li><li>Click next</li></ul>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--oU2toiqE--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/k9vgz9af4a6v0wdf1v32.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--oU2toiqE--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/k9vgz9af4a6v0wdf1v32.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--dig7uTY_--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/f3gpmgqg25e4c2c7nbij.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--dig7uTY_--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/f3gpmgqg25e4c2c7nbij.png" alt="Image description"/></a></figure>
+
+
+
+<h3>Step 6:&nbsp;<strong>Review and create</strong></h3>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--HSQnvkjY--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/r5sal74yfrgg0v17e9gm.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--HSQnvkjY--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/r5sal74yfrgg0v17e9gm.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--zfmQg-gE--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/25zene72ftbvl71nbizu.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--zfmQg-gE--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/25zene72ftbvl71nbizu.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--f00EfRMO--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/cklblx87a4y48fujm7t2.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--f00EfRMO--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/cklblx87a4y48fujm7t2.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--gaxwyVRv--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/uromd0g6hk29qml9cdrm.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--gaxwyVRv--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/uromd0g6hk29qml9cdrm.png" alt="Image description"/></a></figure>
+
+
+
+<ul><li>Review your configuration</li><li>Click Create user pool</li></ul>
+
+
+
+<h3>User Pools</h3>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--BSROB40N--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/l56ru5xu2zi969tovlug.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--BSROB40N--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/l56ru5xu2zi969tovlug.png" alt="Image description"/></a></figure>
+
+
+
+<p>See your created user pool</p>
+
+
+
+<h2>Application configuration and resource server creation</h2>
+
+
+
+<p>Navigate to your created user pool</p>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--p7s1lseQ--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/0vvq76ipc8qajnvlr2ru.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--p7s1lseQ--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/0vvq76ipc8qajnvlr2ru.png" alt="Image description"/></a></figure>
+
+
+
+<p>Navigate to the App Integration tab</p>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--4_qn4aa5--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/14vpqzmqpfehciszazts.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--4_qn4aa5--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/14vpqzmqpfehciszazts.png" alt="Image description"/></a></figure>
+
+
+
+<h3>Step 1: Create Domain</h3>
+
+
+
+<ul><li>On the Domain section click on Actions and then click on Create Cogniro domain</li><li>Enter a unique domain prefix</li><li>Click Create Cognito domain</li></ul>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--J77sW3Eb--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/z6eipb86s8bobrqe1mgg.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--J77sW3Eb--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/z6eipb86s8bobrqe1mgg.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--UmMlfDId--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/pzwiexx7ox1p60uik327.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--UmMlfDId--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/pzwiexx7ox1p60uik327.png" alt="Image description"/></a></figure>
+
+
+
+<h3>Step 2: Create Resource server</h3>
+
+
+
+<ul><li>Click Create resource server</li><li>Configure the resource server name and identifier</li><li>Create custom scopes for your application to use when authenticating</li><li>Click create resource server</li></ul>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--4PNehDky--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/q3a54busbwym99dttnhv.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--4PNehDky--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/q3a54busbwym99dttnhv.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--oZg8LWxK--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/lbxls42vt70ydxq81vcc.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--oZg8LWxK--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/lbxls42vt70ydxq81vcc.png" alt="Image description"/></a></figure>
+
+
+
+<h3>Step 3: Configure client application</h3>
+
+
+
+<ul><li>Select the app client you created</li><li>Under Hosted UI click edit</li><li>Under Hosted sign-up and sign-in pages select the identity provider cognito user pool</li><li>Select Client Credentials OAuth 2.0 Grant type</li><li>Select the custom scope you created and want to assign to the application</li><li>Click Save changes</li></ul>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--7qUPho6x--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/zydmkutei884mlb94dgc.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--7qUPho6x--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/zydmkutei884mlb94dgc.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--oRkwiv_j--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/e7943pkfdtkmq9g6ajzy.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--oRkwiv_j--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/e7943pkfdtkmq9g6ajzy.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--ZDSy5UcX--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/ssk8d6bdabob5b2jkgwi.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--ZDSy5UcX--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/ssk8d6bdabob5b2jkgwi.png" alt="Image description"/></a></figure>
+
+
+
+<h2>Create Weather API</h2>
+
+
+
+<h3>Step 1: Create API</h3>
+
+
+
+<p>Create a API project if you don’t have one</p>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--egnbBj76--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/24eegflzlf0ey9t2z4v7.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--egnbBj76--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/24eegflzlf0ey9t2z4v7.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--drojt5ns--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/6o86nq06uilbmi6rzw4o.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--drojt5ns--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/6o86nq06uilbmi6rzw4o.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--YhHO_N8a--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/f4hve021n5sz0h3ikbzf.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--YhHO_N8a--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/f4hve021n5sz0h3ikbzf.png" alt="Image description"/></a></figure>
+
+
+
+<h3>Step 2: Add NuGet packages</h3>
+
+
+
+<p>Add the following NuGet packages:</p>
+
+
+
+<ul><li><a href="https://www.nuget.org/packages/Amazon.AspNetCore.Identity.Cognito/">https://www.nuget.org/packages/Amazon.AspNetCore.Identity.Cognito/</a></li><li><a href="https://www.nuget.org/packages/Microsoft.AspNetCore.Authentication.JwtBearer/6.0.5">https://www.nuget.org/packages/Microsoft.AspNetCore.Authentication.JwtBearer</a>/</li></ul>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--HkHjZ58b--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/9pn0hzom790oswoztvw1.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--HkHjZ58b--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/9pn0hzom790oswoztvw1.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--sMweL_au--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/gisbzfuru9yg4eq9ppe3.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--sMweL_au--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/gisbzfuru9yg4eq9ppe3.png" alt="Image description"/></a></figure>
+
+
+
+<h3>Step 3: Setup auth in Program.cs</h3>
+
+
+
+<p>Add this block of code to the Program.cs under the builder.</p>
+
+
+
+<pre class="wp-block-code"><code>builder.Services.AddCognitoIdentity();
+
+builder.Services.AddAuthentication(options =&gt;
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =&gt;
+{
+    options.Authority = builder.Configuration&#91;"AWSCognito:Authority"];
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+                ValidateAudience = false
+    };
+});
+</code></pre>
+
+
+
+<p>Add the following under app.UseHttpsRedirection(); in Program.cs</p>
+
+
+
+<pre class="wp-block-code"><code>app.UseAuthentication();
+app.UseAuthorization();
+</code></pre>
+
+
+
+<p>Add the following using&#8217;s to the Program.cs</p>
+
+
+
+<pre class="wp-block-code"><code>using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+</code></pre>
+
+
+
+<p>Your Program.cs will end up looking like this when you’re done.</p>
+
+
+
+<pre class="wp-block-code"><code>using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddCognitoIdentity();
+
+builder.Services.AddAuthentication(options =&gt;
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =&gt;
+{
+    options.Authority = builder.Configuration&#91;"AWSCognito:Authority"];
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        ValidateAudience = false
+    };
+});
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();
+</code></pre>
+
+
+
+<h3>Step 4: Setup configuration file</h3>
+
+
+
+<p>Add this section to the appsettings.Development.json file</p>
+
+
+
+<p>This URL for the authority is made up of the following</p>
+
+
+
+<figure class="wp-block-embed"><div class="wp-block-embed__wrapper">
+https://cognito-idp.{region}.amazonaws.com/{userpoolid}
+</div></figure>
+
+
+
+<pre class="wp-block-code"><code>
+  "AWSCognito": {
+    "Authority": "https://cognito-idp/.{region}.amazonaws.com/{userpoolid}"
+  }
+</code></pre>
+
+
+
+<p>You can find the user pool id in AWS on the Amazon Cognito page under user pools</p>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--ALOU9qFH--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/doame0m5l1fo0hdx3ag1.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--ALOU9qFH--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/doame0m5l1fo0hdx3ag1.png" alt="Image description"/></a></figure>
+
+
+
+<h3>Step 5: Add authorize attribute to GetWeatherForecast endpoint</h3>
+
+
+
+<p>In the WeatherForecastController.cs add the Authorize attribute to the GetWeatherForecast endpoint and add Microsoft.AspNetCore.Authorization to the usings.</p>
+
+
+
+<pre class="wp-block-code"><code>using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace AWSCognitoWeatherAPI.Controllers
+{
+    &#91;ApiController]
+    &#91;Route("&#91;controller]")]
+    public class WeatherForecastController : ControllerBase
+    {
+        private static readonly string&#91;] Summaries = new&#91;]
+        {
+        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+    };
+
+        private readonly ILogger&lt;WeatherForecastController&gt; _logger;
+
+        public WeatherForecastController(ILogger&lt;WeatherForecastController&gt; logger)
+        {
+            _logger = logger;
+        }
+
+        &#91;Authorize]
+        &#91;HttpGet(Name = "GetWeatherForecast")]
+        public IEnumerable&lt;WeatherForecast&gt; Get()
+        {
+            return Enumerable.Range(1, 5).Select(index =&gt; new WeatherForecast
+            {
+                Date = DateTime.Now.AddDays(index),
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = Summaries&#91;Random.Shared.Next(Summaries.Length)]
+            })
+            .ToArray();
+        }
+    }
+}
+</code></pre>
+
+
+
+<h2>Call the Weather Forecast API using Postman</h2>
+
+
+
+<h3>Step 1: Create new collection</h3>
+
+
+
+<ul><li>Create a new collection for the API</li><li>Add new request to the collection for the weather forcast endpoint (<a href="https://localhost:7214/WeatherForecast">https://localhost:7214/WeatherForecast</a>)</li></ul>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--I7rrYxVr--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/aeljxi65815zts9dpo9y.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--I7rrYxVr--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/aeljxi65815zts9dpo9y.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--RUa3r764--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/9kzrwz267z4kcvxpyi0s.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--RUa3r764--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/9kzrwz267z4kcvxpyi0s.png" alt="Image description"/></a></figure>
+
+
+
+<h3>Step 2: Setup Collection Auth</h3>
+
+
+
+<ul><li>Click on the Weather Forcast API collection and navigate to the Authorization tab</li><li>From the Type dropdown select OAuth 2.0</li><li>In the Configure New Token Section give the token a name</li><li>In Grant Type dropdown select Client Credentials</li><li>In the app integration section of the user pool in AWS get the domain url</li><li>Add the domain to the Access Token URL section in postman and append it with /oauth2/token</li><li>Get the client id from the client app in AWS</li><li>Get the client secret from the client app in AWS</li><li>Get the custom scope form the Hosted UI</li><li>Add the clientid, client secret and scope in postman</li><li>Click get new access token</li><li>Click use token on the pop-up</li><li>On the Weather Forecast request under the Authorization tab ensure the Type is set to Inherit auth from parent.</li></ul>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--_BH0ChxL--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/nai6tefg7742n0907eid.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--_BH0ChxL--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/nai6tefg7742n0907eid.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--5JiwmeeK--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/mfjnw2yp68a4jpl9he95.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--5JiwmeeK--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/mfjnw2yp68a4jpl9he95.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--xHM_iHg6--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/hjc9ofghcbmsj3wjahsg.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--xHM_iHg6--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/hjc9ofghcbmsj3wjahsg.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--laaOqwFI--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/cbebxmgccvb2xuuf3x93.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--laaOqwFI--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/cbebxmgccvb2xuuf3x93.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--6HA2oIFj--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/cm262okes8xeqf6fyt1a.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--6HA2oIFj--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/cm262okes8xeqf6fyt1a.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--K50Jcyqf--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/0ciz4i96b5gtds9ezbsu.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--K50Jcyqf--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/0ciz4i96b5gtds9ezbsu.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--q1JZ2Gvi--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/pflduqxem8e33ntijvvt.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--q1JZ2Gvi--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/pflduqxem8e33ntijvvt.png" alt="Image description"/></a></figure>
+
+
+
+<h3>Step 3: Call the Weather API</h3>
+
+
+
+<p>Click send on the weather forecast request to get the response on the API</p>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--g7THxwAz--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/zlxb3ddb5ojwt4h4v1sv.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--g7THxwAz--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/zlxb3ddb5ojwt4h4v1sv.png" alt="Image description"/></a></figure>
+
+
+
+<p>It’s as easy as that !<img src="https://s.w.org/images/core/emoji/13.0.1/72x72/1f389.png" alt="🎉" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://vinayaroratech.com/dotnet/aws-cognito-client-credentials-flow-net-6/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>How to reverse proxy using NGINX</title>
+		<link>https://vinayaroratech.com/dotnet/how-to/how-to-reverse-proxy-using-nginx/</link>
+					<comments>https://vinayaroratech.com/dotnet/how-to/how-to-reverse-proxy-using-nginx/#respond</comments>
+		
+		<dc:creator><![CDATA[Vinay]]></dc:creator>
+		<pubDate>Fri, 23 Apr 2021 16:57:56 +0000</pubDate>
+				<category><![CDATA[How-to]]></category>
+		<guid isPermaLink="false">https://vinayaroratech.com/?p=164</guid>
+
+					<description><![CDATA[Introduction Nginx is one of the most popular web servers in the world and is responsible for hosting some of the largest and highest-traffic sites on the internet. It is more resource-friendly than Apache in most cases and can be used as a web server or reverse proxy. This article describes the basic configuration of &#8230;<p class="read-more"> <a class="" href="https://vinayaroratech.com/dotnet/how-to/how-to-reverse-proxy-using-nginx/"> <span class="screen-reader-text">How to reverse proxy using NGINX</span> Read More &#187;</a></p>]]></description>
+										<content:encoded><![CDATA[		<div data-elementor-type="wp-post" data-elementor-id="164" class="elementor elementor-164" data-elementor-settings="[]">
+						<div class="elementor-inner">
+							<div class="elementor-section-wrap">
+							<section class="elementor-section elementor-top-section elementor-element elementor-element-4c99ce5 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="4c99ce5" data-element_type="section">
+						<div class="elementor-container elementor-column-gap-default">
+							<div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-75b3b33" data-id="75b3b33" data-element_type="column">
+			<div class="elementor-column-wrap elementor-element-populated">
+							<div class="elementor-widget-wrap">
+						<div class="elementor-element elementor-element-661196b elementor-widget elementor-widget-heading" data-id="661196b" data-element_type="widget" data-widget_type="heading.default">
+				<div class="elementor-widget-container">
+			<h2 class="elementor-heading-title elementor-size-default">Introduction</h2>		</div>
+				</div>
+						</div>
+					</div>
+		</div>
+								</div>
+					</div>
+		</section>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-50f78ce elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="50f78ce" data-element_type="section">
+						<div class="elementor-container elementor-column-gap-default">
+							<div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-49c23a0" data-id="49c23a0" data-element_type="column">
+			<div class="elementor-column-wrap elementor-element-populated">
+							<div class="elementor-widget-wrap">
+						<div class="elementor-element elementor-element-08912a2 elementor-widget elementor-widget-text-editor" data-id="08912a2" data-element_type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+								<div class="elementor-text-editor elementor-clearfix">
+				<p>Nginx is one of the most popular web servers in the world and is responsible for hosting some of the largest and highest-traffic sites on the internet. It is more resource-friendly than Apache in most cases and can be used as a web server or reverse proxy.</p>					</div>
+						</div>
+				</div>
+						</div>
+					</div>
+		</div>
+								</div>
+					</div>
+		</section>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-f74209b elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="f74209b" data-element_type="section">
+						<div class="elementor-container elementor-column-gap-default">
+							<div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-cd2d0b7" data-id="cd2d0b7" data-element_type="column">
+			<div class="elementor-column-wrap elementor-element-populated">
+							<div class="elementor-widget-wrap">
+						<div class="elementor-element elementor-element-42b688f elementor-widget elementor-widget-text-editor" data-id="42b688f" data-element_type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+								<div class="elementor-text-editor elementor-clearfix">
+				<p>This article describes <span style="color: var( --e-global-color-text ); font-family: var( --e-global-typography-text-font-family ), Sans-serif; font-weight: var( --e-global-typography-text-font-weight );">the basic configuration of a proxy server. You will learn how to pass a request from NGINX to proxied servers over different protocols, modify client request headers that are sent to the proxied server, and configure buffering of responses coming from the proxied servers.</span></p>					</div>
+						</div>
+				</div>
+						</div>
+					</div>
+		</div>
+								</div>
+					</div>
+		</section>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-b1b249d elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="b1b249d" data-element_type="section">
+						<div class="elementor-container elementor-column-gap-default">
+							<div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-9e47b6a" data-id="9e47b6a" data-element_type="column">
+			<div class="elementor-column-wrap elementor-element-populated">
+							<div class="elementor-widget-wrap">
+						<div class="elementor-element elementor-element-451790d elementor-widget elementor-widget-text-editor" data-id="451790d" data-element_type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+								<div class="elementor-text-editor elementor-clearfix">
+				<p>When hosting our web applications, we often have one public IP address (i.e., an IP address visible to the outside world) using which we want to host multiple web apps. For example, one may wants to host three different web apps respectively for <em>example1.com</em>, <i>example2.com</i>, and <i>example1.com/images</i> on the same machine using a single IP address.</p>					</div>
+						</div>
+				</div>
+						</div>
+					</div>
+		</div>
+								</div>
+					</div>
+		</section>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-2119321 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="2119321" data-element_type="section">
+						<div class="elementor-container elementor-column-gap-default">
+							<div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-d4f9079" data-id="d4f9079" data-element_type="column">
+			<div class="elementor-column-wrap elementor-element-populated">
+							<div class="elementor-widget-wrap">
+						<div class="elementor-element elementor-element-55765d4 elementor-widget elementor-widget-text-editor" data-id="55765d4" data-element_type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+								<div class="elementor-text-editor elementor-clearfix">
+				<p><strong>How can we do that?</strong> Well, the good news is Internet browsers send the domain name inside HTTP requests and all we need to do is to parse the requested domain name and URL and then route the HTTP request to the actual web server.</p>					</div>
+						</div>
+				</div>
+						</div>
+					</div>
+		</div>
+								</div>
+					</div>
+		</section>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-2876da4 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="2876da4" data-element_type="section">
+						<div class="elementor-container elementor-column-gap-default">
+							<div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-3700c07" data-id="3700c07" data-element_type="column">
+			<div class="elementor-column-wrap elementor-element-populated">
+							<div class="elementor-widget-wrap">
+						<div class="elementor-element elementor-element-f56a65d elementor-widget elementor-widget-text-editor" data-id="f56a65d" data-element_type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+								<div class="elementor-text-editor elementor-clearfix">
+				<p><strong>Oh, do I really need to parse HTTP requests?</strong> You can if you really want to, but there are lots of tools and technologies that readily do this for you. In this tutorial, we walk you through how you can use nginx to <em>proxy</em> multiple web applications.</p>					</div>
+						</div>
+				</div>
+						</div>
+					</div>
+		</div>
+								</div>
+					</div>
+		</section>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-c58e2ea elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="c58e2ea" data-element_type="section">
+						<div class="elementor-container elementor-column-gap-default">
+							<div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-758d716" data-id="758d716" data-element_type="column">
+			<div class="elementor-column-wrap elementor-element-populated">
+							<div class="elementor-widget-wrap">
+						<div class="elementor-element elementor-element-fce5029 elementor-widget elementor-widget-heading" data-id="fce5029" data-element_type="widget" data-widget_type="heading.default">
+				<div class="elementor-widget-container">
+			<h2 class="elementor-heading-title elementor-size-default">Configuration</h2>		</div>
+				</div>
+						</div>
+					</div>
+		</div>
+								</div>
+					</div>
+		</section>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-090cdd0 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="090cdd0" data-element_type="section">
+						<div class="elementor-container elementor-column-gap-default">
+							<div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-ca87859" data-id="ca87859" data-element_type="column">
+			<div class="elementor-column-wrap elementor-element-populated">
+							<div class="elementor-widget-wrap">
+						<div class="elementor-element elementor-element-0d3a5b9 elementor-widget elementor-widget-text-editor" data-id="0d3a5b9" data-element_type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+								<div class="elementor-text-editor elementor-clearfix">
+				<h3 class="elementor-heading-title elementor-size-default elementor-inline-editing pen" contenteditable="true" data-elementor-setting-key="title" data-pen-placeholder="Type Here...">Step 1 &#8212; Booting Servers for Virtual Hosts​</h3><p>Write three different node applications running on different ports (say 8080, 8181, 8282) on your machine.</p>					</div>
+						</div>
+				</div>
+						</div>
+					</div>
+		</div>
+								</div>
+					</div>
+		</section>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-9ab7194 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="9ab7194" data-element_type="section">
+						<div class="elementor-container elementor-column-gap-default">
+							<div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-68e5e99" data-id="68e5e99" data-element_type="column">
+			<div class="elementor-column-wrap elementor-element-populated">
+							<div class="elementor-widget-wrap">
+						<div class="elementor-element elementor-element-45405f6 elementor-widget elementor-widget-text-editor" data-id="45405f6" data-element_type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+								<div class="elementor-text-editor elementor-clearfix">
+				<h3 class="elementor-heading-title elementor-size-default elementor-inline-editing pen" contenteditable="true" data-elementor-setting-key="title" data-pen-placeholder="Type Here...">Step 2 &#8212; Configure nginx&#8217;s Port</h3><p>To do so, you need to edit your <code>nginx</code> config file.</p><p>In the config file, find the <code>server</code> section:</p><pre><code>server {
+    listen       80;
+    ...
+    location / {
+       ...
+    }
+    ...
+}
+</code></pre><p><strong>If you&#8217;re using CDF</strong>, make sure you change <code>80</code> to a vacant port number (ask for one from your instructor). If not, you can keep using <code>80</code> or change the port if you will.</p><p><strong>Test nginx</strong></p><ol><li>Run <code>./nginx</code> on CDF, or run <code>sudo nginx</code> on your local machine.</li><li>Open the browser and log on to <code>localhost:$PORT</code> (replace <code>$PORT</code> with the port number you configured for <code>nginx</code>).</li></ol>					</div>
+						</div>
+				</div>
+						</div>
+					</div>
+		</div>
+								</div>
+					</div>
+		</section>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-877cc04 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="877cc04" data-element_type="section">
+						<div class="elementor-container elementor-column-gap-default">
+							<div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-9e8e495" data-id="9e8e495" data-element_type="column">
+			<div class="elementor-column-wrap elementor-element-populated">
+							<div class="elementor-widget-wrap">
+						<div class="elementor-element elementor-element-c55d29b elementor-widget elementor-widget-text-editor" data-id="c55d29b" data-element_type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+								<div class="elementor-text-editor elementor-clearfix">
+				<h3>Step 3 &#8212; Configure /</h3><p>Let say we want to configure <code>nginx</code> to route requests for <code>/</code>, <code>/blog</code>, and <code>/mail</code>, respectively onto <code>localhost:8080</code>, <code>localhost:8181</code>, and <code>localhost:8282</code>.</p><pre><code>                  +--- host --------&gt; node.js on localhost:8080
+                  |
+users --&gt; nginx --|--- host/blog ---&gt; node.js on localhost:8181
+                  |
+                  +--- host/mail ---&gt; node.js on localhost:8282
+</code></pre><p>To route <code>/</code>, you need to edit your <code>nginx</code> config file.</p><p>In the config file, find the <code>server</code> section:</p><pre><code>server {
+    listen       80;
+    ...
+    location / {
+       ...
+    }
+    ...
+}
+</code></pre><p>This section is simply telling <code>nginx</code> how it should serve HTTP requests.</p><p>Now, change the location section to this snippet:</p><pre><code>server {
+    listen       ...;
+    ...
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+    }
+    ...
+}
+</code></pre><p><code>proxy_pass</code> simply tells <code>nginx</code> to forward requests to <code>/</code> to the server listening on <code>http://127.0.0.1:8080</code>.</p>					</div>
+						</div>
+				</div>
+						</div>
+					</div>
+		</div>
+								</div>
+					</div>
+		</section>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-aff6022 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="aff6022" data-element_type="section">
+						<div class="elementor-container elementor-column-gap-default">
+							<div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-ef2b5fa" data-id="ef2b5fa" data-element_type="column">
+			<div class="elementor-column-wrap elementor-element-populated">
+							<div class="elementor-widget-wrap">
+						<div class="elementor-element elementor-element-5f29003 elementor-widget elementor-widget-text-editor" data-id="5f29003" data-element_type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+								<div class="elementor-text-editor elementor-clearfix">
+				<h3>Step 4 &#8212; Reload nginx&#8217;s Configuration</h3><p>To reload <code>nginx</code>&#8216;s configuration run: <code>nginx -s reload</code> on your machine.</p><p>Referesh your browser. <em>Do you see the output from your <code>node.js</code> application?</em> If yes, you are all set. If no, there is a problem with your config.</p>					</div>
+						</div>
+				</div>
+						</div>
+					</div>
+		</div>
+								</div>
+					</div>
+		</section>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-8a65f23 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="8a65f23" data-element_type="section">
+						<div class="elementor-container elementor-column-gap-default">
+							<div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-cfb00ff" data-id="cfb00ff" data-element_type="column">
+			<div class="elementor-column-wrap elementor-element-populated">
+							<div class="elementor-widget-wrap">
+						<div class="elementor-element elementor-element-1adfdab elementor-widget elementor-widget-text-editor" data-id="1adfdab" data-element_type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+								<div class="elementor-text-editor elementor-clearfix">
+				<h3>Step 5 &#8212; Add /blog and /mail</h3><p>To redirect <code>/mail</code> and <code>/blog</code>, you simply need to add new entries the location section in the config file:</p><pre><code>server {
+    listen       ...;
+    ...
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+    }
+    
+    location /blog {
+        proxy_pass http://127.0.0.1:8181;
+    }
+
+    location /mail {
+        proxy_pass http://127.0.0.1:8282;
+    }
+    ...
+}</code></pre>					</div>
+						</div>
+				</div>
+						</div>
+					</div>
+		</div>
+								</div>
+					</div>
+		</section>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-fdcde13 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="fdcde13" data-element_type="section">
+						<div class="elementor-container elementor-column-gap-default">
+							<div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-90f89c2" data-id="90f89c2" data-element_type="column">
+			<div class="elementor-column-wrap elementor-element-populated">
+							<div class="elementor-widget-wrap">
+						<div class="elementor-element elementor-element-8e7473c elementor-widget elementor-widget-text-editor" data-id="8e7473c" data-element_type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+								<div class="elementor-text-editor elementor-clearfix">
+				<h3>Step 6 &#8212; Reload Your nginx Configuration</h3><p>Run <code>nginx -s reload</code> on your machine.</p><p>Log onto <code>localhost:$PORT/blog</code> in your browser. <em>Do you see the output from your second <code>node.js</code> application?</em></p><p>Then log onto <code>localhost:$PORT/mail</code>. <em>Do you see the output from your third <code>node.js</code> application?</em></p><p>If yes &amp; yes, you are all set. If no, there is a problem with your config.</p>					</div>
+						</div>
+				</div>
+						</div>
+					</div>
+		</div>
+								</div>
+					</div>
+		</section>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-e5be034 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="e5be034" data-element_type="section">
+						<div class="elementor-container elementor-column-gap-default">
+							<div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-d511c56" data-id="d511c56" data-element_type="column">
+			<div class="elementor-column-wrap elementor-element-populated">
+							<div class="elementor-widget-wrap">
+						<div class="elementor-element elementor-element-32b0bc0 elementor-widget elementor-widget-text-editor" data-id="32b0bc0" data-element_type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+								<div class="elementor-text-editor elementor-clearfix">
+				<h3>Step 7 &#8212; Rewriting Requests</h3><p>Now as you might have noticed in Step 6, nginx sends the same HTTP request to your <code>node.js</code> web apps which results into a 404 error. Why? Because, your <code>node.js</code> web application serves requests from <code>/</code> not from <code>/blog</code> and <code>/mail</code>. But, <code>nginx</code> is sending requests to <code>/blog</code> and <code>/mail</code>.</p><p>To fix this issue, we need rewrite the URL so that it matches the URL you can serve on your <code>node.js</code> applications.</p><p>To correctly rewrite URLs change your config file to match the following snippet:</p><pre><code>server {
+    listen       ...;
+    ...
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+    }
+    
+    location /blog {
+        rewrite ^/blog(.*) /$1 break;
+        proxy_pass http://127.0.0.1:8181;
+    }
+
+    location /mail {
+        rewrite ^/mail(.*) /$1 break;
+        proxy_pass http://127.0.0.1:8282;
+    }
+    ...
+}
+</code></pre><p>This rewrite commands are simple regular expressions that transform strings like <code>/blogWHAT_EVER</code> and <code>/mailWHAT_EVER</code> to <code>/WHAT_EVER</code> in the HTTP requests.</p>					</div>
+						</div>
+				</div>
+						</div>
+					</div>
+		</div>
+								</div>
+					</div>
+		</section>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-ca84ecf elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="ca84ecf" data-element_type="section">
+						<div class="elementor-container elementor-column-gap-default">
+							<div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-c34d035" data-id="c34d035" data-element_type="column">
+			<div class="elementor-column-wrap elementor-element-populated">
+							<div class="elementor-widget-wrap">
+						<div class="elementor-element elementor-element-b928976 elementor-widget elementor-widget-text-editor" data-id="b928976" data-element_type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+								<div class="elementor-text-editor elementor-clearfix">
+				<h3>Step 8 &#8212; Reload and Test.</h3><p>All set?</p><h3><a id="user-content-exercise-1" class="anchor" href="https://gist.github.com/soheilhy/8b94347ff8336d971ad0#exercise-1" aria-hidden="true"></a>Exercise 1</h3><p>Configure your nginx to redirect URLs from <code>/google</code> to <code>http://www.google.com</code></p>					</div>
+						</div>
+				</div>
+						</div>
+					</div>
+		</div>
+								</div>
+					</div>
+		</section>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-5a2e9f1 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="5a2e9f1" data-element_type="section">
+						<div class="elementor-container elementor-column-gap-default">
+							<div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-70a5b1f" data-id="70a5b1f" data-element_type="column">
+			<div class="elementor-column-wrap elementor-element-populated">
+							<div class="elementor-widget-wrap">
+						<div class="elementor-element elementor-element-782e7aa elementor-widget elementor-widget-text-editor" data-id="782e7aa" data-element_type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+								<div class="elementor-text-editor elementor-clearfix">
+				<h3>Step 9 (optional) &#8212; Redirecting Based on Host Name</h3><p>Let say you want to host <code>example1.com</code>, <code>example2.com</code>, and <code>example3.com</code> on your machine, respectively to <code>localhost:8080</code>, <code>localhost:8181</code>, and <code>localhost:8282</code>.</p><p><strong>Note:</strong> Since you don&#8217;t have access to a DNS server, you should add domain name entries to your <code>/etc/hosts</code> (you can&#8217;t do this on CDF machines):</p><pre><code>...
+127.0.0.1 example1.com example2.com example3.com
+...
+</code></pre><p>To proxy <code>eaxmple1.com</code> we can&#8217;t use the location part of the default server. Instead we need to add another server section with a <code>server_name</code> set to our virtual host (e.g., <code>example1.com</code>, &#8230;), and then a simple location section that tells <code>nginx</code> how to proxy the requests:</p><pre><code>server {
+    listen       80;
+    server_name  example1.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+    }
+}
+
+server {
+    listen       80;
+    server_name  example2.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:8181;
+    }
+}
+
+server {
+    listen       80;
+    server_name  example3.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:8282;
+    }
+}</code></pre>					</div>
+						</div>
+				</div>
+						</div>
+					</div>
+		</div>
+								</div>
+					</div>
+		</section>
+						</div>
+						</div>
+					</div>
+		]]></content:encoded>
+					
+					<wfw:commentRss>https://vinayaroratech.com/dotnet/how-to/how-to-reverse-proxy-using-nginx/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

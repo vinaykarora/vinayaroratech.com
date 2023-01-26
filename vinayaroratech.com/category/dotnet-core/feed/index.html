@@ -1,0 +1,1856 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>.NET Core &#8211; Vinay Arora</title>
+	<atom:link href="https://vinayaroratech.com/category/dotnet-core/feed/" rel="self" type="application/rss+xml" />
+	<link>https://vinayaroratech.com</link>
+	<description>.NET Core, Full Stack, Angular, Azure, Microservices</description>
+	<lastBuildDate>Wed, 30 Nov 2022 10:51:18 +0000</lastBuildDate>
+	<language>en</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.7.8</generator>
+
+<image>
+	<url>https://vinayaroratech.com/wp-content/uploads/2020/05/cropped-android-chrome-512x5121-1-3-32x32.png</url>
+	<title>.NET Core &#8211; Vinay Arora</title>
+	<link>https://vinayaroratech.com</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+	<item>
+		<title>Confirm AWS Cognito signups automatically</title>
+		<link>https://vinayaroratech.com/dotnet/confirm-aws-cognito-signups-automatically/</link>
+					<comments>https://vinayaroratech.com/dotnet/confirm-aws-cognito-signups-automatically/#respond</comments>
+		
+		<dc:creator><![CDATA[Vinay]]></dc:creator>
+		<pubDate>Wed, 30 Nov 2022 10:51:16 +0000</pubDate>
+				<category><![CDATA[.NET]]></category>
+		<category><![CDATA[.NET Core]]></category>
+		<category><![CDATA[AWS]]></category>
+		<category><![CDATA[How-to]]></category>
+		<category><![CDATA[Auto-Approve]]></category>
+		<category><![CDATA[Cognito]]></category>
+		<category><![CDATA[Lambda]]></category>
+		<category><![CDATA[Signup]]></category>
+		<category><![CDATA[Users]]></category>
+		<guid isPermaLink="false">https://vinayaroratech.com/?p=926</guid>
+
+					<description><![CDATA[In this tutorial, I will share how to automatically confirm users in your application without sending the confirmation code. When users signup in for your application normally you will send a confirmation code in their email or phone to confirm their account. This tutorial will be helpful if you are using AWS Cognito. Assuming you &#8230;<p class="read-more"> <a class="" href="https://vinayaroratech.com/dotnet/confirm-aws-cognito-signups-automatically/"> <span class="screen-reader-text">Confirm AWS Cognito signups automatically</span> Read More &#187;</a></p>]]></description>
+										<content:encoded><![CDATA[
+<p>In this tutorial, I will share how to automatically confirm users in your application without sending the confirmation code.</p>
+
+
+
+<p>When users signup in for your application normally you will send a confirmation code in their email or phone to confirm their account.</p>
+
+
+
+<p>This tutorial will be helpful if you are using AWS Cognito. Assuming you want to auto-confirm your user&#8217;s email and phone numbers. This can be done using a Lambda function.</p>
+
+
+
+<h1>STEPS</h1>
+
+
+
+<ul><li>Create a Lambda function name it <strong>confirmSignUp</strong>. For this tutorial, I will use runtime Node.js 18.x.</li><li>Copy the following and paste it in the index.mjs file.</li></ul>
+
+
+
+<pre class="wp-block-code"><code>export const handler = (event, context, callback) => {
+
+    // Confirm the user
+        event.response.autoConfirmUser = true;
+
+    // Set the email as verified if it is in the request
+    if (event.request.userAttributes.hasOwnProperty("email")) {
+        event.response.autoVerifyEmail = true;
+    }
+
+    // Set the phone number as verified if it is in the request
+    if (event.request.userAttributes.hasOwnProperty("phone_number")) {
+        event.response.autoVerifyPhone = true;
+    }
+
+    // Return to Amazon Cognito
+    callback(null, event);
+};
+
+</code></pre>
+
+
+
+<ul><li>Save the Lambda function and go back to AWS Cognito dashboard. </li><li>Select user pool and go to User pool properties and click Add Lambda trigger.</li></ul>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" width="1024" height="263" src="https://vinayaroratech.com/wp-content/uploads/2022/11/image-1024x263.png" alt="" class="wp-image-927" srcset="https://vinayaroratech.com/wp-content/uploads/2022/11/image-1024x263.png 1024w, https://vinayaroratech.com/wp-content/uploads/2022/11/image-300x77.png 300w, https://vinayaroratech.com/wp-content/uploads/2022/11/image-768x197.png 768w, https://vinayaroratech.com/wp-content/uploads/2022/11/image-1536x395.png 1536w, https://vinayaroratech.com/wp-content/uploads/2022/11/image.png 1783w" sizes="(max-width: 1024px) 100vw, 1024px" /></figure>
+
+
+
+<ul><li>Under Lambda triggers Select Sign-up as Trigger type<span style="font-size: 1rem;"> and under sign-up select Pre sign-up trigger option.</span> Pre sign-up trigger will be disabled once you add lambda for this option.</li></ul>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" width="1024" height="622" src="https://vinayaroratech.com/wp-content/uploads/2022/11/image-2-1024x622.png" alt="" class="wp-image-929" srcset="https://vinayaroratech.com/wp-content/uploads/2022/11/image-2-1024x622.png 1024w, https://vinayaroratech.com/wp-content/uploads/2022/11/image-2-300x182.png 300w, https://vinayaroratech.com/wp-content/uploads/2022/11/image-2-768x466.png 768w, https://vinayaroratech.com/wp-content/uploads/2022/11/image-2.png 1173w" sizes="(max-width: 1024px) 100vw, 1024px" /></figure>
+
+
+
+<ul><li>Finally select your Lambda function and click Add Lambda trigger button.</li></ul>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" width="1024" height="523" src="https://vinayaroratech.com/wp-content/uploads/2022/11/image-4-1024x523.png" alt="" class="wp-image-931" srcset="https://vinayaroratech.com/wp-content/uploads/2022/11/image-4-1024x523.png 1024w, https://vinayaroratech.com/wp-content/uploads/2022/11/image-4-300x153.png 300w, https://vinayaroratech.com/wp-content/uploads/2022/11/image-4-768x393.png 768w, https://vinayaroratech.com/wp-content/uploads/2022/11/image-4.png 1207w" sizes="(max-width: 1024px) 100vw, 1024px" /></figure>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://vinayaroratech.com/dotnet/confirm-aws-cognito-signups-automatically/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>How to AWS Cognito Login Signup in ASP.NET Core</title>
+		<link>https://vinayaroratech.com/dotnet/how-to-aws-cognito-login-signup-in-asp-net-core/</link>
+					<comments>https://vinayaroratech.com/dotnet/how-to-aws-cognito-login-signup-in-asp-net-core/#respond</comments>
+		
+		<dc:creator><![CDATA[Vinay]]></dc:creator>
+		<pubDate>Tue, 29 Nov 2022 09:43:38 +0000</pubDate>
+				<category><![CDATA[.NET]]></category>
+		<category><![CDATA[.NET Core]]></category>
+		<category><![CDATA[AWS]]></category>
+		<category><![CDATA[How-to]]></category>
+		<category><![CDATA[Cognito]]></category>
+		<guid isPermaLink="false">https://vinayaroratech.com/?p=924</guid>
+
+					<description><![CDATA[In this article, let&#8217;s look at how we can design and build such an API that encapsulates all of User Identity Management functionalities such as Login.. Introduction AWS Cognito provides OAuth2 auth flows such as Authorization Code where the application can redirect to AWS Cognito hosted login screens where the user credentials are validated against &#8230;<p class="read-more"> <a class="" href="https://vinayaroratech.com/dotnet/how-to-aws-cognito-login-signup-in-asp-net-core/"> <span class="screen-reader-text">How to AWS Cognito Login Signup in ASP.NET Core</span> Read More &#187;</a></p>]]></description>
+										<content:encoded><![CDATA[
+<p>In this article, let&#8217;s look at how we can design and build such an API that encapsulates all of User Identity Management functionalities such as Login..</p>
+
+
+
+<h2>Introduction</h2>
+
+
+
+<p>AWS Cognito provides OAuth2 auth flows such as Authorization Code where the application can redirect to AWS Cognito hosted login screens where the user credentials are validated against Cognito data store and is redirected to the configured landing pages on the application side with an idToken which represents user authorization.</p>
+
+
+
+<p>While it is the most recommended approach for applications, some designs prefer having a layer of their API that would communicate with Cognito for authorization, as a matter of decoupling Cognito with the Client (so as to have flexibility or better control).</p>
+
+
+
+<p>In this article, let’s look at how we can design and build such an API that encapsulates all of User Identity Management functionalities such as Login, Signup, Password Reset, Update profile and so on, while internally communicating with Cognito for respective flows.</p>
+
+
+
+<p>Keep in mind that to run such an API, we need the API to be deployed in a resource that has all the IAM permissions for Cognito access.</p>
+
+
+
+<h2>Features we’ll implement &amp; Getting started</h2>
+
+
+
+<p>We shall look at designing our APIs which provide the below features:</p>
+
+
+
+<ol><li>Login an existing user with his/her Email address and Password combination</li><li>Signup a new user with his/her Email address, Name, Phone and Password</li><li>Update a logged in user’s profile information</li><li>Update a logged in user’s password</li><li>Reset a user’s forgotten password based on Email address</li></ol>
+
+
+
+<p>To get started, let’s create a new AspNetCore project that’d host all of these functionalities.</p>
+
+
+
+<p><code>dotnet new mvc --name CognitoUserManager</code></p>
+
+
+
+<p>I’m creating an MVC application instead of a WebAPI, so that I can also add a layer of UI for testing the functionalities. In the project, I create a Repository class called UserRepository which implements an interface IUserRepository that defines all the functionalities as contracts. This Repository is injected into our API layers or UI layer by means of the inbuilt Dependency Injection.</p>
+
+
+
+<pre class="wp-block-code"><code>namespace CognitoUserManager.Contracts.Repositories
+{
+    public interface IUserRepository
+    {
+        /* Signup Flow Starts */
+        Task&lt;UserSignUpResponse> ConfirmUserSignUpAsync(UserConfirmSignUpRequest request);
+        Task&lt;UserSignUpResponse> CreateUserAsync(UserSignUpRequest request);
+        /* Signup Flow Ends */
+        
+        /* Change Password Flow */
+        Task&lt;BaseResponseRequest> TryChangePasswordAsync(ChangePwdRequest request);
+        
+        /* Forgot Password Flow Starts */
+        Task&lt;InitForgotPwdResponse> TryInitForgotPasswordAsync(InitForgotPwdRequest request);
+        Task&lt;ResetPasswordResponse> TryResetPasswordWithConfirmationCodeAsync(ResetPasswordRequest request);
+        /* Forgot Password Flow Ends */
+        
+        /* Login Flow Starts */
+        Task&lt;AuthResponseRequest> TryLoginAsync(UserLoginRequest request);
+        /* Login Flow Ends */
+        
+        Task&lt;UserSignOutResponse> TryLogOutAsync(UserSignOutRequest request);
+        
+        /* Update Profile Flow Starts */
+        Task&lt;UserProfileResponse> GetUserAsync(string userId);
+        Task&lt;UpdateProfileResponse> UpdateUserAttributesAsync(UpdateProfileRequest request);
+        /* Update Profile Flow Ends */
+    }
+}
+</code></pre>
+
+
+
+<p>I’ve created individual request and response DTO classes for handling respective data. All the Response classes extend from a BaseResponse class which contains the below attributes.</p>
+
+
+
+<pre class="wp-block-code"><code>public class BaseResponse
+{
+    public bool IsSuccess { get; set; }
+    public string Message { get; set; }
+}
+</code></pre>
+
+
+
+<p>Before jumping into the implementation, we also need to know what information from Cognito to be configured and used in the API.</p>
+
+
+
+<h2>Prerequisites for Accessing AWS Cognito Resources</h2>
+
+
+
+<p>To access Cognito, we’d require a UserPool where all the users are stored and an AppClient which is created over this UserPool. We’d also require the Region in which this UserPool resides.</p>
+
+
+
+<p>In case if we’re not deploying our application inside an AWS environment we’d also require the credentials of a user who has all the required permissions for accessing the Cognito user pool.</p>
+
+
+
+<p>This we call the AccessKey and the SecretKey. We shall store and access all these information inside our appsettings.json (or preferably as Environmental Variables if redeployments are not an option).</p>
+
+
+
+<pre class="wp-block-code"><code>"AppConfig": {
+    "Region": "us-west-2",
+    "UserPoolId": "us-west-2_aBcDeFgHiJ",
+    "AppClientId": "Ab12Cd34Ef56Gh78ij90",
+    "AccessKeyId": "AKIA1234567890",
+    "AccessSecretKey": "abcdEfghalfheqncoryedofhuehhrh"
+}
+</code></pre>
+
+
+
+<p>I’ve configured this configuration section into IOptions so as to access it as an object inside my Repository class.</p>
+
+
+
+<pre class="wp-block-code"><code>services.Configure&lt;AppConfig&gt;(Configuration.GetSection("AppConfig"));
+services.AddScoped&lt;IUserRepository, UserRepository&gt;();
+</code></pre>
+
+
+
+<p>We’d also require to install the below packages which contain the necessary libraries for communicating with Cognito and working with UserPools based on the requests.</p>
+
+
+
+<pre class="wp-block-code"><code>&lt;PackageReference Include="Amazon.Extensions.CognitoAuthentication" Version="2.0.3" /&gt;
+&lt;PackageReference Include="AWSSDK.CognitoIdentityProvider" Version="3.5.1.17" /&gt;
+</code></pre>
+
+
+
+<h2>Implementing UserRepository for Cognito Flows</h2>
+
+
+
+<p>Let’s begin by implementing the UserRepository which implements the IUserRepository interface and encapsulates all the user flows. To communicate with cognito we use an instance of the AmazonCognitoIdentityProviderClient which we configure by passing all the cognito details we collected before.</p>
+
+
+
+<pre class="wp-block-code"><code>_cloudConfig = appConfigOptions.Value;
+_provider = new AmazonCognitoIdentityProviderClient(
+                _cloudConfig.AccessKeyId, 
+                _cloudConfig.AccessSecretKey, 
+                RegionEndpoint.GetBySystemName(_cloudConfig.Region));
+</code></pre>
+
+
+
+<p>Next we create an instance of CognitoUserPool by passing the AmazonCognitoIdentityProviderClient instance we created before along with few other parameters.</p>
+
+
+
+<pre class="wp-block-code"><code>_userPool = new CognitoUserPool(
+        _cloudConfig.UserPoolId, 
+        _cloudConfig.AppClientId, 
+        _provider);
+</code></pre>
+
+
+
+<p>Now that we’re done with our initial setups, let’s jump into action – implementing these user flows one by one using AWS .NET SDK for Cognito.</p>
+
+
+
+<ol><li>Login an existing user with his/her Email address and Password combination</li><li>Signup a new user with his/her Email address, Name, Phone and Password</li><li>Update a logged in user’s profile information</li><li>Update a logged in user’s password</li><li>Reset a user’s forgotten password based on Email address</li></ol>
+
+
+
+<h2>Login Flow – an existing user with Email address and Password</h2>
+
+
+
+<p>In this flow, the client passes an Email address and Password to the API which needs to validate this combination against a UserPool. We use a Resource Owner Password Grant (ROPG) type of flow in this, which is called as a Secure Remote Password (SRP) Authentication. We implement this as below:</p>
+
+
+
+<pre class="wp-block-code"><code>CognitoUser user = new CognitoUser(emailAddress, _cloudConfig.AppClientId, _userPool, _provider);
+InitiateSrpAuthRequest authRequest = new InitiateSrpAuthRequest()
+{
+    Password = password
+};
+
+AuthFlowResponse authResponse = await user.StartWithSrpAuthAsync(authRequest);
+</code></pre>
+
+
+
+<p>We create an instance of CognitoUser by passing the emailAddress and the instances of CognitoUserPool and AmazonCognitoIdentityProviderClient we created before. Then we call the StartWithSrpAuthAsync() method that takes an instance of InitiateSrpAuthRequest where we pass the password.</p>
+
+
+
+<p>This call validates the passed on credentials for any user inside the passed on user pool and returns an AuthFlowResponse.</p>
+
+
+
+<p>This response contains an AuthenticationResult, which is an instance of AuthenticationResultType containing the tokens representing the authenticated user. The tokens generated are based on the scope configurations provided while configuring the cognito.</p>
+
+
+
+<p>If the user is not authenticated, the method throws a NotAuthorizedException which we can assume that the password combination is wrong.</p>
+
+
+
+<pre class="wp-block-code"><code>public async Task&lt;AuthResponseRequest> TryLoginAsync(UserLoginRequest request)
+{
+    try
+    {
+        CognitoUser user = new CognitoUser(
+                emailAddress, 
+                _cloudConfig.AppClientId, 
+                _userPool, 
+                _provider);
+        
+        InitiateSrpAuthRequest authRequest = new InitiateSrpAuthRequest()
+        {
+            Password = password
+        };
+
+        AuthFlowResponse authResponse = await user.StartWithSrpAuthAsync(authRequest);
+        var result = authResponse.AuthenticationResult;
+
+        var authResponseRequest = new AuthResponseRequest();
+        authResponseRequest.EmailAddress = user.UserID;
+        authResponseRequest.UserId = user.Username;
+        authResponseRequest.Tokens = new TokenRequest
+        {
+            IdToken = result.IdToken,
+            AccessToken = result.AccessToken,
+            ExpiresIn = result.ExpiresIn,
+            RefreshToken = result.RefreshToken
+        };
+        
+        authResponseRequest.IsSuccess = true;
+        return authResponseRequest;
+    }
+    catch (UserNotConfirmedException)
+    {
+        // Occurs if the User has signed up 
+        // but has not confirmed his EmailAddress
+        // In this block we try sending 
+        // the Confirmation Code again and ask user to confirm
+    }
+    catch (UserNotFoundException)
+    {
+        // Occurs if the provided emailAddress 
+        // doesn't exist in the UserPool
+        return new AuthResponseRequest
+        {
+            IsSuccess = false,
+            Message = "EmailAddress not found."
+        };
+    }
+    catch (NotAuthorizedException)
+    {
+        return new AuthResponseRequest
+        {
+            IsSuccess = false,
+            Message = "Incorrect username or password"
+        };
+    }
+}
+</code></pre>
+
+
+
+<h2>Signup Flow – a new user with his/her Email address, Name, Phone and Password</h2>
+
+
+
+<p>To let a new user signup, we need to follow a two step process:</p>
+
+
+
+<ol><li>Create a new User in Cognito – this leaves the user in a NotConfirmed state</li><li>Confirm the User by passing the Confirmation Code that is sent to the user’s primary source (EmailAddress in our case).</li></ol>
+
+
+
+<p>Creating a user is a straight forward process, where we pass the EmailAddress, Password and other information such as Name, PhoneNumber and so on as OpenID attributes to the AmazonCognitoIdentityProviderClient instance.</p>
+
+
+
+<pre class="wp-block-code"><code>public async Task&lt;UserSignUpResponse> CreateUserAsync(CreateUserRequest request, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Create user {0}.", request.Email);
+
+        var validator = new CreateUserRequestValidator(_repository, _validatorLocalizer);
+        await validator.ValidateAndThrowAsync(request, cancellationToken: cancellationToken);
+
+        var agency = await _agencyRepository.GetByIdAsync(request.AgencyId, cancellationToken);
+
+        _ = agency ?? throw new NotFoundException(string.Format(_localizer&#91;"agency.notfound"], request.AgencyId));
+
+        if (agency.Name.Equals("Tonkin", StringComparison.InvariantCultureIgnoreCase))
+            request.UserType = Domain.Common.UserType.Tonkin;
+
+        var user = new ApplicationUser(
+        request.AgencyId,
+        request.UserType,
+        request.FirstName,
+        request.LastName,
+        request.Email);
+        await _repository.AddAsync(user, cancellationToken);
+
+        var signUpRequest = new SignUpRequest
+        {
+            ClientId = _myApiCredentials.AppClientId,
+            Password = "Password@1122",
+            Username = request.Email,
+            SecretHash = CognitoHashCalculator.GetSecretHash(request.Email, _myApiCredentials.AppClientId, _myApiCredentials.AppClientSecret),
+        };
+
+        signUpRequest.UserAttributes.AddRange(new&#91;]
+        {
+            new AttributeType { Name = "email", Value = request.Email },
+            new AttributeType { Value = request.FirstName, Name = "given_name" },
+            new AttributeType { Value = $"{request.FirstName} {request.LastName}", Name = "family_name" }
+        });
+
+        try
+        {
+            var response = await _provider.SignUpAsync(signUpRequest, cancellationToken);
+
+            return new UserSignUpResponse
+            {
+                UserId = user.Id,
+                UserSub = response.UserSub,
+                Email = request.Email,
+                IsSuccess = true,
+                Message = $"Confirmation Code sent to {response.CodeDeliveryDetails.Destination} via {response.CodeDeliveryDetails.DeliveryMedium.Value}",
+            };
+        }
+        catch (UsernameExistsException)
+        {
+            return new UserSignUpResponse
+            {
+                IsSuccess = false,
+                Message = "Email Already Exists"
+            };
+        }
+    }</code></pre>
+
+
+
+<p>The SignUpResponse returned by the Cognito CreateUserAsync() method contains the details about where the Confirmation Code has been sent to. The Destination property of the CodeDeliveryDetails contains a masked EmailAddress (or PhoneNumber) to where the code is sent. The next step is to post this Confirmation Code sent by the user to Cognito to as to “Confirm” the user.</p>
+
+
+
+<pre class="wp-block-code"><code> public async Task&lt;UserSignUpResponse> ConfirmUserSignUpAsync(UserConfirmSignUpRequest request, CancellationToken cancellationToken)
+    {
+        var confirmRequest = new ConfirmSignUpRequest
+        {
+            ClientId = _myApiCredentials.AppClientId,
+            ConfirmationCode = request.Code,
+            Username = request.Email,
+            SecretHash = CognitoHashCalculator.GetSecretHash(request.Email, _myApiCredentials.AppClientId, _myApiCredentials.AppClientSecret),
+        };
+
+        try
+        {
+            _ = await _provider.ConfirmSignUpAsync(confirmRequest, cancellationToken);
+            return new UserSignUpResponse
+            {
+                Email = request.Email,
+                UserId = request.UserId,
+                Message = "User Confirmed",
+                IsSuccess = true
+            };
+        }
+        catch (CodeMismatchException)
+        {
+            return new UserSignUpResponse
+            {
+                IsSuccess = false,
+                Message = "Invalid Confirmation Code",
+                Email = request.Email
+            };
+        }
+    }
+</code></pre>
+
+
+
+<p>Here we post the confirmation code for the respective EmailAddress related to the AppClientId and call the ConfirmSignUpAsync() method on the client.</p>
+
+
+
+<p>A successful confirmation means no Exception and we can safely ask the user to login. If the confirmation code is wrong, the method throws a CodeMismatchException.</p>
+
+
+
+<p>if Amazon.CognitoIdentityProvider.Model.NotAuthorizedException throw. i.e. &#8216;Client abcded8uek12di4ftcj0cv7btt is configured for secret but secret was not received. Use the below CognitoHashCalculator method in request payload.</p>
+
+
+
+<pre class="wp-block-code"><code>public static class CognitoHashCalculator
+{
+    public static string GetSecretHash(string username, string appClientId, string appSecretKey)
+    {
+        var dataString = username + appClientId;
+
+        var data = Encoding.UTF8.GetBytes(dataString);
+        var key = Encoding.UTF8.GetBytes(appSecretKey);
+
+        return Convert.ToBase64String(HmacSHA256(data, key));
+    }
+
+    public static byte&#91;] HmacSHA256(byte&#91;] data, byte&#91;] key)
+    {
+        using var shaAlgorithm = new System.Security.Cryptography.HMACSHA256(key);
+        var result = shaAlgorithm.ComputeHash(data);
+        return result;
+    }
+}</code></pre>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://vinayaroratech.com/dotnet/how-to-aws-cognito-login-signup-in-asp-net-core/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>How to load .NET configuration from AWS Secrets Manager</title>
+		<link>https://vinayaroratech.com/dotnet/how-to-load-net-configuration-from-aws-secrets-manager/</link>
+					<comments>https://vinayaroratech.com/dotnet/how-to-load-net-configuration-from-aws-secrets-manager/#respond</comments>
+		
+		<dc:creator><![CDATA[Vinay]]></dc:creator>
+		<pubDate>Fri, 25 Nov 2022 18:56:42 +0000</pubDate>
+				<category><![CDATA[.NET]]></category>
+		<category><![CDATA[.NET Core]]></category>
+		<category><![CDATA[AWS]]></category>
+		<category><![CDATA[How-to]]></category>
+		<category><![CDATA[Configuration]]></category>
+		<category><![CDATA[Secrets Manager]]></category>
+		<guid isPermaLink="false">https://vinayaroratech.com/?p=922</guid>
+
+					<description><![CDATA[Every application has secrets – database credentials, API keys used to call external services, or private encryption keys needed to secure data. In this blog post, I will show you how you can load and use secrets using .NET’s configuration system and AWS Secrets Manager (Secrets Manager). Keeping your sensitive data outside of your code is &#8230;<p class="read-more"> <a class="" href="https://vinayaroratech.com/dotnet/how-to-load-net-configuration-from-aws-secrets-manager/"> <span class="screen-reader-text">How to load .NET configuration from AWS Secrets Manager</span> Read More &#187;</a></p>]]></description>
+										<content:encoded><![CDATA[
+<p>Every application has secrets – database credentials, API keys used to call external services, or private encryption keys needed to secure data. In this blog post, I will show you how you can load and use secrets using .NET’s configuration system and <a href="https://aws.amazon.com/secrets-manager/">AWS Secrets Manager (Secrets Manager)</a>.</p>
+
+
+
+<p>Keeping your sensitive data outside of your code is crucial, but reducing the risk of compromise is not always a simple task. Many companies find themselves inventing complex and difficult-to-implement techniques, which result in a less streamlined development experience. This might lead developers to find simpler, less secure solutions for storing the application’s sensitive data, such as using hard-coded strings in the application’s code or configuration files. This may lead to a security breach when code that contains sensitive data is then saved in the company’s source control, where multiple parties can access it without proper auditing or other security safeguards. In addition, an organization needs to keep track of multiple versions of the same secret and different values depending on the deployed environment (such as dev, staging, or production). This can become difficult when those secrets are tightly coupled with the deployed code.</p>
+
+
+
+<p>Secrets Manager helps you protect secrets needed to access your applications, services, and IT resources. It enables you to easily rotate, manage, and retrieve secrets used by your application, eliminating the need to hard-code sensitive information in plain text. You can use the Secrets Manager client to retrieve secrets using AWS SDK for .NET. However, this would require code changes and add to the complexity of your code, as you need to invoke the client whenever you need to read data stored in Secrets Manager. Instead, you can use the&nbsp;<a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-6.0">.NET configuration system</a>&nbsp;– an extensible API used to read and manage application secrets. This lets developers use a familiar API to access secrets in secure storage and reduce complexity by using a single code path for all environments. Additionally, the provider lets existing applications move to Secrets Manager without making any code changes.</p>
+
+
+
+<p>In this blog post, I will show you how to create a custom configuration provider that loads sensitive data from Secrets Manager and makes those secrets available to your application.</p>
+
+
+
+<h1>Walktrough</h1>
+
+
+
+<p>To load values from Secrets Manager to your .NET configuration, you will need to complete the following steps:</p>
+
+
+
+<ul><li>Create a custom configuration provider</li><li>Create a configuration source to initialize the new provider</li><li>Create a new class to pass the secret’s data to your code</li><li>Update your code to use the new configuration source</li><li><em>Optional: enable secrets reloading</em></li></ul>
+
+
+
+<h1>Prerequisites</h1>
+
+
+
+<p>This example will use credentials needed to connect to a 3rd-party API. The credentials will include an API key, user ID, and password — all stored in Secrets Manager.</p>
+
+
+
+<p>Create a secret to use in your application<br>First, you’ll need to add a new secret to load from your code.</p>
+
+
+
+<ol><li>Log in to the&nbsp;<a href="https://console.aws.amazon.com/secretsmanager">Secrets Manager console</a></li><li>Click on the Store a new secret to create your new secret value.</li><li>Choose Other type of secret and add the following key/value pairs:<code>{ "ApiKey": "key1", "UserId": "User1", "Password": "12345", }</code>JSON<img loading="lazy" src="https://d2908q01vomqb2.cloudfront.net/8effee409c625e1a2d8f5033631840e6ce1dcb64/2022/09/18/Choose-secret-type.png" alt="AWS Secrets Manager - Choose Secret Type" width="977" height="881"></li><li>Choose&nbsp;<strong>Next</strong></li><li>Fill the secret’s name, description, add tags and then choose&nbsp;<strong>Next</strong></li><li>On the next screen, choose&nbsp;<strong>Next</strong>&nbsp;on the Secret rotation page (automatic rotation disabled)</li><li>On the last screen, choose&nbsp;<strong>Store</strong>&nbsp;once you’re done reviewing your changes.</li></ol>
+
+
+
+<h2>Create an ASP.NET Core Web API project</h2>
+
+
+
+<p>Although the .NET configuration system can be used by different project types and different versions of .NET, I am using the .NET 6 ASP.NET Core Web API project template (using Visual Studio 2022 or later).</p>
+
+
+
+<ol><li>Create a new project of type ASP.NET Core Web API</li><li>Fill your project name and choose&nbsp;<strong>Next</strong></li><li>On the next screen, make sure .NET 6.0 is selected, and choose&nbsp;<strong>Create</strong></li></ol>
+
+
+
+<h1>Step 1: Create a custom configuration provider</h1>
+
+
+
+<ol><li>Use NuGet to add <em>AWS.SecretsManager</em> as a dependency in your project.</li><li>Create a new class named <code>AmazonSecretsManagerConfigurationProvider</code> that inherits from the <code>ConfigurationProvider</code> abstract class. The class constructor will receive two string parameters, <em>region</em> and <em>secretName</em>, and store them as fields in the class.</li><li>Override the <em>Load</em> method and add code to retrieve your secret from Secrets Manager as JSON, then deserialize the result as a <code>Dictionary&lt;string, string></code>. Store the result in <em>Data</em> property (inherited from ConfigurationProvider):</li></ol>
+
+
+
+<pre class="wp-block-code"><code>public class AmazonSecretsManagerConfigurationProvider : ConfigurationProvider
+{
+    private readonly string _region;
+    private readonly string _secretName;
+
+    public AmazonSecretsManagerConfigurationProvider(string region, string secretName, PeriodicWatcher watcher)
+    {
+        _region = region;
+        _secretName = secretName;
+        ChangeToken.OnChange(() => watcher.Watch(), Load);
+    }
+
+    public override void Load()
+    {
+        string secret = GetSecret();
+
+        Data = JsonSerializer.Deserialize&lt;Dictionary&lt;string, string>>(secret);
+    }
+
+    private string GetSecret()
+    {
+        var request = new GetSecretValueRequest
+        {
+            SecretId = _secretName,
+            VersionStage = "AWSCURRENT" // VersionStage defaults to AWSCURRENT if unspecified.
+        };
+
+        using var client = new AmazonSecretsManagerClient(RegionEndpoint.GetBySystemName(_region));
+        var response = client.GetSecretValueAsync(request).Result;
+        if (response.SecretString != null)
+        {
+            return response.SecretString;
+        }
+        else
+        {
+            var memoryStream = response.SecretBinary;
+            var reader = new StreamReader(memoryStream);
+            string str = reader.ReadToEnd();
+            return Encoding.UTF8.GetString(Convert.FromBase64String(str));
+        }
+    }
+}</code></pre>
+
+
+
+<h1>Step 2: Create a configuration source to initialize the new provider</h1>
+
+
+
+<p>Create a class that implements&nbsp;<code>IConfigurationSource</code>&nbsp;and creates a new instance of&nbsp;<code>AmazonSecretsManagerConfigurationProvider</code>:</p>
+
+
+
+<pre class="wp-block-code"><code>public class AmazonSecretsManagerConfigurationSource : IConfigurationSource
+{
+    private readonly string _region;
+    private readonly string _secretName;
+
+    public AmazonSecretsManagerConfigurationSource(string region, string secretName)
+    {
+        _region = region;
+        _secretName = secretName;
+    }
+
+    public IConfigurationProvider Build(IConfigurationBuilder builder)
+    {
+        return new AmazonSecretsManagerConfigurationProvider(_region, _secretName);
+    }
+}
+</code></pre>
+
+
+
+<h1>Step 3: Create a new class to pass the secret’s data to your code</h1>
+
+
+
+<p>Create a new class that has properties with the same names as the secret’s keys:</p>
+
+
+
+<pre class="wp-block-code"><code>public class MyApiCredentials
+{
+    public string ApiKey { get; set; }
+    public string UserId { get; set; }
+    public string Password { get;set; }
+}
+</code></pre>
+
+
+
+<h1>Step 4: Update your code to use the new configuration source</h1>
+
+
+
+<p>In this example, I’m using the Visual Studio 2022 .NET project templates. In the new templates, the service’s configuration is in the&nbsp;<em>Program.cs</em>&nbsp;file. Older IDEs (such as Visual Studio 2019 or prior) have similar code in the&nbsp;<em>Startup.cs</em>&nbsp;file.</p>
+
+
+
+<ul><li>Create a new static class with an extension method to initialize the new configuration source and add it to the configuration builder:</li></ul>
+
+
+
+<pre class="wp-block-code"><code>public static class Startup
+{
+    public static void AddAmazonSecretsManager(
+        this IConfigurationBuilder configurationBuilder,
+        string region,
+        string secretName)
+    {
+        var configurationSource = new AmazonSecretsManagerConfigurationSource(region, secretName);
+
+        configurationBuilder.Add(configurationSource);
+    }
+
+    public static IServiceCollection AddMyApiCredentials(this IServiceCollection services, IConfiguration configuration)
+    {
+        return services.Configure&lt;MyApiCredentials>(configuration);
+    }
+}</code></pre>
+
+
+
+<ul><li>Add the new configuration provider to the existing list of configuration providers:</li></ul>
+
+
+
+<pre class="wp-block-code"><code>internal static class Startup
+{
+    internal static ConfigureHostBuilder AddConfigurations(this ConfigureHostBuilder host)
+    {
+        host.ConfigureAppConfiguration((context, config) =>
+        {            
+            var configRoot = config.Build();
+            string region = configRoot&#91;"AWSSecertManager:Region"];
+            string secretName = configRoot&#91;"AWSSecertManager:SecretName"];
+            config.AddAmazonSecretsManager(region, secretName);
+        });
+        return host;
+    }
+}</code></pre>
+
+
+
+<p>Now, use the built-in configuration IOption interface to inject the credentials into your application:</p>
+
+
+
+<pre class="wp-block-code"><code>private readonly MyApiCredentials _myApiCredentials;
+
+public MyService(IOptions&lt;MyApiCredentials> options)
+{
+    _myApiCredentials = options.Value;
+}</code></pre>
+
+
+
+<h1>Step 5: Reloading secrets</h1>
+
+
+
+<p>If your application requires configuration updates without restarting – you will need to add functionality to your configuration provider to refresh the configuration data.</p>
+
+
+
+<ul><li>Create a new class that will hold the logic needed to refresh your configuration values.This class must have a method/property that returns <code>IChangeToken</code>:</li></ul>
+
+
+
+<pre class="wp-block-code"><code>public class PeriodicWatcher : IDisposable
+{
+    private readonly TimeSpan _refreshInterval;
+    private IChangeToken _changeToken;
+    private readonly Timer _timer;
+    private CancellationTokenSource _cancellationTokenSource;
+
+    public PeriodicWatcher(TimeSpan refreshInterval)
+    {
+        _refreshInterval = refreshInterval;
+        _timer = new Timer(OnChange, null, TimeSpan.Zero, _refreshInterval);
+    }
+
+    private void OnChange(object? state)
+    {
+        _cancellationTokenSource?.Cancel();
+    }
+
+    public IChangeToken Watch()
+    {
+        _cancellationTokenSource = new CancellationTokenSource();
+        _changeToken = new CancellationChangeToken(_cancellationTokenSource.Token);
+
+        return _changeToken;
+    }
+
+    public void Dispose()
+    {
+        _timer?.Dispose();
+        _cancellationTokenSource?.Dispose();
+    }
+}
+</code></pre>
+
+
+
+<ul><li>Here I’m using the built-in <code>CancellationChangeToken</code> class to create a change token from <code>CancellationTokenSource</code>.</li><li>Pass an instance of that class to the configuration provider and call <code>ChangeToken.OnChange</code> to tie the change token to a method that will be called on each change – in this case Load:</li></ul>
+
+
+
+<pre class="wp-block-code"><code> public AmazonSecretsManagerConfigurationProvider(string region, string secretName, PeriodicWatcher watcher)
+    {
+        _region = region;
+        _secretName = secretName;
+        ChangeToken.OnChange(() => watcher.Watch(), Load);
+    }</code></pre>
+
+
+
+<ul><li>Update your code to use <em>IOptionsSnapshot </em>instead of <em>IOption</em>. <code>IOption&lt;T></code> caches the configuration read from Data once for the entire application lifecycle, but <code>IOptionsSnapshot&lt;T></code> reads Data on each HTTP request, making sure that the provider gets the latest configuration values:</li></ul>
+
+
+
+<pre class="wp-block-code"><code>private readonly string _myApiCredentials;
+
+public MyService(IOptionsSnapshot&lt;MyApiCredentials> options)
+{
+    _myApiCredentials = options.Value;
+}
+</code></pre>
+
+
+
+<h1>Conclusion</h1>
+
+
+
+<p>Every application has sensitive data it needs to store in a secure location. Keeping sensitive data in your application code can cause a security breach. On the other hand, you do not want to slow down developers by adding hard-to-follow steps to run and debug your application.</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://vinayaroratech.com/dotnet/how-to-load-net-configuration-from-aws-secrets-manager/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>AWS Cognito — Client credentials flow .NET 6</title>
+		<link>https://vinayaroratech.com/dotnet/aws-cognito-client-credentials-flow-net-6/</link>
+					<comments>https://vinayaroratech.com/dotnet/aws-cognito-client-credentials-flow-net-6/#respond</comments>
+		
+		<dc:creator><![CDATA[Vinay]]></dc:creator>
+		<pubDate>Wed, 23 Nov 2022 05:19:15 +0000</pubDate>
+				<category><![CDATA[.NET]]></category>
+		<category><![CDATA[.NET Core]]></category>
+		<category><![CDATA[AWS]]></category>
+		<category><![CDATA[How-to]]></category>
+		<category><![CDATA[.NET6]]></category>
+		<category><![CDATA[Auth2]]></category>
+		<category><![CDATA[Authentication]]></category>
+		<category><![CDATA[Cognito]]></category>
+		<guid isPermaLink="false">https://vinayaroratech.com/?p=919</guid>
+
+					<description><![CDATA[AWS Cognito User pool creation Navigate to the AWS Cognito service page Click on create user pool Step 1:&#160;Configure sign-in experience Select Email and click next Step 2:&#160;Configure security requirements Under password policy select cognito defaults Under Multi-factor authentication select No MFA Under User account recovery select Enable self-service account recovery and then Email Only &#8230;<p class="read-more"> <a class="" href="https://vinayaroratech.com/dotnet/aws-cognito-client-credentials-flow-net-6/"> <span class="screen-reader-text">AWS Cognito — Client credentials flow .NET 6</span> Read More &#187;</a></p>]]></description>
+										<content:encoded><![CDATA[
+<h2>AWS Cognito User pool creation</h2>
+
+
+
+<p>Navigate to the AWS Cognito service page</p>
+
+
+
+<p>Click on create user pool</p>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--Q7BE8SnM--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/xowsh1tb5fw7v21vcwvt.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--Q7BE8SnM--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/xowsh1tb5fw7v21vcwvt.png" alt="Image description"/></a></figure>
+
+
+
+<h3>Step 1:&nbsp;<strong>Configure sign-in experience</strong></h3>
+
+
+
+<p>Select Email and click next</p>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--djjpUzj6--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/0dyfbjftcb4gkhn4spho.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--djjpUzj6--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/0dyfbjftcb4gkhn4spho.png" alt="Image description"/></a></figure>
+
+
+
+<h3>Step 2:&nbsp;<strong>Configure security requirements</strong></h3>
+
+
+
+<ul><li>Under password policy select cognito defaults</li><li>Under Multi-factor authentication select No MFA</li><li>Under User account recovery select Enable self-service account recovery and then Email Only</li><li>Click next</li></ul>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--nSiWrZa5--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/fg1utqde501f2nswe5ay.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--nSiWrZa5--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/fg1utqde501f2nswe5ay.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--qcDVjApk--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/oy8cez01twtbaenhaqe0.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--qcDVjApk--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/oy8cez01twtbaenhaqe0.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--20XQoxbI--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/568k0gdjf2ryhmk6g6t8.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--20XQoxbI--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/568k0gdjf2ryhmk6g6t8.png" alt="Image description"/></a></figure>
+
+
+
+<h3>Step 3: Configure sign-up experience</h3>
+
+
+
+<p>Keep all selections as default and click next</p>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--ze1nTPQN--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/11tq51nygov0j0ymqiuh.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--ze1nTPQN--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/11tq51nygov0j0ymqiuh.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--y3DmrFS5--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/w0b4fr89xuxlqrndfe47.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--y3DmrFS5--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/w0b4fr89xuxlqrndfe47.png" alt="Image description"/></a></figure>
+
+
+
+<h3>Step 4:&nbsp;<strong>Configure message delivery</strong></h3>
+
+
+
+<p>Select Send email with Cognito and keep the rest of the configuration as default then click next</p>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--oxXEqCX6--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/w0k59cwdphbe9zdln3wg.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--oxXEqCX6--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/w0k59cwdphbe9zdln3wg.png" alt="Image description"/></a></figure>
+
+
+
+<h3>Step 5:&nbsp;<strong>Integrate your app</strong></h3>
+
+
+
+<ul><li>Configure the User pool name with your preferred naming convention</li><li>Select Confidential client</li><li>Configure the App client name</li><li>Click next</li></ul>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--oU2toiqE--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/k9vgz9af4a6v0wdf1v32.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--oU2toiqE--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/k9vgz9af4a6v0wdf1v32.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--dig7uTY_--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/f3gpmgqg25e4c2c7nbij.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--dig7uTY_--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/f3gpmgqg25e4c2c7nbij.png" alt="Image description"/></a></figure>
+
+
+
+<h3>Step 6:&nbsp;<strong>Review and create</strong></h3>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--HSQnvkjY--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/r5sal74yfrgg0v17e9gm.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--HSQnvkjY--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/r5sal74yfrgg0v17e9gm.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--zfmQg-gE--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/25zene72ftbvl71nbizu.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--zfmQg-gE--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/25zene72ftbvl71nbizu.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--f00EfRMO--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/cklblx87a4y48fujm7t2.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--f00EfRMO--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/cklblx87a4y48fujm7t2.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--gaxwyVRv--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/uromd0g6hk29qml9cdrm.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--gaxwyVRv--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/uromd0g6hk29qml9cdrm.png" alt="Image description"/></a></figure>
+
+
+
+<ul><li>Review your configuration</li><li>Click Create user pool</li></ul>
+
+
+
+<h3>User Pools</h3>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--BSROB40N--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/l56ru5xu2zi969tovlug.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--BSROB40N--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/l56ru5xu2zi969tovlug.png" alt="Image description"/></a></figure>
+
+
+
+<p>See your created user pool</p>
+
+
+
+<h2>Application configuration and resource server creation</h2>
+
+
+
+<p>Navigate to your created user pool</p>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--p7s1lseQ--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/0vvq76ipc8qajnvlr2ru.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--p7s1lseQ--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/0vvq76ipc8qajnvlr2ru.png" alt="Image description"/></a></figure>
+
+
+
+<p>Navigate to the App Integration tab</p>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--4_qn4aa5--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/14vpqzmqpfehciszazts.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--4_qn4aa5--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/14vpqzmqpfehciszazts.png" alt="Image description"/></a></figure>
+
+
+
+<h3>Step 1: Create Domain</h3>
+
+
+
+<ul><li>On the Domain section click on Actions and then click on Create Cogniro domain</li><li>Enter a unique domain prefix</li><li>Click Create Cognito domain</li></ul>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--J77sW3Eb--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/z6eipb86s8bobrqe1mgg.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--J77sW3Eb--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/z6eipb86s8bobrqe1mgg.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--UmMlfDId--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/pzwiexx7ox1p60uik327.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--UmMlfDId--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/pzwiexx7ox1p60uik327.png" alt="Image description"/></a></figure>
+
+
+
+<h3>Step 2: Create Resource server</h3>
+
+
+
+<ul><li>Click Create resource server</li><li>Configure the resource server name and identifier</li><li>Create custom scopes for your application to use when authenticating</li><li>Click create resource server</li></ul>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--4PNehDky--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/q3a54busbwym99dttnhv.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--4PNehDky--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/q3a54busbwym99dttnhv.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--oZg8LWxK--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/lbxls42vt70ydxq81vcc.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--oZg8LWxK--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/lbxls42vt70ydxq81vcc.png" alt="Image description"/></a></figure>
+
+
+
+<h3>Step 3: Configure client application</h3>
+
+
+
+<ul><li>Select the app client you created</li><li>Under Hosted UI click edit</li><li>Under Hosted sign-up and sign-in pages select the identity provider cognito user pool</li><li>Select Client Credentials OAuth 2.0 Grant type</li><li>Select the custom scope you created and want to assign to the application</li><li>Click Save changes</li></ul>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--7qUPho6x--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/zydmkutei884mlb94dgc.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--7qUPho6x--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/zydmkutei884mlb94dgc.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--oRkwiv_j--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/e7943pkfdtkmq9g6ajzy.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--oRkwiv_j--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/e7943pkfdtkmq9g6ajzy.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--ZDSy5UcX--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/ssk8d6bdabob5b2jkgwi.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--ZDSy5UcX--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/ssk8d6bdabob5b2jkgwi.png" alt="Image description"/></a></figure>
+
+
+
+<h2>Create Weather API</h2>
+
+
+
+<h3>Step 1: Create API</h3>
+
+
+
+<p>Create a API project if you don’t have one</p>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--egnbBj76--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/24eegflzlf0ey9t2z4v7.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--egnbBj76--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/24eegflzlf0ey9t2z4v7.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--drojt5ns--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/6o86nq06uilbmi6rzw4o.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--drojt5ns--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/6o86nq06uilbmi6rzw4o.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--YhHO_N8a--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/f4hve021n5sz0h3ikbzf.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--YhHO_N8a--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/f4hve021n5sz0h3ikbzf.png" alt="Image description"/></a></figure>
+
+
+
+<h3>Step 2: Add NuGet packages</h3>
+
+
+
+<p>Add the following NuGet packages:</p>
+
+
+
+<ul><li><a href="https://www.nuget.org/packages/Amazon.AspNetCore.Identity.Cognito/">https://www.nuget.org/packages/Amazon.AspNetCore.Identity.Cognito/</a></li><li><a href="https://www.nuget.org/packages/Microsoft.AspNetCore.Authentication.JwtBearer/6.0.5">https://www.nuget.org/packages/Microsoft.AspNetCore.Authentication.JwtBearer</a>/</li></ul>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--HkHjZ58b--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/9pn0hzom790oswoztvw1.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--HkHjZ58b--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/9pn0hzom790oswoztvw1.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--sMweL_au--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/gisbzfuru9yg4eq9ppe3.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--sMweL_au--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/gisbzfuru9yg4eq9ppe3.png" alt="Image description"/></a></figure>
+
+
+
+<h3>Step 3: Setup auth in Program.cs</h3>
+
+
+
+<p>Add this block of code to the Program.cs under the builder.</p>
+
+
+
+<pre class="wp-block-code"><code>builder.Services.AddCognitoIdentity();
+
+builder.Services.AddAuthentication(options =&gt;
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =&gt;
+{
+    options.Authority = builder.Configuration&#91;"AWSCognito:Authority"];
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+                ValidateAudience = false
+    };
+});
+</code></pre>
+
+
+
+<p>Add the following under app.UseHttpsRedirection(); in Program.cs</p>
+
+
+
+<pre class="wp-block-code"><code>app.UseAuthentication();
+app.UseAuthorization();
+</code></pre>
+
+
+
+<p>Add the following using&#8217;s to the Program.cs</p>
+
+
+
+<pre class="wp-block-code"><code>using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+</code></pre>
+
+
+
+<p>Your Program.cs will end up looking like this when you’re done.</p>
+
+
+
+<pre class="wp-block-code"><code>using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddCognitoIdentity();
+
+builder.Services.AddAuthentication(options =&gt;
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =&gt;
+{
+    options.Authority = builder.Configuration&#91;"AWSCognito:Authority"];
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        ValidateAudience = false
+    };
+});
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();
+</code></pre>
+
+
+
+<h3>Step 4: Setup configuration file</h3>
+
+
+
+<p>Add this section to the appsettings.Development.json file</p>
+
+
+
+<p>This URL for the authority is made up of the following</p>
+
+
+
+<figure class="wp-block-embed"><div class="wp-block-embed__wrapper">
+https://cognito-idp.{region}.amazonaws.com/{userpoolid}
+</div></figure>
+
+
+
+<pre class="wp-block-code"><code>
+  "AWSCognito": {
+    "Authority": "https://cognito-idp/.{region}.amazonaws.com/{userpoolid}"
+  }
+</code></pre>
+
+
+
+<p>You can find the user pool id in AWS on the Amazon Cognito page under user pools</p>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--ALOU9qFH--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/doame0m5l1fo0hdx3ag1.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--ALOU9qFH--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/doame0m5l1fo0hdx3ag1.png" alt="Image description"/></a></figure>
+
+
+
+<h3>Step 5: Add authorize attribute to GetWeatherForecast endpoint</h3>
+
+
+
+<p>In the WeatherForecastController.cs add the Authorize attribute to the GetWeatherForecast endpoint and add Microsoft.AspNetCore.Authorization to the usings.</p>
+
+
+
+<pre class="wp-block-code"><code>using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace AWSCognitoWeatherAPI.Controllers
+{
+    &#91;ApiController]
+    &#91;Route("&#91;controller]")]
+    public class WeatherForecastController : ControllerBase
+    {
+        private static readonly string&#91;] Summaries = new&#91;]
+        {
+        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+    };
+
+        private readonly ILogger&lt;WeatherForecastController&gt; _logger;
+
+        public WeatherForecastController(ILogger&lt;WeatherForecastController&gt; logger)
+        {
+            _logger = logger;
+        }
+
+        &#91;Authorize]
+        &#91;HttpGet(Name = "GetWeatherForecast")]
+        public IEnumerable&lt;WeatherForecast&gt; Get()
+        {
+            return Enumerable.Range(1, 5).Select(index =&gt; new WeatherForecast
+            {
+                Date = DateTime.Now.AddDays(index),
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = Summaries&#91;Random.Shared.Next(Summaries.Length)]
+            })
+            .ToArray();
+        }
+    }
+}
+</code></pre>
+
+
+
+<h2>Call the Weather Forecast API using Postman</h2>
+
+
+
+<h3>Step 1: Create new collection</h3>
+
+
+
+<ul><li>Create a new collection for the API</li><li>Add new request to the collection for the weather forcast endpoint (<a href="https://localhost:7214/WeatherForecast">https://localhost:7214/WeatherForecast</a>)</li></ul>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--I7rrYxVr--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/aeljxi65815zts9dpo9y.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--I7rrYxVr--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/aeljxi65815zts9dpo9y.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--RUa3r764--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/9kzrwz267z4kcvxpyi0s.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--RUa3r764--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/9kzrwz267z4kcvxpyi0s.png" alt="Image description"/></a></figure>
+
+
+
+<h3>Step 2: Setup Collection Auth</h3>
+
+
+
+<ul><li>Click on the Weather Forcast API collection and navigate to the Authorization tab</li><li>From the Type dropdown select OAuth 2.0</li><li>In the Configure New Token Section give the token a name</li><li>In Grant Type dropdown select Client Credentials</li><li>In the app integration section of the user pool in AWS get the domain url</li><li>Add the domain to the Access Token URL section in postman and append it with /oauth2/token</li><li>Get the client id from the client app in AWS</li><li>Get the client secret from the client app in AWS</li><li>Get the custom scope form the Hosted UI</li><li>Add the clientid, client secret and scope in postman</li><li>Click get new access token</li><li>Click use token on the pop-up</li><li>On the Weather Forecast request under the Authorization tab ensure the Type is set to Inherit auth from parent.</li></ul>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--_BH0ChxL--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/nai6tefg7742n0907eid.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--_BH0ChxL--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/nai6tefg7742n0907eid.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--5JiwmeeK--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/mfjnw2yp68a4jpl9he95.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--5JiwmeeK--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/mfjnw2yp68a4jpl9he95.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--xHM_iHg6--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/hjc9ofghcbmsj3wjahsg.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--xHM_iHg6--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/hjc9ofghcbmsj3wjahsg.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--laaOqwFI--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/cbebxmgccvb2xuuf3x93.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--laaOqwFI--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/cbebxmgccvb2xuuf3x93.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--6HA2oIFj--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/cm262okes8xeqf6fyt1a.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--6HA2oIFj--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/cm262okes8xeqf6fyt1a.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--K50Jcyqf--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/0ciz4i96b5gtds9ezbsu.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--K50Jcyqf--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/0ciz4i96b5gtds9ezbsu.png" alt="Image description"/></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--q1JZ2Gvi--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/pflduqxem8e33ntijvvt.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--q1JZ2Gvi--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/pflduqxem8e33ntijvvt.png" alt="Image description"/></a></figure>
+
+
+
+<h3>Step 3: Call the Weather API</h3>
+
+
+
+<p>Click send on the weather forecast request to get the response on the API</p>
+
+
+
+<figure class="wp-block-image"><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--g7THxwAz--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/zlxb3ddb5ojwt4h4v1sv.png"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--g7THxwAz--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/zlxb3ddb5ojwt4h4v1sv.png" alt="Image description"/></a></figure>
+
+
+
+<p>It’s as easy as that !<img src="https://s.w.org/images/core/emoji/13.0.1/72x72/1f389.png" alt="🎉" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://vinayaroratech.com/dotnet/aws-cognito-client-credentials-flow-net-6/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Working with AWS S3 using ASP.NET Core – Upload, Download &#038; Delete Files</title>
+		<link>https://vinayaroratech.com/dotnet-core/working-with-aws-s3-using-asp-net-core-upload-download-delete-files/</link>
+					<comments>https://vinayaroratech.com/dotnet-core/working-with-aws-s3-using-asp-net-core-upload-download-delete-files/#respond</comments>
+		
+		<dc:creator><![CDATA[Vinay]]></dc:creator>
+		<pubDate>Mon, 31 Oct 2022 12:22:31 +0000</pubDate>
+				<category><![CDATA[.NET Core]]></category>
+		<category><![CDATA[AWS]]></category>
+		<category><![CDATA[Bucket]]></category>
+		<category><![CDATA[FileUpload]]></category>
+		<category><![CDATA[S3]]></category>
+		<guid isPermaLink="false">https://vinayaroratech.com/?p=912</guid>
+
+					<description><![CDATA[In this article, we will be get started on working with AWS S3 using ASP.NET Core Web API to upload, download and delete files from Amazons Super Scalable S3! Apart from that, we will also learn more about Amazons S3, the problem it solves, dive a bit into the AWS Console for S3 Management, AWS &#8230;<p class="read-more"> <a class="" href="https://vinayaroratech.com/dotnet-core/working-with-aws-s3-using-asp-net-core-upload-download-delete-files/"> <span class="screen-reader-text">Working with AWS S3 using ASP.NET Core – Upload, Download &#038; Delete Files</span> Read More &#187;</a></p>]]></description>
+										<content:encoded><![CDATA[
+<p>In this article, we will be get started on working with AWS S3 using ASP.NET Core Web API to upload, download and delete files from Amazons Super Scalable S3! Apart from that, we will also learn more about Amazons S3, the problem it solves, dive a bit into the AWS Console for S3 Management, AWS CLI, and Credentials Store, Generate Access Keys for accessing S3 via SDKs, Creating and Deleting S3 buckets, a bit about pre-signed URLs and so on!</p>
+
+
+
+<p>We will be building a .NET 6 Web API that demonstrated all of the above topics. This API would allow you to create and delete S3 Buckets, and upload and delete files from specific Amazon S3 Buckets.</p>
+
+
+
+<h2>Creating User &amp; Generating Access Keys via AWS IAM</h2>
+
+
+
+<p>Lets start with the security part.</p>
+
+
+
+<p>As mentioned earlier, we are going to work with AWS SDK to perform operations over S3 via our .NET Application. Thus, the first requirement is to have a way to access AWS S3 via the 3rd party application ( our Web API ). IAM or the Identity &amp; Access Management from AWS is responsible for creating users and granting access to the users with specific privileges.</p>
+
+
+
+<p>First up, sign in to the AWS Console.</p>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" width="1024" height="567" src="https://vinayaroratech.com/wp-content/uploads/2022/10/image-1024x567.png" alt="" class="wp-image-913" srcset="https://vinayaroratech.com/wp-content/uploads/2022/10/image-1024x567.png 1024w, https://vinayaroratech.com/wp-content/uploads/2022/10/image-300x166.png 300w, https://vinayaroratech.com/wp-content/uploads/2022/10/image-768x426.png 768w, https://vinayaroratech.com/wp-content/uploads/2022/10/image-1536x851.png 1536w, https://vinayaroratech.com/wp-content/uploads/2022/10/image.png 1664w" sizes="(max-width: 1024px) 100vw, 1024px" /></figure>
+
+
+
+<p>In the search bar, search for IAM and open it. IAM helps you manage security for AWS resources in general.</p>
+
+
+
+<p>Once IAM loads up, click on users. Our intention is to create a new user that has full access rights to perform operations with the AWS S3 Service.</p>
+
+
+
+<figure class="wp-block-image"><img src="https://codewithmukesh.com/wp-content/uploads/2022/03/image-27-1024x630.png" alt="image 27 Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified" class="wp-image-237210" title="Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified 2"/></figure>
+
+
+
+<p>In the next form, add in your user name and make sure to select the AWS Credential type as Access Key. This enables us to use the generated keys for SDK / API-related development works.</p>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" width="1024" height="561" src="https://vinayaroratech.com/wp-content/uploads/2022/10/image-1-1024x561.png" alt="" class="wp-image-914" srcset="https://vinayaroratech.com/wp-content/uploads/2022/10/image-1-1024x561.png 1024w, https://vinayaroratech.com/wp-content/uploads/2022/10/image-1-300x164.png 300w, https://vinayaroratech.com/wp-content/uploads/2022/10/image-1-768x420.png 768w, https://vinayaroratech.com/wp-content/uploads/2022/10/image-1-1536x841.png 1536w, https://vinayaroratech.com/wp-content/uploads/2022/10/image-1.png 1677w" sizes="(max-width: 1024px) 100vw, 1024px" /></figure>
+
+
+
+<p>Next, we have to attach policies/permissions to this user. Search for S3 add select AmazonS3FullAccess. You can choose to add more if you want. But for this article, we only need this policy to be added.</p>
+
+
+
+<figure class="wp-block-image"><img src="https://codewithmukesh.com/wp-content/uploads/2022/03/image-30-1024x832.png" alt="image 30 Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified" class="wp-image-237213" title="Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified 4"/></figure>
+
+
+
+<p>On the next screen, you get an option to add tags to the user. This can be useful for billing/monitoring purposes. But for now, we can skip this step.</p>
+
+
+
+<p>Finally, Review the details that you added and click on Create User.</p>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" width="1024" height="506" src="https://vinayaroratech.com/wp-content/uploads/2022/10/image-2-1024x506.png" alt="" class="wp-image-915" srcset="https://vinayaroratech.com/wp-content/uploads/2022/10/image-2-1024x506.png 1024w, https://vinayaroratech.com/wp-content/uploads/2022/10/image-2-300x148.png 300w, https://vinayaroratech.com/wp-content/uploads/2022/10/image-2-768x379.png 768w, https://vinayaroratech.com/wp-content/uploads/2022/10/image-2.png 1537w" sizes="(max-width: 1024px) 100vw, 1024px" /></figure>
+
+
+
+<p>Thats it. A new user will be created for you.</p>
+
+
+
+<p>As the next step, make sure to download the generated CSV for safekeeping. This usually has your Access Key Id and Secret Access Key. We need these details later on when we try to integrate our code with AWS S3 Service.</p>
+
+
+
+<h2>Creating your First AWS S3 Bucket via AWS Console</h2>
+
+
+
+<p>With the user created, Lets explore a bit of the AWS S3 Console. Search for S3 in the top search bar and open up the first result.</p>
+
+
+
+<figure class="wp-block-image"><img src="https://codewithmukesh.com/wp-content/uploads/2022/04/image-1.png" alt="image 1 Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified" class="wp-image-237249" title="Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified 7"/></figure>
+
+
+
+<p>As discussed earlier, we will start with creating S3 Buckets via console. In the later part, we will see how to create and delete S3 buckets via .NET.</p>
+
+
+
+<p>So, Click on Create bucket.</p>
+
+
+
+<p>There are a few rules to be followed while naming your new S3 Bucket. The most important rule is that your bucket name should be globally unique.</p>
+
+
+
+<p>As for the AWS region, select the region close to you for optimal transfer speeds.</p>
+
+
+
+<figure class="wp-block-image"><img src="https://codewithmukesh.com/wp-content/uploads/2022/03/image-42.png" alt="image 42 Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified" class="wp-image-237227" title="Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified 9"/></figure>
+
+
+
+<p>You can leave everything else as it is.</p>
+
+
+
+<p>By default, AWS blocks all kinds of public access into the bucket. Lets keep it that way. Further in the tutorial, we will learn a way with .NET to generate URLs to your uploaded files that expire after a given amount of time.</p>
+
+
+
+<figure class="wp-block-image"><img src="https://codewithmukesh.com/wp-content/uploads/2022/03/image-35.png" alt="image 35 Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified" class="wp-image-237218" title="Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified 10"/></figure>
+
+
+
+<p>Here too, tags are optional.</p>
+
+
+
+<p>Thats it. Review your changes and hit on Create Bucket.</p>
+
+
+
+<figure class="wp-block-image"><img src="https://codewithmukesh.com/wp-content/uploads/2022/03/image-36.png" alt="image 36 Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified" class="wp-image-237219" title="Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified 11"/></figure>
+
+
+
+<p>The below screenshot shows that your new S3 bucket is available.</p>
+
+
+
+<figure class="wp-block-image"><img src="https://codewithmukesh.com/wp-content/uploads/2022/03/image-43-1024x248.png" alt="image 43 Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified" class="wp-image-237228" title="Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified 12"/></figure>
+
+
+
+<p>As a simple exercise, you can play around with the dashboard and try to upload some files into it. Below, I uploaded a Blog banner into my S3 bucket.</p>
+
+
+
+<figure class="wp-block-image"><img src="https://codewithmukesh.com/wp-content/uploads/2022/04/image-2.png" alt="image 2 Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified" class="wp-image-237251" title="Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified 13"/></figure>
+
+
+
+<figure class="wp-block-image"><img src="https://codewithmukesh.com/wp-content/uploads/2022/04/image-3-1024x412.png" alt="image 3 Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified" class="wp-image-237252" title="Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified 14"/></figure>
+
+
+
+<p>Moreover, you can also create folders in your bucket and upload objects to it. Playing around with the S3 Dashboard should get you familiar with using it.</p>
+
+
+
+<p>Now, lets see how to build our ASP.NET Core Web API to work with AWS.</p>
+
+
+
+<h2>AWS Configurations &amp; CLI</h2>
+
+
+
+<p>As you know that we already have the secret keys with us, lets talk about how to use them for .NET Applications. Now, AWS CLI provides some real secure ways to store your secret keys. Traditionally, one would place the access keys within the appsettings.json of the web application, or to the secret store. With AWS CLI, there is a dedicated AWS Local store that manages your credentials and configurations.</p>
+
+
+
+<p>To get started with it, first install the AWS CLI on your machine. Note that the below screenshots are for Windows Machines.</p>
+
+
+
+<p><a href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html" target="_blank" rel="noreferrer noopener">Download AWS CLI here</a>.</p>
+
+
+
+<p>Note that the above link has downloadable installers for Windows, Mac, and Linux Operating Systems.</p>
+
+
+
+<figure class="wp-block-image"><img src="https://codewithmukesh.com/wp-content/uploads/2022/03/image-38.png" alt="image 38 Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified" class="wp-image-237222" title="Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified 15"/></figure>
+
+
+
+<figure class="wp-block-image"><img src="https://codewithmukesh.com/wp-content/uploads/2022/03/image-39.png" alt="image 39 Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified" class="wp-image-237223" title="Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified 16"/></figure>
+
+
+
+<p>Once you have downloaded and installed the AWS CLI, make sure to restart any open command prompts / terminals. After that, type in&nbsp;<strong>aws -version&nbsp;</strong>to check if the CLI tool has been installed properly on your machine. If you see something like the below, you are probably good to go.</p>
+
+
+
+<figure class="wp-block-image"><img src="https://codewithmukesh.com/wp-content/uploads/2022/04/image-4.png" alt="image 4 Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified" class="wp-image-237256" title="Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified 17"/></figure>
+
+
+
+<p>With that done, lets create a new AWS Local Configuration profile which will be used by our .NET application to read in the credentials and other configuration stuff. Type in the following command to get started with creating an AWS local profile.aws configure &#8211;profile &#8220;my-profile-name&#8221;</p>
+
+
+
+<p>You can name your profile something like s3-demo or so. This is just for our identification. With that, you will be prompted to enter the access id and the secret. Remember we downloaded a CSV file earlier? while creating a new user. This is when that CSV file would come in handy. Paste in the Access Key and Secret Access Key.</p>
+
+
+
+<figure class="wp-block-image"><img src="https://codewithmukesh.com/wp-content/uploads/2022/03/image-44-1024x572.png" alt="image 44 Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified" class="wp-image-237229" title="Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified 18"/></figure>
+
+
+
+<p>As for the default region name, make sure to give the same region that you used while creating our new S3 bucket. If you are unsure, simply navigate to the S3 dashboard, select your newly created bucket and check its properties. You will get the region details.</p>
+
+
+
+<figure class="wp-block-image"><img src="https://codewithmukesh.com/wp-content/uploads/2022/04/image-6.png" alt="image 6 Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified" class="wp-image-237259" title="Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified 19"/></figure>
+
+
+
+<p>In case you gave in some details while setting up the configurations, nothing to worry about. Re-enter the profile creation command and AWS will take you again through the configurations.</p>
+
+
+
+<p>Now, whatever data you gave will be stored securely under your user folder in the below path. Feel free to explore the files.</p>
+
+
+
+<figure class="wp-block-image"><img src="https://codewithmukesh.com/wp-content/uploads/2022/03/image-41.png" alt="image 41 Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified" class="wp-image-237225" title="Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified 20"/></figure>
+
+
+
+<p>Note that you have to use this profile name while working with the .NET application. The SDK would pull in the credentials related to the profile name you give. You will understand more when we set up the appsettings.json for our .NET Web API.</p>
+
+
+
+<h2>Working with AWS S3 using ASP.NET Core – Getting Started</h2>
+
+
+
+<p>Next, lets start with the development part! For this demonstration, I will be using Visual Studio 2022 Community as my IDE with the latest stable release of .NET 6 SDK installed on my machine.</p>
+
+
+
+<h3>Setting up the Project</h3>
+
+
+
+<p>Create a new ASP.NET Core Web API solution with .NET 6.0. We will be using the traditional API controllers approach for this sample project. Note that we have also enabled the OpenAPI support, which will configure the Swagger UI for us, which in turn will help our API Documentation and Testing easily.</p>
+
+
+
+<figure class="wp-block-image"><img src="https://codewithmukesh.com/wp-content/uploads/2022/03/image-26.png" alt="image 26 Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified" class="wp-image-237208" title="Working with AWS S3 using ASP.NET Core - Upload, Download &amp; Delete Files - Simplified 21"/></figure>
+
+
+
+<p>First up, lets modify the appsettings.json of the Web API project. Make sure that your appsettings.json looks like the one below. Ensure that you are populating the Profile and Region fields with the values you have configured earlier in the AWS CLI.</p>
+
+
+
+<pre class="wp-block-code"><code>{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "AWS": {
+    "Profile": "s3-dotnet-demo",
+    "Region": "ap-south-1"
+  }
+}</code></pre>
+
+
+
+<p>Note that s3-dotnet-demo is the name of the profile I created locally on my machine, and ap-south-1 is the closest region to where I am and also is the region where my test S3 bucket is created.</p>
+
+
+
+<p>Run the following commands via Visual Studio to install the required AWS NuGet packages.</p>
+
+
+
+<pre class="wp-block-code"><code>Install-Package AWSSDK.Extensions.NETCore.Setup
+Install-Package AWSSDK.S3</code></pre>
+
+
+
+<p>With that done, lets register the AWS Service into the .NET applications Container. Open up the Program.cs and make the modifications as below. You might have to use the Amazon.S3 namespace while referencing the below changes.</p>
+
+
+
+<pre class="wp-block-code"><code>private static IServiceCollection AddAws(this IServiceCollection services, IConfiguration config)
+    {
+        var awsOptions = config.GetAWSOptions();
+        awsOptions.Credentials = new EnvironmentVariablesAWSCredentials();
+        services.AddDefaultAWSOptions(awsOptions);
+        services.AddAWSService&lt;IAmazonS3>();
+        return services;
+    }</code></pre>
+
+
+
+<h3>How to Upload Files to AWS S3 using ASP.NET Core?</h3>
+
+
+
+<p>First up, is an endpoint to Upload Files to a specific Bucket in AWS S3.</p>
+
+
+
+<p>The simple flow will be,</p>
+
+
+
+<ul><li>The user passes the File, name of the bucket, and a folder name to this endpoint.</li><li>The code should first check if such a BucketName exists in the S3 account. If not, it returns an exception. You could also modify the code to create an S3 Bucket for you if the entered Bucket Name doesnt exist.</li><li>Finally, creates a request object and send it to Amazon Service which would upload the file into S3 for you.</li></ul>
+
+
+
+<p>Here is what the code would look like.</p>
+
+
+
+<pre class="wp-block-code"><code>    private readonly ApplicationDbContext _dbContext;
+    private readonly IAmazonS3 _s3Client;
+    private readonly ILogger&lt;ClaimService> _logger;
+    private readonly AWSOptions _awsOptions;
+
+    public ClaimService(
+        ApplicationDbContext dbContext,
+        IAmazonS3 s3Client,
+        ILogger&lt;ClaimService> logger,
+        IOptions&lt;AWSOptions> awsOptions)
+    {
+        _dbContext = dbContext;
+        _s3Client = s3Client;
+        _logger = logger;
+        _awsOptions = awsOptions.Value;
+    }
+
+public async Task&lt;string> UploadFileToS3(IFormFile file, string prefix, CancellationToken cancellationToken = default)
+    {
+        bool bucketExists = await _s3Client.DoesS3BucketExistAsync(_bucketName);
+        if (!bucketExists)
+            throw new Application.Common.Exceptions.NotFoundException($"Bucket {_bucketName} does not exist.");
+
+        var request = new PutObjectRequest()
+        {
+            BucketName = _bucketName,
+            Key = string.IsNullOrEmpty(prefix) ? file.FileName : $"{prefix?.TrimEnd('/')}/{file.FileName}",
+            InputStream = file.OpenReadStream()
+        };
+        request.Metadata.Add("Content-Type", file.ContentType);
+        var response = await _s3Client.PutObjectAsync(request, cancellationToken);
+        _logger.LogInformation($"File {prefix}/{file.FileName} uploaded to S3 successfully!");
+        return $"https://{_bucketName}.s3.{_awsOptions.DefaultClientConfig?.RegionEndpoint?.SystemName}.amazonaws.com/{prefix}/{file.FileName}";
+    }</code></pre>
+
+
+
+<h4>Understanding Pre signed URLs in AWS S3</h4>
+
+
+
+<p>So, as mentioned many times, the objects that you upload to S3 Buckets are secured and cannot be accessed or viewed by the public. But as per our requirement, we need to expose an URL that can open up / preview the S3 object to the public, but limit access to just about a minute or so, after which the link would be expired. This is where the Pre Signed URLs come into the picture. Its possible to define the amount of time after which the link would expire.</p>
+
+
+
+<pre class="wp-block-code"><code>public async Task&lt;S3ObjectDto> GetAllFilesAsync(string bucketName, string? prefix)
+    {
+        var bucketExists = await _s3Client.DoesS3BucketExistAsync(bucketName);
+        if (!bucketExists) throw new NotFoundException($"Bucket {bucketName} does not exist.");
+        var request = new ListObjectsV2Request() { BucketName = bucketName, Prefix = prefix };
+        var result = await _s3Client.ListObjectsV2Async(request);
+        var s3Objects = result.S3Objects.Select(s =>
+        {
+            var urlRequest = new GetPreSignedUrlRequest()
+            {
+                BucketName = bucketName,
+                Key = s.Key,
+                Expires = DateTime.UtcNow.AddMinutes(1)
+            };
+            return new S3ObjectDto()
+            {
+                Name = s.Key,
+                PresignedUrl = _s3Client.GetPreSignedURL(urlRequest),
+            };
+        });
+
+        s3Objects;
+    }</code></pre>
+
+
+
+<p>In above code, I have set the expiration timeout to be 1 Min.</p>
+
+
+
+<p>The URL request is formed using the bucket name, Key (entire file name of the object), and the expiration parameter. This method would return a pre-signed URL.</p>
+
+
+
+<h3>How to Download Files from AWS S3 using ASP.NET Core?</h3>
+
+
+
+<p>Next, is a simple endpoint that can preview the file in Swagger. Here also, we will be passing the bucket name and key of the object (entire file name) and we expect the endpoint to return the binary of the uploaded file back to the user.</p>
+
+
+
+<pre class="wp-block-code"><code>public async Task GetFileByKeyAsync(string bucketName, string key)
+    {
+        var bucketExists = await _s3Client.DoesS3BucketExistAsync(bucketName);
+        if (!bucketExists) throw new NotFoundException($"Bucket {bucketName} does not exist.");
+        var s3Object = await _s3Client.GetObjectAsync(bucketName, key);
+        return File(s3Object.ResponseStream, s3Object.Headers.ContentType);
+    }</code></pre>
+]]></content:encoded>
+					
+					<wfw:commentRss>https://vinayaroratech.com/dotnet-core/working-with-aws-s3-using-asp-net-core-upload-download-delete-files/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>
